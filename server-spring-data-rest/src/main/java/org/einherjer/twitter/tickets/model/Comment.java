@@ -1,6 +1,7 @@
-package org.einherjer.twitter.tickets;
+package org.einherjer.twitter.tickets.model;
 
 import javax.persistence.Entity;
+
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

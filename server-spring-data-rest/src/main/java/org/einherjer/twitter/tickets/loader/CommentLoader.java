@@ -1,7 +1,9 @@
-package org.einherjer.twitter.tickets;
+package org.einherjer.twitter.tickets.loader;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.einherjer.twitter.tickets.model.Comment;
+import org.einherjer.twitter.tickets.repository.CommentRepository;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

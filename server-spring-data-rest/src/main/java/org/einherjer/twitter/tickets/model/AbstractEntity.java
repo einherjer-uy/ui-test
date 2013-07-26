@@ -1,4 +1,4 @@
-package org.einherjer.twitter.tickets;
+package org.einherjer.twitter.tickets.model;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
