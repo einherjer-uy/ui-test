@@ -1,13 +1,12 @@
 package org.einherjer.twitter.tickets.model;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 
 @Entity
 @Getter
@@ -16,12 +15,12 @@ public class Comment extends AbstractEntity {
 
     private String text;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp;
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    private DateTime timestamp;
 
     public Comment(String text) {
         this.text = text;
-        this.timestamp = new Date();
+        this.timestamp = new DateTime();
     }
 
 }

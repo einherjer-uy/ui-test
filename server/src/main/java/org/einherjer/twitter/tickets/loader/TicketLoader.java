@@ -14,7 +14,7 @@ import org.springframework.util.Assert;
 @Component
 @DependsOn("serviceLocator")
 @Slf4j
-public class TicketLoader {
+class TicketLoader {
 
     @Autowired
     public TicketLoader(TicketRepository ticketRepository, ProjectRepository projectRepository) {

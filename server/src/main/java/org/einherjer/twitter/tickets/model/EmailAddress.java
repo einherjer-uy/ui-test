@@ -9,9 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.springframework.util.Assert;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -12,7 +12,7 @@ import org.springframework.util.Assert;
 @Component
 @DependsOn("serviceLocator")
 @Slf4j
-public class ProjectLoader {
+class ProjectLoader {
 
     public static final String PR1_PREFIX = "PR1";
     public static final String PR2_PREFIX = "PR2";

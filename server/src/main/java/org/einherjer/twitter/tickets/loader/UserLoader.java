@@ -12,7 +12,7 @@ import org.springframework.util.Assert;
 @Component
 @DependsOn("serviceLocator")
 @Slf4j
-public class UserLoader {
+class UserLoader {
 
     @Autowired
     public UserLoader(UserRepository repository) {

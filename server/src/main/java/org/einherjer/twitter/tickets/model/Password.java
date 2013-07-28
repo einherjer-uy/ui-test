@@ -15,9 +15,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import org.apache.commons.codec.binary.Base64;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.springframework.util.Assert;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,13 +40,15 @@ public class Password {
         return password == null ? false : password.matches(PASSWORD_PATTERN);
     }
 
-    public void validateLogin(String password) {
-        Assert.notNull(password, "Null password");
+    public void validateLogin(String password) throws InvalidLoginException {
+        if (password == null) {
+            throw new InvalidLoginException("Null password");
+        }
 
         String salt = this.hashedAndSalted.split(",")[1];
 
         if (!this.hashedAndSalted.equals(makePasswordHash(password, salt))) {
-            throw new IllegalArgumentException("Submitted password is not a match");
+            throw new InvalidLoginException("Submitted password doesn't match");
         }
     }
 

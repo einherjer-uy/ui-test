@@ -1,28 +1,103 @@
 package org.einherjer.twitter.tickets;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
-
-import org.springframework.data.rest.webmvc.RepositoryRestExporterServlet;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
+import org.springframework.http.MediaType;
+import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
+import org.springframework.stereotype.Service;
 import org.springframework.web.WebApplicationInitializer;
-import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+/* Regular SpringMVC web initializer with spring-data-rest (RepositoryRestExporterServlet) or vanilla (DispatcherServlet)
 public class TwitterTicketsWebApplicationInitializer implements WebApplicationInitializer {
 
+@Override
+public void onStartup(ServletContext container) throws ServletException {
+
+AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
+rootContext.register(ApplicationConfig.class);
+
+container.addListener(new ContextLoaderListener(rootContext));
+
+DispatcherServlet servlet = new RepositoryRestExporterServlet(); //use just new DispatcherServlet for regular spring mvc (manual Controllers, no spring-data-rest magic)
+ServletRegistration.Dynamic dispatcher = container.addServlet("spring-data-rest-exporter", servlet);
+dispatcher.setLoadOnStartup(1);
+dispatcher.addMapping("/");
+}*/
+
+/**
+ * Servlet 3.0 {@link WebApplicationInitializer} using Spring 3.2 convenient base class
+ * {@link AbstractAnnotationConfigDispatcherServletInitializer}. It essentially sets up a root application context from
+ * {@link ApplicationConfig}, and a dispatcher servlet application context from {@link RepositoryRestMvcConfiguration}
+ * (enabling Spring Data REST) and {@link WebConfiguration} for general Spring MVC customizations.
+ * 
+ * @author Oliver Gierke
+ */
+public class TwitterTicketsWebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+
+    /* 
+     * (non-Javadoc)
+     * @see org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer#getRootConfigClasses()
+     */
     @Override
-    public void onStartup(ServletContext container) throws ServletException {
+    protected Class<?>[] getRootConfigClasses() {
+        return new Class<?>[] { ApplicationConfig.class };
+    }
 
-        AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
-        rootContext.register(ApplicationConfig.class);
+    /* 
+     * (non-Javadoc)
+     * @see org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer#getServletConfigClasses()
+     */
+    @Override
+    protected Class<?>[] getServletConfigClasses() {
+        return new Class<?>[] { WebConfiguration.class };
+    }
 
-        container.addListener(new ContextLoaderListener(rootContext));
+    /* 
+     * (non-Javadoc)
+     * @see org.springframework.web.servlet.support.AbstractDispatcherServletInitializer#getServletMappings()
+     */
+    @Override
+    protected String[] getServletMappings() {
+        return new String[] { "/" };
+    }
 
-        DispatcherServlet servlet = new RepositoryRestExporterServlet();
-        ServletRegistration.Dynamic dispatcher = container.addServlet("exporter", servlet);
-        dispatcher.setLoadOnStartup(1);
-        dispatcher.addMapping("/*");
+    /* 
+     * (non-Javadoc)
+     * @see org.springframework.web.servlet.support.AbstractDispatcherServletInitializer#getServletFilters()
+     */
+    @Override
+    protected javax.servlet.Filter[] getServletFilters() {
+        return new javax.servlet.Filter[] { new OpenEntityManagerInViewFilter() };
+    }
+
+    /**
+     * Web layer configuration enabling Spring MVC, Spring Hateoas hypermedia support.
+     * 
+     * @author Oliver Gierke
+     */
+    @Configuration
+    @EnableHypermediaSupport
+    //no need for @EnableWebMvc cause the superclass (DelegatingWebMvcConfiguration) performs the same process
+    //  (plus, it allows to override some methods without extending WebMvcConfigurerAdapter)  
+    @Import(RepositoryRestMvcConfiguration.class)
+    @ComponentScan(excludeFilters = @Filter({ Service.class, Configuration.class }))
+    public static class WebConfiguration extends DelegatingWebMvcConfiguration {
+
+        /*
+         * (non-Javadoc)
+         * @see org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport#configureContentNegotiation(org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer)
+         */
+        @Override
+        public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+            configurer.defaultContentType(MediaType.APPLICATION_JSON);
+        }
     }
 }
+
