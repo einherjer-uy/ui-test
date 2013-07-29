@@ -1,5 +1,6 @@
 package org.einherjer.twitter.tickets.service;
 
+import org.einherjer.twitter.tickets.model.Attachment;
 import org.einherjer.twitter.tickets.model.Project;
 import org.einherjer.twitter.tickets.model.Ticket;
 import org.einherjer.twitter.tickets.repository.ProjectRepository;
@@ -19,11 +20,33 @@ public class TicketService {
 
     @Transactional
     public void addComment(String projectPrefix, Integer ticketNumber, String comment) {
+        Ticket ticket = this.find(projectPrefix, ticketNumber);
+        ticket.addComment(comment);
+    }
+
+    public Ticket find(String projectPrefix, Integer ticketNumber) {
         Project project = projectRepository.findByPrefix(projectPrefix);
         Assert.notNull(project, "No project matches the specified prefix");
         Ticket ticket = ticketRepository.findByProjectAndNumber(project, ticketNumber);
         Assert.notNull(ticket, "No ticket matches the specified project and ticket number");
-        ticket.addComment(comment);
+        return ticket;
+    }
+
+    @Transactional
+    public void deleteAttachment(String projectPrefix, Integer ticketNumber, Long attachmentId) {
+        Ticket ticket = this.find(projectPrefix, ticketNumber);
+        ticket.removeAttachment(attachmentId);
+    }
+
+    @Transactional
+    public void addAttachment(String projectPrefix, Integer ticketNumber, String filename, byte[] bytes) {
+        Ticket ticket = this.find(projectPrefix, ticketNumber);
+        ticket.addAttachment(filename, bytes);
+    }
+
+    public Attachment getAttachment(String projectPrefix, Integer ticketNumber, Long attachmentId) {
+        Ticket ticket = this.find(projectPrefix, ticketNumber);
+        return ticket.findAttachmentById(attachmentId);
     }
 
 }

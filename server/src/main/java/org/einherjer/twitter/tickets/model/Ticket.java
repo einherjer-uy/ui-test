@@ -2,7 +2,9 @@ package org.einherjer.twitter.tickets.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -22,14 +24,14 @@ import org.einherjer.twitter.tickets.repository.TicketRepository;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "Ticket", uniqueConstraints = @UniqueConstraint(columnNames = { "Number", "Project_Id" }))
+@Table(name = "Ticket", uniqueConstraints = @UniqueConstraint(columnNames = { "number", "project_Id" }))
 public class Ticket extends AbstractEntity {
 
-    @Column(name = "Number")
+    @Column(name = "mumber")
     private @Getter Integer number;
     
     @ManyToOne
-    @JoinColumn(name = "Project_Id")
+    @JoinColumn(name = "project_Id")
     private @Getter Project project;
 
     private @Getter String title;
@@ -42,6 +44,10 @@ public class Ticket extends AbstractEntity {
     @JoinColumn(name = "ticket_id")
     @OrderBy(value = "timestamp DESC")
     private List<Comment> comments = new ArrayList<Comment>();
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "ticket_id")
+    private Set<Attachment> attachments = new HashSet<Attachment>();
 
     public Ticket(Project project, String title, String description) {
         this.number = this.generateTicketNumber(project);
@@ -57,6 +63,27 @@ public class Ticket extends AbstractEntity {
 
     public void addComment(String text) {
         this.comments.add(new Comment(text));
+    }
+
+    public Set<Attachment> getAttachments() {
+        return Collections.unmodifiableSet(attachments);
+    }
+
+    public void addAttachment(String filename, byte[] bytes) {
+        this.attachments.add(new Attachment(filename, bytes));
+    }
+
+    public void removeAttachment(Long attachmentId) {
+        this.attachments.remove(this.findAttachmentById(attachmentId));
+    }
+
+    public Attachment findAttachmentById(Long attachmentId) {
+        for (Attachment a : this.attachments) {
+            if (a.getId().equals(attachmentId)) {
+                return a;
+            }
+        }
+        return null;
     }
 
     //TODO: concurrency issue here!!!

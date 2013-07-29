@@ -1,5 +1,8 @@
 package org.einherjer.twitter.tickets;
 
+import java.util.List;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
@@ -7,12 +10,20 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.WebApplicationInitializer;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 /* Regular SpringMVC web initializer with spring-data-rest (RepositoryRestExporterServlet) or vanilla (DispatcherServlet)
 public class TwitterTicketsWebApplicationInitializer implements WebApplicationInitializer {
@@ -98,6 +109,35 @@ public class TwitterTicketsWebApplicationInitializer extends AbstractAnnotationC
         public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
             configurer.defaultContentType(MediaType.APPLICATION_JSON);
         }
+
+        private ObjectMapper objectMapper() {
+            Jackson2ObjectMapperFactoryBean bean = new Jackson2ObjectMapperFactoryBean();
+            bean.setIndentOutput(true);
+            bean.setSimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            bean.afterPropertiesSet();
+            ObjectMapper objectMapper = bean.getObject();
+            objectMapper.registerModule(new JodaModule());
+            return objectMapper;
+        }
+
+        private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+            MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+            converter.setObjectMapper(objectMapper());
+            return converter;
+        }
+
+        @Override
+        public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+            converters.add(mappingJackson2HttpMessageConverter());
+        }
+
+        @Bean
+        public MultipartResolver multipartResolver() {
+            CommonsMultipartResolver bean = new CommonsMultipartResolver();
+            bean.setMaxUploadSize(5242880);
+            return bean;
+        }
+
     }
 }
 

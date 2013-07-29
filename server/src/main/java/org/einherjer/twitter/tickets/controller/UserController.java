@@ -1,5 +1,8 @@
 package org.einherjer.twitter.tickets.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,17 +25,18 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    /*
+    /**
+     * Login
+     * 
      * Example request:
      * 
      * POST /login HTTP/1.1
      * Host: localhost:8080
      * Content-Type: application/json
-     * Cache-Control: no-cache
      * {"username":"user@twitter.com", "password":"Admin_123"}
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public void login(@RequestBody LoginJson jsonBody) throws InvalidLoginException {
+    public @ResponseBody Map<String, Object> login(@RequestBody LoginJson jsonBody) throws InvalidLoginException {
         userService.validateLogin(jsonBody.getUsername(), jsonBody.getPassword());
         //            String sessionID = blogService.startSession(user.getUsername());
         //            if (sessionID == null) {
@@ -42,6 +46,11 @@ public class UserController {
         //                response.addCookie(new Cookie("session", sessionID));
         //                return "redirect:welcome";
         //            }
+        return new HashMap<String, Object>() {
+            {
+                put("message", "ok");
+            }
+        };
     }
 
     @ExceptionHandler(InvalidLoginException.class)

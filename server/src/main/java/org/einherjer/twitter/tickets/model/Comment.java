@@ -11,7 +11,7 @@ import org.joda.time.DateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Comment extends AbstractEntity {
+public class Comment extends AbstractEntity implements Comparable<Comment> {
 
     private String text;
 
@@ -21,6 +21,11 @@ public class Comment extends AbstractEntity {
     public Comment(String text) {
         this.text = text;
         this.timestamp = new DateTime();
+    }
+
+    @Override
+    public int compareTo(Comment o) {
+        return this.timestamp.compareTo(o.getTimestamp());
     }
 
 }
