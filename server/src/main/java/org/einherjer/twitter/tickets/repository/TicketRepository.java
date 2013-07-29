@@ -10,4 +10,6 @@ public interface TicketRepository extends CrudRepository<Ticket, Long> {
     @Query("select max(t.number) from Ticket t where t.project = ?1")
     Integer getMaxTicketNumberByProject(Project project);
 
+    Ticket findByProjectAndNumber(Project project, Integer ticketNumber);
+
 }

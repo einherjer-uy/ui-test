@@ -1,5 +1,8 @@
 package org.einherjer.twitter.tickets.controller;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.einherjer.twitter.tickets.model.InvalidLoginException;
 import org.einherjer.twitter.tickets.service.UserService;
@@ -7,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,9 +22,18 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /*
+     * Example request:
+     * 
+     * POST /login HTTP/1.1
+     * Host: localhost:8080
+     * Content-Type: application/json
+     * Cache-Control: no-cache
+     * {"username":"user@twitter.com", "password":"Admin_123"}
+     */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public void doLogin(LoginForm loginForm) throws InvalidLoginException {
-        userService.validateLogin(loginForm.getUsername(), loginForm.getPassword());
+    public void login(@RequestBody LoginJson jsonBody) throws InvalidLoginException {
+        userService.validateLogin(jsonBody.getUsername(), jsonBody.getPassword());
         //            String sessionID = blogService.startSession(user.getUsername());
         //            if (sessionID == null) {
         //                return "redirect:internal_error";
@@ -37,6 +50,19 @@ public class UserController {
         return new ExceptionBody(e.getMessage(), ExceptionUtils.getStackTrace(e));
     }
     
+    /*
+     * Represents the JSON body of the request
+     * (could also represent form data (x-www-from-urlencoded)) in a POST /login
+     *      (or PUT, but PUT requires HttpPutFormContentFilter, see Spring docs)
+     * SSL assumed
+     */
+    @Getter
+    @Setter
+    public static class LoginJson {
+        private String username;
+        private String password;
+    }
+
     //	@RequestMapping(value = "/logout", method = RequestMethod.GET)
     //    public String doLogout(Model model, @CookieValue("session") String sessionID) {
     //		if (sessionID == null) {

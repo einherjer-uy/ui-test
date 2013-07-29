@@ -5,11 +5,14 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,11 +22,14 @@ import org.einherjer.twitter.tickets.repository.TicketRepository;
 
 @Entity
 @NoArgsConstructor
+@Table(name = "Ticket", uniqueConstraints = @UniqueConstraint(columnNames = { "Number", "Project_Id" }))
 public class Ticket extends AbstractEntity {
 
+    @Column(name = "Number")
     private @Getter Integer number;
     
     @ManyToOne
+    @JoinColumn(name = "Project_Id")
     private @Getter Project project;
 
     private @Getter String title;
