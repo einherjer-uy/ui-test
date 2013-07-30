@@ -37,9 +37,9 @@ rootContext.register(ApplicationConfig.class);
 container.addListener(new ContextLoaderListener(rootContext));
 
 DispatcherServlet servlet = new RepositoryRestExporterServlet(); //use just new DispatcherServlet for regular spring mvc (manual Controllers, no spring-data-rest magic)
-ServletRegistration.Dynamic dispatcher = container.addServlet("spring-data-rest-exporter", servlet);
+ServletRegistration.Dynamic dispatcher = container.addServlet("rest-exporter", servlet);
 dispatcher.setLoadOnStartup(1);
-dispatcher.addMapping("/");
+dispatcher.addMapping("/*");
 }*/
 
 /**
@@ -76,13 +76,15 @@ public class TwitterTicketsWebApplicationInitializer extends AbstractAnnotationC
      */
     @Override
     protected String[] getServletMappings() {
-        return new String[] { "/" };
+        return new String[] { "/*" };
     }
 
     /* 
      * (non-Javadoc)
      * @see org.springframework.web.servlet.support.AbstractDispatcherServletInitializer#getServletFilters()
      */
+    //Needed because after the @Service returns the @Transactional method ends and the @Entity gets detached,
+    //but after that Spring MVC, etc needs to access the entity to serialize it to json
     @Override
     protected javax.servlet.Filter[] getServletFilters() {
         return new javax.servlet.Filter[] { new OpenEntityManagerInViewFilter() };
@@ -119,13 +121,11 @@ public class TwitterTicketsWebApplicationInitializer extends AbstractAnnotationC
             objectMapper.registerModule(new JodaModule());
             return objectMapper;
         }
-
         private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
             MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
             converter.setObjectMapper(objectMapper());
             return converter;
         }
-
         @Override
         public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
             converters.add(mappingJackson2HttpMessageConverter());

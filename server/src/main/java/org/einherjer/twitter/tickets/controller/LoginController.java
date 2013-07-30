@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.einherjer.twitter.tickets.model.InvalidLoginException;
-import org.einherjer.twitter.tickets.service.UserService;
+import org.einherjer.twitter.tickets.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -20,10 +20,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
-public class UserController {
+public class LoginController /*implements ResourceProcessor<Resources<Object>>*/{
+
+    public static final String LOGIN_REL = "login";
 
     @Autowired
-    private UserService userService;
+    private LoginService loginService;
 
     /**
      * Login
@@ -37,7 +39,7 @@ public class UserController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public @ResponseBody Map<String, Object> login(@RequestBody LoginJson jsonBody) throws InvalidLoginException {
-        userService.validateLogin(jsonBody.getUsername(), jsonBody.getPassword());
+        loginService.validateLogin(jsonBody.getUsername(), jsonBody.getPassword());
         //            String sessionID = blogService.startSession(user.getUsername());
         //            if (sessionID == null) {
         //                return "redirect:internal_error";
@@ -87,5 +89,16 @@ public class UserController {
             }
         };
     }
+
+    //    /**
+    //     * Exposes the {@link LoginController} to the root resource
+    //     * 
+    //     * @see org.springframework.hateoas.ResourceProcessor#process(org.springframework.hateoas.ResourceSupport)
+    //     */
+    //    @Override
+    //    public Resources<Object> process(Resources<Object> resource) {
+    //        resource.add(linkTo(LoginController.class).slash("login").withRel(LOGIN_REL));
+    //        return resource;
+    //    }
 
 }

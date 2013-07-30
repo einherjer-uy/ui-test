@@ -43,7 +43,7 @@ public class TicketController {
      * Content-Type: application/json
      * { "project":{"prefix":"PR1"}, "title":"t", "description":"d", "status":"OPEN", "assignee":{"username":"user@twitter.com"} }
      */
-    @RequestMapping(value = "/tickets", method = RequestMethod.PUT)
+    @RequestMapping(value = "/tickets/put", method = RequestMethod.PUT)
     public @ResponseBody Map<String, Object> putTicket(@RequestBody Ticket jsonBody) {
         this.validateTicketDTO(jsonBody);
         Assert.notNull(jsonBody.getProject(), "Project cannot be null");

@@ -1,5 +1,7 @@
 package org.einherjer.twitter.tickets;
 
+import java.util.Properties;
+
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
@@ -35,10 +37,15 @@ public class ApplicationConfig {
 		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		vendorAdapter.setDatabase(Database.HSQL);
 		vendorAdapter.setGenerateDdl(true);
+        vendorAdapter.setShowSql(true);
 
 		LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
 		factory.setJpaVendorAdapter(vendorAdapter);
 		factory.setPackagesToScan(getClass().getPackage().getName());
+        Properties jpaProperties = new Properties();
+        jpaProperties.setProperty("hibernate.show_sql", Boolean.TRUE.toString());
+        jpaProperties.setProperty("hbm2ddl.auto", "create-drop");
+        factory.setJpaProperties(jpaProperties);
 		factory.setDataSource(dataSource());
 
 		factory.afterPropertiesSet();
