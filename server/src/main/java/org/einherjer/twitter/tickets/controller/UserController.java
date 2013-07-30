@@ -46,11 +46,7 @@ public class UserController {
         //                response.addCookie(new Cookie("session", sessionID));
         //                return "redirect:welcome";
         //            }
-        return new HashMap<String, Object>() {
-            {
-                put("message", "ok");
-            }
-        };
+        return okMessage();
     }
 
     @ExceptionHandler(InvalidLoginException.class)
@@ -83,5 +79,13 @@ public class UserController {
     //			return "redirect:login";
     //		}
     //	}
+
+    private HashMap<String, Object> okMessage() {
+        return new HashMap<String, Object>() {
+            {
+                put("message", "ok");
+            }
+        };
+    }
 
 }

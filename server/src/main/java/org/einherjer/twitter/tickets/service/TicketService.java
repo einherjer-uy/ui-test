@@ -5,6 +5,7 @@ import org.einherjer.twitter.tickets.model.Project;
 import org.einherjer.twitter.tickets.model.Ticket;
 import org.einherjer.twitter.tickets.repository.ProjectRepository;
 import org.einherjer.twitter.tickets.repository.TicketRepository;
+import org.einherjer.twitter.tickets.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,39 @@ public class TicketService {
     private TicketRepository ticketRepository;
     @Autowired
     private ProjectRepository projectRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    public Ticket find(String projectPrefix, Integer ticketNumber) {
+        return this.find(projectPrefix, ticketNumber, false);
+    }
+
+    public Ticket find(String projectPrefix, Integer ticketNumber, boolean allowNull) {
+        Project project = projectRepository.findByPrefix(projectPrefix);
+        Assert.notNull(project, "No project matches the specified prefix");
+        Ticket ticket = ticketRepository.findByProjectAndNumber(project, ticketNumber);
+        if (!allowNull) {
+            Assert.notNull(ticket, "No ticket matches the specified project and ticket number");
+        }
+        return ticket;
+    }
+
+    @Transactional
+    public void save(String projectPrefix, Integer ticketNumber, Ticket data) {
+        data.setAssignee(userRepository.findByUsername(data.getAssignee().getUsername()));
+        Assert.notNull(data.getAssignee(), "No user matches the specified username");
+        
+        Ticket ticket = this.find(projectPrefix, ticketNumber, true);
+        if (ticket == null) {
+            Project project = projectRepository.findByPrefix(projectPrefix);
+            Assert.notNull(project, "No project matches the specified prefix");
+            ticket = new Ticket(project, data);
+            ticketRepository.save(ticket);
+        }
+        else {
+            ticket.set(data);
+        }
+    }
 
     @Transactional
     public void addComment(String projectPrefix, Integer ticketNumber, String comment) {
@@ -24,18 +58,9 @@ public class TicketService {
         ticket.addComment(comment);
     }
 
-    public Ticket find(String projectPrefix, Integer ticketNumber) {
-        Project project = projectRepository.findByPrefix(projectPrefix);
-        Assert.notNull(project, "No project matches the specified prefix");
-        Ticket ticket = ticketRepository.findByProjectAndNumber(project, ticketNumber);
-        Assert.notNull(ticket, "No ticket matches the specified project and ticket number");
-        return ticket;
-    }
-
-    @Transactional
-    public void deleteAttachment(String projectPrefix, Integer ticketNumber, Long attachmentId) {
+    public Attachment getAttachment(String projectPrefix, Integer ticketNumber, Long attachmentId) {
         Ticket ticket = this.find(projectPrefix, ticketNumber);
-        ticket.removeAttachment(attachmentId);
+        return ticket.findAttachmentById(attachmentId);
     }
 
     @Transactional
@@ -44,9 +69,9 @@ public class TicketService {
         ticket.addAttachment(filename, bytes);
     }
 
-    public Attachment getAttachment(String projectPrefix, Integer ticketNumber, Long attachmentId) {
+    @Transactional
+    public void deleteAttachment(String projectPrefix, Integer ticketNumber, Long attachmentId) {
         Ticket ticket = this.find(projectPrefix, ticketNumber);
-        return ticket.findAttachmentById(attachmentId);
+        ticket.removeAttachment(attachmentId);
     }
-
 }

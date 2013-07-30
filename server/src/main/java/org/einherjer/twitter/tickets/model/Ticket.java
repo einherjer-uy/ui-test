@@ -18,27 +18,33 @@ import javax.persistence.UniqueConstraint;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import org.einherjer.twitter.tickets.ServiceLocator;
 import org.einherjer.twitter.tickets.repository.TicketRepository;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "Ticket", uniqueConstraints = @UniqueConstraint(columnNames = { "number", "project_Id" }))
+@Table(name = "Ticket", uniqueConstraints = @UniqueConstraint(columnNames = { "number", "project_id" }))
 public class Ticket extends AbstractEntity {
 
-    @Column(name = "mumber")
+    @Column(name = "number", nullable = false)
     private @Getter Integer number;
     
-    @ManyToOne
-    @JoinColumn(name = "project_Id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "project_id", nullable = false)
     private @Getter Project project;
 
     private @Getter String title;
 
     private @Getter String description;
 
+    @Column(nullable = false)
     private @Getter Status status;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private @Getter @Setter User assignee;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "ticket_id")
@@ -49,12 +55,24 @@ public class Ticket extends AbstractEntity {
     @JoinColumn(name = "ticket_id")
     private Set<Attachment> attachments = new HashSet<Attachment>();
 
-    public Ticket(Project project, String title, String description) {
+    public Ticket(Project project, String title, String description, User assignee) {
         this.number = this.generateTicketNumber(project);
         this.project = project;
         this.title = title;
         this.description = description;
         this.status = Status.OPEN;
+        this.assignee = assignee;
+    }
+
+    public Ticket(Project project, Ticket data) {
+        this(project, data.title, data.description, data.assignee);
+    }
+
+    public void set(Ticket data) {
+        this.title = data.title;
+        this.description = data.description;
+        this.status = data.status;
+        this.assignee = data.assignee;
     }
 
     public List<Comment> getComments() {
