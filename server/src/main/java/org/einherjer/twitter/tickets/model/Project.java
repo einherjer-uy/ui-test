@@ -11,9 +11,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+//@Table(name = "Project", uniqueConstraints = @UniqueConstraint(columnNames = { "prefix" }))
 public class Project extends AbstractEntity {
 
-    @Column(unique = true)
+    @Column(/*name = "prefix", */unique = true)
     private String prefix;
 
     private String name;
