@@ -25,10 +25,11 @@ import org.einherjer.twitter.tickets.repository.TicketRepository;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "Ticket", uniqueConstraints = @UniqueConstraint(columnNames = { "number", "project_id" }))
+//table name is plural to avoid restricted keywords in some databases like "user" and "comment"
+@Table(name = "Tickets", uniqueConstraints = @UniqueConstraint(columnNames = { "ticket_number", "project_id" }))
 public class Ticket extends AbstractEntity {
 
-    @Column(name = "number", nullable = false)
+    @Column(name = "ticket_number", nullable = false) //just "number" is restricted in some databases
     private @Getter Integer number;
     
     @ManyToOne(optional = false)
@@ -108,7 +109,7 @@ public class Ticket extends AbstractEntity {
     private Integer generateTicketNumber(Project project) {
         TicketRepository repository = ServiceLocator.getInstance().getTicketRepository();
         Integer currMaxNum = repository.getMaxTicketNumberByProject(project);
-        return currMaxNum == null ? 1 : currMaxNum++;
+        return currMaxNum == null ? 1 : currMaxNum + 1;
     }
 
     public static enum Status {

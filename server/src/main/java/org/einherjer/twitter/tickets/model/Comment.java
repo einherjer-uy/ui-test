@@ -1,6 +1,7 @@
 package org.einherjer.twitter.tickets.model;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import org.joda.time.DateTime;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "Comments") //table name is plural to avoid restricted keywords in some databases like "user" and "comment"
 public class Comment extends AbstractEntity implements Comparable<Comment> {
 
     private String text;

@@ -39,35 +39,15 @@ public class ApplicationConfig {
         return builder.setType(EmbeddedDatabaseType.HSQL).build();
     }
 
-    //start with java -cp /Users/einherjer/.m3/repository/org/hsqldb/hsqldb/2.2.9/hsqldb-2.2.9.jar org.hsqldb.Server --database.0 mem:test --dbname.0 test
-    private DataSource externalHSQLDataSource() {
-        ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        try {
-            dataSource.setDriverClass("org.hsqldb.jdbcDriver");
-        }
-        catch (PropertyVetoException e) {
-            throw new RuntimeException("Unexpected error", e);
-        }
-        dataSource.setJdbcUrl("jdbc:hsqldb:mem:test");
-        dataSource.setUser("sa");
-        dataSource.setPassword("");
-        dataSource.setAcquireIncrement(1);
-        dataSource.setMaxPoolSize(1);
-        dataSource.setMinPoolSize(1);
-        dataSource.setMaxStatements(0);
-        dataSource.setIdleConnectionTestPeriod(100);
-        return dataSource;
-    }
-
     private DataSource externalOracleDataSource() {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         try {
-            dataSource.setDriverClass("org.hsqldb.jdbcDriver");
+            dataSource.setDriverClass("oracle.jdbc.OracleDriver");
         }
         catch (PropertyVetoException e) {
             throw new RuntimeException("Unexpected error", e);
         }
-        dataSource.setJdbcUrl("jdbc:hsqldb:mem:test");
+        dataSource.setJdbcUrl("jdbc:oracle:thin:@localhost:1521:xe");
         dataSource.setUser("twittertickets");
         dataSource.setPassword("twittertickets");
         dataSource.setAcquireIncrement(1);
@@ -78,38 +58,39 @@ public class ApplicationConfig {
         return dataSource;
     }
 
-	@Bean
+    @Bean
     public EntityManagerFactory entityManagerFactory() {
-		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-		vendorAdapter.setDatabase(Database.HSQL);
-		vendorAdapter.setGenerateDdl(true);
+        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
+        factory.setPackagesToScan(getClass().getPackage().getName());
+        factory.setDataSource(dataSource());
+
+        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        //vendorAdapter.setDatabase(Database.ORACLE);
+        vendorAdapter.setDatabase(Database.HSQL);
+        vendorAdapter.setGenerateDdl(true);
         vendorAdapter.setShowSql(true);
+        factory.setJpaVendorAdapter(vendorAdapter);
 
-		LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
-		factory.setJpaVendorAdapter(vendorAdapter);
-		factory.setPackagesToScan(getClass().getPackage().getName());
         Properties jpaProperties = new Properties();
-        jpaProperties.setProperty("hibernate.show_sql", Boolean.TRUE.toString());
-        jpaProperties.setProperty("hbm2ddl.auto", "create-drop");
+        jpaProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         factory.setJpaProperties(jpaProperties);
-		factory.setDataSource(dataSource());
+        
+        factory.afterPropertiesSet();
 
-		factory.afterPropertiesSet();
+        return factory.getObject();
+    }
 
-		return factory.getObject();
-	}
+    @Bean
+    public JpaDialect jpaDialect() {
+        return new HibernateJpaDialect();
+    }
 
-	@Bean
-	public JpaDialect jpaDialect() {
-		return new HibernateJpaDialect();
-	}
-
-	@Bean
-	public PlatformTransactionManager transactionManager() {
-		JpaTransactionManager txManager = new JpaTransactionManager();
-		txManager.setEntityManagerFactory(entityManagerFactory());
-		return txManager;
-	}
+    @Bean
+    public PlatformTransactionManager transactionManager() {
+        JpaTransactionManager txManager = new JpaTransactionManager();
+        txManager.setEntityManagerFactory(entityManagerFactory());
+        return txManager;
+    }
 
     @Bean
     public ServiceLocator serviceLocator() {
