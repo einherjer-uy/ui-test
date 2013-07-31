@@ -1,14 +1,14 @@
 package org.einherjer.twitter.tickets.controller;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.einherjer.twitter.tickets.model.Attachment;
 import org.einherjer.twitter.tickets.model.Comment;
 import org.einherjer.twitter.tickets.model.Ticket;
 import org.einherjer.twitter.tickets.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,37 +38,38 @@ public class TicketController {
      * Add ticket
      * 
      * Example request:
-     * PUT /tickets HTTP/1.1
+     * POST /tickets HTTP/1.1
      * Host: localhost:8080
      * Content-Type: application/json
      * { "project":{"prefix":"PR1"}, "title":"t", "description":"d", "status":"OPEN", "assignee":{"username":"user@twitter.com"} }
      */
-    @RequestMapping(value = "/tickets/put", method = RequestMethod.PUT)
-    public @ResponseBody Map<String, Object> putTicket(@RequestBody Ticket jsonBody) {
+    @RequestMapping(value = "/tickets/add", method = RequestMethod.POST)
+    public/*ResponseEntity<String>*/ResponseEntity<String> putTicket(@RequestBody Ticket jsonBody) {
         this.validateTicketDTO(jsonBody);
         Assert.notNull(jsonBody.getProject(), "Project cannot be null");
         Assert.notNull(jsonBody.getProject().getPrefix(), "Project cannot be null");
         ticketService.save(jsonBody.getProject().getPrefix(), -1, jsonBody);
-        return okMessage();
+        //return okMessage();
+        return new ResponseEntity<String>(HttpStatus.CREATED);
     }
     
     /**
      * Update ticket
      * 
      * Example request:
-     * POST /tickets/PR1-1 HTTP/1.1
+     * PUT /tickets/PR1-1 HTTP/1.1
      * Host: localhost:8080
      * Content-Type: application/json
      * { "title":"t", "description":"d", "status":"OPEN", "assignee":{"username":"user@twitter.com"} }
      */
-    @RequestMapping(value = "/tickets/{project}-{number}", method = RequestMethod.POST)
-    public @ResponseBody Map<String, Object> postTicket(
+    @RequestMapping(value = "/tickets/{project}-{number}", method = RequestMethod.PUT)
+    public ResponseEntity<String> postTicket(
             @RequestBody Ticket jsonBody,
             @PathVariable("project") String projectPrefix, 
             @PathVariable("number") Integer ticketNumber) {
         this.validateTicketDTO(jsonBody);
         ticketService.save(projectPrefix, ticketNumber, jsonBody);
-        return okMessage();
+        return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
     }
     
     private void validateTicketDTO(Ticket jsonBody){
@@ -83,22 +84,18 @@ public class TicketController {
      * Add Comment
      * 
      * Example request:
-     * PUT /tickets/PR1-1/comment HTTP/1.1
+     * POST /tickets/PR1-1/comment HTTP/1.1
      * Host: localhost:8080
      * Content-Type: application/json
      * {"text":"comment text"}
      */
-    //Jackson can be used with "full data binding" (e.g. @RequestBody Comment), or "simple data binding" (e.g. @ResponseBody Map<String, Object>). 
-    //      Both kinds of data binding can be used in either @ResponseBody or @RequestBody.
-    //Note also that we could have created an object CommentJson (as we did with LoginJson) but we can also use the same model entity (Comment).
-    //      Note that if we use the model entity not every field need to be present in the JSON request body)
-    @RequestMapping(value = "/tickets/{project}-{number}/comment", method = RequestMethod.PUT)
-    public @ResponseBody Map<String, Object> addComment(
+    @RequestMapping(value = "/tickets/{project}-{number}/comment", method = RequestMethod.POST)
+    public ResponseEntity<String> addComment(
             @RequestBody Comment jsonBody,
             @PathVariable("project") String projectPrefix,
             @PathVariable("number") Integer ticketNumber) {
         ticketService.addComment(projectPrefix, ticketNumber, jsonBody.getText());
-        return okMessage();
+        return new ResponseEntity<String>(HttpStatus.CREATED);
     }
     
     /**
@@ -124,32 +121,25 @@ public class TicketController {
      * Content-Transfer-Encoding: 8bit
      * ... File Data ...
      */
-    @RequestMapping(value = "/tickets/{project}-{number}/attachment", method = RequestMethod.PUT)
-    public @ResponseBody Map<String, Object> addAttachment(
+    @RequestMapping(value = "/tickets/{project}-{number}/attachment", method = RequestMethod.POST)
+    public ResponseEntity<String> addAttachment(
             @PathVariable("project") String projectPrefix,
             @PathVariable("number") Integer ticketNumber,
             @RequestPart("file-data") MultipartFile file) throws IOException {
         ticketService.addAttachment(projectPrefix, ticketNumber, file.getOriginalFilename(), file.getBytes());
-        return okMessage();
+        return new ResponseEntity<String>(HttpStatus.CREATED);
     }
     
     /**
      * Delete attachment
      */
     @RequestMapping(value = "/tickets/{project}-{number}/attachment/{attachId}", method = RequestMethod.DELETE)
-    public @ResponseBody Map<String, Object> deleteAttachment(
+    public ResponseEntity<String> deleteAttachment(
             @PathVariable("project") String projectPrefix,
             @PathVariable("number") Integer ticketNumber,
             @PathVariable("attachId") Long attachmentId) {
         ticketService.deleteAttachment(projectPrefix, ticketNumber, attachmentId);
-        return okMessage();
+        return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
     }
 
-    private HashMap<String, Object> okMessage() {
-        return new HashMap<String, Object>() {
-            {
-                put("message", "ok");
-            }
-        };
-    }
 }

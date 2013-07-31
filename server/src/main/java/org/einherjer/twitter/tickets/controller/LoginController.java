@@ -1,8 +1,5 @@
 package org.einherjer.twitter.tickets.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +8,7 @@ import org.einherjer.twitter.tickets.model.InvalidLoginException;
 import org.einherjer.twitter.tickets.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Controller
 public class LoginController /*implements ResourceProcessor<Resources<Object>>*/{
 
-    public static final String LOGIN_REL = "login";
+    //    public static final String LOGIN_REL = "login";
 
     @Autowired
     private LoginService loginService;
@@ -37,8 +35,13 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
      * Content-Type: application/json
      * {"username":"user@twitter.com", "password":"Admin_123"}
      */
+    //Jackson can be used with "full data binding" (e.g. @RequestBody LoginJson), or "simple data binding" (e.g. @ResponseBody Map<String, Object>). 
+    //      Both kinds of data binding can be used in either @ResponseBody or @RequestBody.
+    //Note also that we can create an object LoginJson but we can also use the same model entity (Comment or any other).
+    //      If we use the model entity not every field need to be present (when serializing the null fields will not appear on the JSON,
+    //      when deserializing missing fields in the JSON will be left null in the deserialized object)
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public @ResponseBody Map<String, Object> login(@RequestBody LoginJson jsonBody) throws InvalidLoginException {
+    public ResponseEntity<String> /*@ResponseBody Map<String, Object>*/ login(@RequestBody LoginJson jsonBody) throws InvalidLoginException {
         loginService.validateLogin(jsonBody.getUsername(), jsonBody.getPassword());
         //            String sessionID = blogService.startSession(user.getUsername());
         //            if (sessionID == null) {
@@ -48,7 +51,13 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
         //                response.addCookie(new Cookie("session", sessionID));
         //                return "redirect:welcome";
         //            }
-        return okMessage();
+
+        return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+        //        return new HashMap<String, Object>() {
+        //            {
+        //                put("message", "ok");
+        //            }
+        //        };
     }
 
     @ExceptionHandler(InvalidLoginException.class)
@@ -81,14 +90,6 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
     //			return "redirect:login";
     //		}
     //	}
-
-    private HashMap<String, Object> okMessage() {
-        return new HashMap<String, Object>() {
-            {
-                put("message", "ok");
-            }
-        };
-    }
 
     //    /**
     //     * Exposes the {@link LoginController} to the root resource

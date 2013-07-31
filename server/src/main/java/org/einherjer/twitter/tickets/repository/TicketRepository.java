@@ -4,8 +4,9 @@ import org.einherjer.twitter.tickets.model.Project;
 import org.einherjer.twitter.tickets.model.Ticket;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.rest.repository.annotation.RestResource;
 
-//@RestResource(path = "/ticket/find")
+@RestResource(path = "ticket", rel = "ticket")
 public interface TicketRepository extends PagingAndSortingRepository<Ticket, Long> {
 
     @Query("select max(t.number) from Ticket t where t.project = ?1")
