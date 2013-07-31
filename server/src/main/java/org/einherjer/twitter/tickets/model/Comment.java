@@ -1,5 +1,6 @@
 package org.einherjer.twitter.tickets.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -18,6 +19,7 @@ public class Comment extends AbstractEntity implements Comparable<Comment> {
     private String text;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @Column(nullable = false)
     private DateTime timestamp;
 
     public Comment(String text) {

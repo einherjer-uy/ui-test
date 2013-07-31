@@ -3,6 +3,7 @@ package org.einherjer.twitter.tickets.loader;
 import lombok.extern.slf4j.Slf4j;
 
 import org.einherjer.twitter.tickets.model.User;
+import org.einherjer.twitter.tickets.model.User.Role;
 import org.einherjer.twitter.tickets.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -22,7 +23,7 @@ class UserLoader {
             return;
         }
 
-        User u1 = new User("user@twitter.com", "Admin_123");
+        User u1 = new User("user@twitter.com", "Admin_123", Role.REQUESTOR);
         repository.save(u1);
         log.info("Created User " + u1);
 

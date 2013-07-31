@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 @Table(name="Attachments") //table name is plural to avoid restricted keywords in some databases like "user" and "comment"
 public class Attachment extends AbstractEntity {
 
+    @Column(nullable = false)
     private String fileName;
 
     @Lob
