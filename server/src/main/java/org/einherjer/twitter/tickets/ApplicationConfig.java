@@ -1,5 +1,6 @@
 package org.einherjer.twitter.tickets;
 
+import java.beans.PropertyVetoException;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
@@ -20,6 +21,8 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+
 @Configuration
 @ComponentScan(basePackageClasses = ApplicationConfig.class)
 @EnableJpaRepositories
@@ -28,27 +31,51 @@ public class ApplicationConfig {
 
     @Bean
     public DataSource dataSource() {
+        return inMemoryHSQLDataSource();
+    }
+
+    private DataSource inMemoryHSQLDataSource() {
         EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
         return builder.setType(EmbeddedDatabaseType.HSQL).build();
+    }
 
-        //For external access (e.g. Squirrel) HSQL has to be started in a separate process
-        //(java -cp /Users/einherjer/.m3/repository/org/hsqldb/hsqldb/2.2.9/hsqldb-2.2.9.jar org.hsqldb.Server --database.0 mem:test --dbname.0 test)
-        //        ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        //        try {
-        //            dataSource.setDriverClass("org.hsqldb.jdbcDriver");
-        //        }
-        //        catch (PropertyVetoException e) {
-        //            throw new RuntimeException("Unexpected error", e);
-        //        }
-        //        dataSource.setJdbcUrl("jdbc:hsqldb:mem:test");
-        //        dataSource.setUser("sa");
-        //        dataSource.setPassword("");
-        //        dataSource.setAcquireIncrement(1);
-        //        dataSource.setMaxPoolSize(1);
-        //        dataSource.setMinPoolSize(1);
-        //        dataSource.setMaxStatements(0);
-        //        dataSource.setIdleConnectionTestPeriod(100);
-        //        return dataSource;
+    //start with java -cp /Users/einherjer/.m3/repository/org/hsqldb/hsqldb/2.2.9/hsqldb-2.2.9.jar org.hsqldb.Server --database.0 mem:test --dbname.0 test
+    private DataSource externalHSQLDataSource() {
+        ComboPooledDataSource dataSource = new ComboPooledDataSource();
+        try {
+            dataSource.setDriverClass("org.hsqldb.jdbcDriver");
+        }
+        catch (PropertyVetoException e) {
+            throw new RuntimeException("Unexpected error", e);
+        }
+        dataSource.setJdbcUrl("jdbc:hsqldb:mem:test");
+        dataSource.setUser("sa");
+        dataSource.setPassword("");
+        dataSource.setAcquireIncrement(1);
+        dataSource.setMaxPoolSize(1);
+        dataSource.setMinPoolSize(1);
+        dataSource.setMaxStatements(0);
+        dataSource.setIdleConnectionTestPeriod(100);
+        return dataSource;
+    }
+
+    private DataSource externalOracleDataSource() {
+        ComboPooledDataSource dataSource = new ComboPooledDataSource();
+        try {
+            dataSource.setDriverClass("org.hsqldb.jdbcDriver");
+        }
+        catch (PropertyVetoException e) {
+            throw new RuntimeException("Unexpected error", e);
+        }
+        dataSource.setJdbcUrl("jdbc:hsqldb:mem:test");
+        dataSource.setUser("twittertickets");
+        dataSource.setPassword("twittertickets");
+        dataSource.setAcquireIncrement(1);
+        dataSource.setMaxPoolSize(1);
+        dataSource.setMinPoolSize(1);
+        dataSource.setMaxStatements(0);
+        dataSource.setIdleConnectionTestPeriod(100);
+        return dataSource;
     }
 
 	@Bean
