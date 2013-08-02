@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -41,7 +40,7 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
     //      If we use the model entity not every field need to be present (when serializing the null fields will not appear on the JSON,
     //      when deserializing missing fields in the JSON will be left null in the deserialized object)
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> /*@ResponseBody Map<String, Object>*/ login(@RequestBody LoginJson jsonBody) throws InvalidLoginException {
+    public ResponseEntity<String> /*@ResponseBody Map<String, Object>*/login(/*@RequestBody*/LoginJson jsonBody) throws InvalidLoginException {
         loginService.validateLogin(jsonBody.getUsername(), jsonBody.getPassword());
         //            String sessionID = blogService.startSession(user.getUsername());
         //            if (sessionID == null) {

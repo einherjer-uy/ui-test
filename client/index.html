@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" media="screen">
+    <link rel="stylesheet" href="base.css">
+</head>
+<body>
+	<!--<div class="login-background">
+		<img class="login-image" src="resources/img/2.jpg">
+	</div>-->
+
+	<header class="navbar navbar-inverse navbar-static-top">
+		<div class="container">
+			<a class="navbar-brand" href="http://www.twitter.com">
+				<span class="icon bird"/>
+			</a>
+		</div>
+	</header>
+
+	<section class="login-form">
+		<div>
+			<form method="post" action="http://localhost:8080/login">
+				<div class="form-group">
+					<label for="username">Email address</label>
+					<input type="text" id="username" name="username" class="form-control" placeholder="Enter email"/>
+				</div>
+				<div class="form-group">
+					<label for="password">Password</label>
+					<input type="password" id="password" name="password" class="form-control" placeholder="Password"/>
+				</div>
+				<button type="submit" class="btn btn-primary">Sign in</button>
+			</form>
+		</div>
+	</section>
+
+	<footer class="footer">
+		<div class="container">
+			<p>© 1998 GSM. All rights reserved.</p>
+		</div>
+	</footer>
+
+	<script src="lib/jquery/jquery.js"></script>
+	<script src="lib/underscore/underscore.js"></script>
+	<script src="lib/backbone/backbone.js"></script>
+	<script src="lib/bootstrap/js/bootstrap.js"></script>
+	<script>
+	  // Your code goes here
+	</script>
+</body>
+</html>
