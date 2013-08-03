@@ -1,2 +1,2 @@
-js-test
+ui-test
 =======
