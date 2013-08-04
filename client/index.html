@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--see http://getbootstrap.com/css/-->
+    <title>Twitter - Corporate Events Tracking System</title>
     <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" media="screen">
     <link rel="stylesheet" href="tt.css">
 </head>
@@ -22,26 +22,28 @@
 		</header>
 
 		<div class="tt-login-welcome">
-			<div class="tt-login-text">
+			<div class="tt-login-text visible-lg">
 				<h2>Twitter</h2>
 				<h3>Corporate Events Ticket System</h3>
 			</div>
 			<div class="panel tt-login-form">
 				<form class="form-horizontal" method="post" action="http://localhost:8080/login">
 					<div class="form-group">
-						<label class="col-12 col-lg-4 control-label" for="username">Username</label>
-						<div class="col-12 col-lg-8 btn-small">
-							<input type="text" id="username" name="username" class="form-control" placeholder="Enter email" autofocus/>
+						<label class="col-12 col-lg-3 control-label hidden-sm" for="username">Username</label>
+						<div class="col-12 col-lg-9">
+							<input type="email" id="username" name="username" class="form-control input-small" placeholder="Enter email" autofocus/>
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-12 col-lg-4 control-label" for="password">Password</label>
-						<div class="col-12 col-lg-8">
-							<input type="password" id="password" name="password" class="form-control" placeholder="Password"/>
+						<label class="col-12 col-lg-3 control-label hidden-sm" for="password">Password</label>
+						<div class="col-12 col-lg-9">
+							<input type="password" id="password" name="password" class="form-control input-small" placeholder="Password"/>
 						</div>
 					</div>
-					<div class="col-12 col-lg-2 col-lg-offset-10">
-						<button type="submit" class="btn btn-primary btn-small">Sign in</button>
+					<div class="form-group">
+						<div class="col-12 col-lg-2 col-offset-9">
+							<button type="submit" class="btn btn-primary btn-small">Sign in</button>
+						</div>
 					</div>
 				</form>
 			</div>
@@ -52,8 +54,6 @@
 		</footer>
 
 	</section>
-
-	
 
 	<script src="lib/jquery/jquery.js"></script>
 	<script src="lib/underscore/underscore.js"></script>

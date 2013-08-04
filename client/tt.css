@@ -63,7 +63,7 @@
 	margin-top: -55px;
 	padding: 10px 30px 20px;
 	background-color: rgba(0, 0, 0, 0.15); /*yes, this is not in line with how twitter.com looks but I wanted to try the effect*/
-	text-shadow: #000 0 1px 2px;
+	text-shadow: #000 0 1px 2px; /*TODO*/
 }
 
 .tt-login-text h2 {
@@ -83,14 +83,18 @@
 .tt-login-form {
     position: absolute;
     right: 0;
-    width: 400px;
+    width: 350px;
     height: 140px;
     top: 50%;
     margin-top: -70px;
     margin-bottom: 0px; /*override bootstrap panel*/
-    background: #f1f1f1; /*TODO*/
+    background: rgba(241, 241, 241, 0.80); /*#f1f1f1*/ /*TODO*/
     border: 1px solid #e5e5e5; /*TODO*/
     padding: 7px;
+}
+
+.tt-login-form .form-group {
+	margin-bottom: 10px; /*override botstrap form-group*/
 }
 
 .tt-footer {
