@@ -1,0 +1,102 @@
+/*use tt- prefix to identify "twitter tickets" classes, as opposed to bootstrap classes*/
+
+.tt-navbar {
+	margin-bottom: 0; /*override bootstrap navbar, which otherwise would generate a space between the navbar and the content below*/
+}
+
+.tt-icon { /*we only use a few sections of this sprite, this is just to test the sprite technique*/
+	background-image: url("resources/img/twitter_web_sprite_icons.png");
+	display: inline-block;
+}
+
+.tt-bird { /*selects the bird image from the sprite, see tt-icon*/
+	background-position: -80px 0;
+	width: 24px;
+	height: 21px;
+	background-repeat: no-repeat;
+}
+
+.tt-login-background {
+	position: fixed; /*TODO*/
+	background: none repeat scroll 0 0 #000000; /*TODO*/
+	height: 200%; /*TODO*/
+	width: 200%; /*TODO*/
+	left: -50%; /*TODO*/
+}
+
+.tt-login-image {
+	display: block; /*TODO*/
+	bottom: 0; /*TODO*/
+	left: 0; /*TODO*/
+	right: 0; /*TODO*/
+	top: 0; /*TODO*/
+	margin: auto; /*TODO*/
+	min-height: 50%; /*TODO*/
+	min-width: 50%; /*TODO*/
+	border: 0 none; /*TODO*/
+}
+
+.tt-login-wrapper {
+	position: absolute; /*positioned wrapper allows position:absolute in child elements to relate to this container and not the body*/
+	min-height: 500px; /*min and max-height to be sure elements are not too "vertically" close/apart in different screen sizes (in this case applies to div welcome vs div footer)*/
+	max-height: 800px;
+	top: 0; 
+	bottom: 0; /*stretch to the borders otherwise since the content is too short the height ends up in 500px and the footer is displayed in the middle of the screen*/
+	left: 0;
+	right: 0;
+}
+
+.tt-login-welcome {
+	position: absolute;
+	width: 800px; /*set the dimensions of the div, see margin*/
+	height: 180px; /*idem width*/
+	top: 40%; /*find the position in the screen where the div will be centered*/
+	left: 50%; /*idem top*/
+	margin: -90px 0 0 -400px; /*setting top/left affects the upper-left corner of the div, now we substract half the height and half the width to the margins so we move the center of the div to that position*/	
+}
+
+.tt-login-text {
+	position: absolute;	
+	left: 0;
+	top: 50%;
+	height: 110px;
+	margin-top: -55px;
+	padding: 10px 30px 20px;
+	background-color: rgba(0, 0, 0, 0.15); /*yes, this is not in line with how twitter.com looks but I wanted to try the effect*/
+	text-shadow: #000 0 1px 2px;
+}
+
+.tt-login-text h2 {
+	color: #fff;
+	font-size: 20px;
+	font-weight: 700;
+	margin-bottom: 3px;
+}
+
+.tt-login-text h3 {
+	color: #eee;
+	font-size: 20px;
+	font-weight: 300;
+	margin-top: 5px;
+}
+
+.tt-login-form {
+    position: absolute;
+    right: 0;
+    width: 400px;
+    height: 140px;
+    top: 50%;
+    margin-top: -70px;
+    margin-bottom: 0px; /*override bootstrap panel*/
+    background: #f1f1f1; /*TODO*/
+    border: 1px solid #e5e5e5; /*TODO*/
+    padding: 7px;
+}
+
+.tt-footer {
+	position: absolute;
+	bottom: 30px;
+	text-align: center;
+	width: 100%;
+	color: rgba(255, 255, 255, 0.25);
+}
