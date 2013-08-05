@@ -38,7 +38,7 @@ public class TicketController {
      * Add ticket
      * 
      * Example request:
-     * POST /tickets HTTP/1.1
+     * POST /api/tickets HTTP/1.1
      * Host: localhost:8080
      * Content-Type: application/json
      * { "project":{"prefix":"PR1"}, "title":"t", "description":"d", "status":"OPEN", "assignee":{"username":"user@twitter.com"} }
@@ -49,7 +49,6 @@ public class TicketController {
         Assert.notNull(jsonBody.getProject(), "Project cannot be null");
         Assert.notNull(jsonBody.getProject().getPrefix(), "Project cannot be null");
         ticketService.save(jsonBody.getProject().getPrefix(), -1, jsonBody);
-        //return okMessage();
         return new ResponseEntity<String>(HttpStatus.CREATED);
     }
     
@@ -57,7 +56,7 @@ public class TicketController {
      * Update ticket
      * 
      * Example request:
-     * PUT /tickets/PR1-1 HTTP/1.1
+     * PUT /api/tickets/PR1-1 HTTP/1.1
      * Host: localhost:8080
      * Content-Type: application/json
      * { "title":"t", "description":"d", "status":"OPEN", "assignee":{"username":"user@twitter.com"} }
@@ -84,7 +83,7 @@ public class TicketController {
      * Add Comment
      * 
      * Example request:
-     * POST /tickets/PR1-1/comment HTTP/1.1
+     * POST /api/tickets/PR1-1/comment HTTP/1.1
      * Host: localhost:8080
      * Content-Type: application/json
      * {"text":"comment text"}
@@ -113,7 +112,7 @@ public class TicketController {
      * Add attachment
      * 
      * Example request:
-     * POST /tickets/PR1-1/attachment HTTP/1.1
+     * POST /api/tickets/PR1-1/attachment HTTP/1.1
      * Content-Type: multipart/mixed
      * --edt7Tfrdusa7r3lNQc79vXuhIIMlatb7PQg7Vp
      * Content-Disposition: form-data; name="file-data"; filename="file.properties"

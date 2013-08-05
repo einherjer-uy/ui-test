@@ -29,10 +29,10 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
      * 
      * Example request:
      * 
-     * POST /login HTTP/1.1
+     * POST /api/login HTTP/1.1
      * Host: localhost:8080
-     * Content-Type: application/json
-     * {"username":"user@twitter.com", "password":"Admin_123"}
+     * Content-Type: application/x-www-form-urlencoded
+     * username=user%40twitter.com&password=Admin_123
      */
     //Jackson can be used with "full data binding" (e.g. @RequestBody LoginJson), or "simple data binding" (e.g. @ResponseBody Map<String, Object>). 
     //      Both kinds of data binding can be used in either @ResponseBody or @RequestBody.
@@ -66,9 +66,9 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
     }
     
     /*
-     * Represents the JSON body of the request
-     * (could also represent form data (x-www-from-urlencoded)) in a POST /login
+     * Represents form data (x-www-from-urlencoded)) in a POST /login
      *      (or PUT, but PUT requires HttpPutFormContentFilter, see Spring docs)
+     * (could also represent the JSON body of the request, is @RequestBody is used) 
      * SSL assumed
      */
     @Getter

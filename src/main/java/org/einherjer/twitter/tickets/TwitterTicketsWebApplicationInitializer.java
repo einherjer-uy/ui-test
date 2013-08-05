@@ -71,7 +71,7 @@ public class TwitterTicketsWebApplicationInitializer implements WebApplicationIn
     //1- only @EnableWebMvc -- applies default spring mvc config
     //2- @EnableWebMvc + extends WebMvcConfigurerAdapter  -- default config + ability to override
     //3- no @EnableWebMvc, but extends DelegatingWebMvcConfiguration (or its superclass WebMvcConfigurationSupport as the docs mention) -- default config + greater ability to override than WebMvcConfigurerAdapter  
-    @Import(RepositoryRestMvcConfiguration.class)
+    @Import(RepositoryRestMvcConfiguration.class) //enables spring-data-rest
     @ComponentScan(excludeFilters = @Filter({ Service.class, Configuration.class }))
     public static class WebConfiguration extends DelegatingWebMvcConfiguration {
 
@@ -110,12 +110,6 @@ public class TwitterTicketsWebApplicationInitializer implements WebApplicationIn
             return bean;
         }
 
-        //        @Override
-        //        protected void addResourceHandlers(ResourceHandlerRegistry registry) {
-        //            super.addResourceHandlers(registry);
-        //
-        //            this.configurers.addResourceHandlers(registry);
-        //        }
     }
 }
 
