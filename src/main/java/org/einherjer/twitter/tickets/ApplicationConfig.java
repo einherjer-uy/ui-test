@@ -23,8 +23,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
+//represents the (usually named) root-context.xml
 @Configuration
-@ComponentScan(basePackageClasses = ApplicationConfig.class)
+@ComponentScan(basePackageClasses = ApplicationConfig.class/*, excludeFilters = @Filter(Configuration.class)*/)
 @EnableJpaRepositories
 @EnableTransactionManagement
 public class ApplicationConfig {

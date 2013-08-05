@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +24,14 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
 
     @Autowired
     private LoginService loginService;
+
+    /*
+     * returning String and receiving ModelMap is the same as receiving and returning ModelAndView, and setting ModelAndView.setViewName
+     */
+    @RequestMapping(value = "/test/login", method = RequestMethod.GET)
+    public String login(ModelMap model) {
+        return "login";
+    }
 
     /**
      * Login
@@ -39,7 +48,7 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
     //Note also that we can create an object LoginJson but we can also use the same model entity (Comment or any other).
     //      If we use the model entity not every field need to be present (when serializing the null fields will not appear on the JSON,
     //      when deserializing missing fields in the JSON will be left null in the deserialized object)
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @RequestMapping(value = "/test/login", method = RequestMethod.POST)
     public ResponseEntity<String> /*@ResponseBody Map<String, Object>*/login(/*@RequestBody*/LoginJson jsonBody) throws InvalidLoginException {
         loginService.validateLogin(jsonBody.getUsername(), jsonBody.getPassword());
         //            String sessionID = blogService.startSession(user.getUsername());
