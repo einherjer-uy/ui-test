@@ -1,6 +1,13 @@
 package org.einherjer.twitter.tickets;
 
+import java.util.EnumSet;
 import java.util.List;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,89 +23,54 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.WebApplicationInitializer;
+import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
-import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
-/* Regular SpringMVC web initializer with spring-data-rest (RepositoryRestExporterServlet) or vanilla (DispatcherServlet)
+//Another option would be to extend AbstractAnnotationConfigDispatcherServletInitializer
+//and override getRootConfigClasses, getServletConfigClasses, getServletMappings, getServletFilters
+//This is a more convenient way to setup spring mvc but doesn't allow to add additional servlets filters 
 public class TwitterTicketsWebApplicationInitializer implements WebApplicationInitializer {
 
-@Override
-public void onStartup(ServletContext container) throws ServletException {
-
-AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
-rootContext.register(ApplicationConfig.class);
-
-container.addListener(new ContextLoaderListener(rootContext));
-
-DispatcherServlet servlet = new RepositoryRestExporterServlet(); //use just new DispatcherServlet for regular spring mvc (manual Controllers, no spring-data-rest magic)
-ServletRegistration.Dynamic dispatcher = container.addServlet("rest-exporter", servlet);
-dispatcher.setLoadOnStartup(1);
-dispatcher.addMapping("/*");
-}*/
-
-/**
- * Servlet 3.0 {@link WebApplicationInitializer} using Spring 3.2 convenient base class
- * {@link AbstractAnnotationConfigDispatcherServletInitializer}. It essentially sets up a root application context from
- * {@link ApplicationConfig}, and a dispatcher servlet application context from {@link RepositoryRestMvcConfiguration}
- * (enabling Spring Data REST) and {@link WebConfiguration} for general Spring MVC customizations.
- * 
- * @author Oliver Gierke
- */
-public class TwitterTicketsWebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
-
-    /* 
-     * (non-Javadoc)
-     * @see org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer#getRootConfigClasses()
-     */
     @Override
-    protected Class<?>[] getRootConfigClasses() {
-        return new Class<?>[] { ApplicationConfig.class };
-    }
+    public void onStartup(ServletContext container) throws ServletException {
+        AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
+        rootContext.register(ApplicationConfig.class);
 
-    /* 
-     * (non-Javadoc)
-     * @see org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer#getServletConfigClasses()
-     */
-    @Override
-    protected Class<?>[] getServletConfigClasses() {
-        return new Class<?>[] { WebConfiguration.class };
-    }
+        container.addListener(new ContextLoaderListener(rootContext));
 
-    /* 
-     * (non-Javadoc)
-     * @see org.springframework.web.servlet.support.AbstractDispatcherServletInitializer#getServletMappings()
-     */
-    @Override
-    protected String[] getServletMappings() {
-        return new String[] { "/*" };
-    }
+        AnnotationConfigWebApplicationContext webContext = new AnnotationConfigWebApplicationContext();
+        webContext.register(WebConfiguration.class);
 
-    /* 
-     * (non-Javadoc)
-     * @see org.springframework.web.servlet.support.AbstractDispatcherServletInitializer#getServletFilters()
-     */
-    //Needed because after the @Service returns the @Transactional method ends and the @Entity gets detached,
-    //but after that Spring MVC, etc needs to access the entity to serialize it to json
-    @Override
-    protected javax.servlet.Filter[] getServletFilters() {
-        return new javax.servlet.Filter[] { new OpenEntityManagerInViewFilter() };
+        DispatcherServlet dispatcherServlet = new DispatcherServlet(webContext);
+        ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcherServlet", dispatcherServlet);
+        dispatcher.setLoadOnStartup(1);
+        dispatcher.addMapping("/api/");
+
+        FilterRegistration.Dynamic openEntityManagerInView = container.addFilter("openEntityManagerInViewFilter", new OpenEntityManagerInViewFilter());
+        openEntityManagerInView.addMappingForServletNames(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), false, "dispatcherServlet");
+
     }
 
     /**
      * Web layer configuration enabling Spring MVC, Spring Hateoas hypermedia support.
-     * 
-     * @author Oliver Gierke
+     * Represents the settings that would otherwise go in xxx-servlet.xml
      */
     @Configuration
     @EnableHypermediaSupport
-    //no need for @EnableWebMvc cause the superclass (DelegatingWebMvcConfiguration) performs the same process
-    //  (plus, it allows to override some methods without extending WebMvcConfigurerAdapter)  
+    //no need for @EnableWebMvc cause all it does is @Import(DelegatingWebMvcConfiguration.class),
+    //and here we are extending DelegatingWebMvcConfiguration directly. Extending gives us the option to override.
+    //To summarize there are several options here, for more info see http://static.springsource.org/spring/docs/3.2.x/javadoc-api/org/springframework/web/servlet/config/annotation/EnableWebMvc.html
+    //1- only @EnableWebMvc -- applies default spring mvc config
+    //2- @EnableWebMvc + extends WebMvcConfigurerAdapter  -- default config + ability to override
+    //3- no @EnableWebMvc, but extends DelegatingWebMvcConfiguration (or its superclass WebMvcConfigurationSupport as the docs mention) -- default config + greater ability to override than WebMvcConfigurerAdapter  
     @Import(RepositoryRestMvcConfiguration.class)
     @ComponentScan(excludeFilters = @Filter({ Service.class, Configuration.class }))
     public static class WebConfiguration extends DelegatingWebMvcConfiguration {
@@ -138,6 +110,12 @@ public class TwitterTicketsWebApplicationInitializer extends AbstractAnnotationC
             return bean;
         }
 
+        //        @Override
+        //        protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+        //            super.addResourceHandlers(registry);
+        //
+        //            this.configurers.addResourceHandlers(registry);
+        //        }
     }
 }
 
