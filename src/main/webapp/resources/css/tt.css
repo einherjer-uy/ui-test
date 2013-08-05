@@ -5,7 +5,7 @@
 }
 
 .tt-icon { /*we only use a few sections of this sprite, this is just to test the sprite technique*/
-	background-image: url("resources/img/twitter_web_sprite_icons.png");
+	background-image: url("../img/twitter_web_sprite_icons.png");
 	display: inline-block;
 }
 

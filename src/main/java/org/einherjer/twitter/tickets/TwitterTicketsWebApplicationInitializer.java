@@ -52,7 +52,7 @@ public class TwitterTicketsWebApplicationInitializer implements WebApplicationIn
         DispatcherServlet dispatcherServlet = new DispatcherServlet(webContext);
         ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcherServlet", dispatcherServlet);
         dispatcher.setLoadOnStartup(1);
-        dispatcher.addMapping("/api/");
+        dispatcher.addMapping("/api/*");
 
         FilterRegistration.Dynamic openEntityManagerInView = container.addFilter("openEntityManagerInViewFilter", new OpenEntityManagerInViewFilter());
         openEntityManagerInView.addMappingForServletNames(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), false, "dispatcherServlet");
