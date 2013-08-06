@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -18,6 +19,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -25,9 +27,10 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 //represents the (usually named) root-context.xml
 @Configuration
-@ComponentScan(basePackageClasses = ApplicationConfig.class/*, excludeFilters = @Filter(Configuration.class)*/)
+@ComponentScan(excludeFilters = @Filter({ Controller.class })) //exclude controllers cause they are not needed here, include them in the web context (see MvcWebApplicationInitializer)
 @EnableJpaRepositories
 @EnableTransactionManagement
+//@PropertySource("classpath:org/springframework/social/showcase/config/application.properties")
 public class ApplicationConfig {
 
     @Bean
@@ -97,4 +100,10 @@ public class ApplicationConfig {
     public ServiceLocator serviceLocator() {
         return ServiceLocator.getInstance();
     }
+
+    //    @Bean
+    //    public PropertySourcesPlaceholderConfigurer propertyPlaceHolderConfigurer() {
+    //        return new PropertySourcesPlaceholderConfigurer();
+    //    }
+
 }
