@@ -28,7 +28,7 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
     /*
      * returning String and receiving ModelMap is the same as receiving and returning ModelAndView, and setting ModelAndView.setViewName
      */
-    @RequestMapping(value = "/test/login", method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(ModelMap model) {
         return "login";
     }

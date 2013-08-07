@@ -16,33 +16,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void registerAuthentication(AuthenticationManagerBuilder auth) throws Exception {
       auth
         .inMemoryAuthentication()
-          .withUser("user")  // #1
+          .withUser("user")
             .password("password")
-            .roles("USER")
-            .and()
-          .withUser("admin") // #2
-            .password("password")
-            .roles("ADMIN","USER");
+            .roles("USER");
     }
    
     @Override
     public void configure(WebSecurity web) throws Exception {
       web
         .ignoring()
-           .antMatchers("/resources/**"); // #3
+           .antMatchers("/resources/**");
     }
    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
       http
         .authorizeUrls()
-          .antMatchers("/signup","/about").permitAll() // #4
-          .antMatchers("/admin/**").hasRole("ADMIN") // #6
-          .anyRequest().authenticated() // 7
+//          .antMatchers("/signup","/about").permitAll()
+          .anyRequest().authenticated()
           .and()
-      .formLogin()  // #8
-          .loginUrl("/login") // #9
-          .permitAll(); // #5
+      .formLogin()
+          .loginUrl("/login")
+          .permitAll();
     }
 
 
