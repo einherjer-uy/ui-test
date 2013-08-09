@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--see http://getbootstrap.com/css/-->
     <title>Twitter - Corporate Events Tracking System</title>
     <link rel="stylesheet" href="../public/lib/bootstrap/css/bootstrap.css" media="screen">
-    <link rel="stylesheet" href="../public/css/tt.css">
+    <link rel="stylesheet" href="../public/css/tt.css" media="screen">
 </head>
 <body>
 	<div class="tt-login-background">
@@ -21,30 +21,30 @@
 			</div>
 		</header>
 
-		<div class="tt-login-welcome">
-			<div class="tt-login-text visible-lg">
+		<div class="tt-login-welcome tt-login-welcome-sm">
+			<div class="tt-login-text tt-login-text-sm hidden-sm">
 				<h2>Twitter</h2>
 				<h3>Corporate Events Ticket System</h3>
 			</div>
-			<div class="panel tt-login-form">
+			<div class="panel tt-login-form tt-login-form-sm">
 				<div class="alert alert-danger hide">
 					Incorrect user name or password.
 				</div>
-				<form class="form-horizontal" method="post" action="/login"> <!-- action="http://localhost:8080/api/login" -->
+				<form class="form-horizontal" method="post" action="/login">
 					<div class="form-group">
-						<label class="col-12 col-lg-3 control-label hidden-sm" for="username">Username</label>
+						<label class="col-12 col-lg-3 control-label hidden-sm tt-login-label-sm" for="username">Username</label>
 						<div class="col-12 col-lg-9">
 							<input type="email" id="username" name="username" class="form-control input-small" placeholder="Enter email" autofocus/>
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-12 col-lg-3 control-label hidden-sm" for="password">Password</label>
+						<label class="col-12 col-lg-3 control-label hidden-sm tt-login-label-sm" for="password">Password</label>
 						<div class="col-12 col-lg-9">
 							<input type="password" id="password" name="password" class="form-control input-small" placeholder="Password"/>
 						</div>
 					</div>
 					<div class="form-group">
-						<div class="col-12 col-lg-2 col-offset-9">
+						<div class="col-3 col-sm-3 col-lg-3 col-offset-9 tt-col-sm-offset-9 ">
 							<button type="submit" class="btn btn-primary btn-small">Sign in</button>
 						</div>
 					</div>

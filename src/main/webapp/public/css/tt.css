@@ -56,7 +56,20 @@
 }
 
 .tt-login-text {
-	position: absolute;	
+	float: left;
+	margin: 15px 95px 0 0;
+	width: 345px;
+	padding: 10px 30px 20px;
+	background-color: rgba(0, 0, 0, 0.15); /*yes, this is not in line with how twitter.com looks but I wanted to try the effect*/
+	text-shadow: #000 0 1px 2px; /*TODO*/
+}
+/* another way to get the same positioning but with position:absolute
+	use top:50% to start at the middle and then negative top margin at height/2 to center, instead of a fixed positive top margin (in this case having a fixed top margin is not a problem cause the container is properly centered using the "top:50%"" technique)
+	use  left:0 instead of float to allow 2 divs in the same line
+	this one has the disadvantage that on a smaller screen when the div on the left is hidden the div on the right doesn't move to the left
+	see .tt-login-text-OPTION_2 */
+.tt-login-text-OPTION_2 {
+	position: absolute;
 	left: 0;
 	top: 50%;
 	height: 110px;
@@ -81,15 +94,28 @@
 }
 
 .tt-login-form {
-    position: absolute;
-    right: 0;
-    width: 350px;
-    top: 50%;
-    margin-top: -70px;
+	float: left;
+	width: 350px;
     margin-bottom: 0px; /*override bootstrap panel*/
     background: rgba(241, 241, 241, 0.80); /*#f1f1f1*/ /*TODO*/
     border: 1px solid #e5e5e5; /*TODO*/
-    padding: 7px;
+    padding: 10px 10px 0px; /*compensate the bottom margin added by bootstrap form-group*/
+}
+/* another way to get the same positioning but with position:absolute
+	use top:50% to start at the middle and then negative top margin at height/2 to center, instead of a fixed positive top margin (in this case having a fixed top margin is not a problem cause the container is properly centered using the "top:50%"" technique)
+	use  right:0 instead of float to allow 2 divs in the same line
+	this one has the disadvantage that on a smaller screen when the div on the left is hidden the div on the right doesn't move to the left
+	see .tt-login-form-OPTION_2 */
+.tt-login-form-OPTION_2 {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    margin-top: -70px;
+    width: 350px;
+    margin-bottom: 0px; /*override bootstrap panel*/
+    background: rgba(241, 241, 241, 0.80); /*#f1f1f1*/ /*TODO*/
+    border: 1px solid #e5e5e5; /*TODO*/
+    padding: 10px 10px 0px; /*compensate the bottom margin added by bootstrap form-group*/
 }
 
 .tt-login-form .form-group {
@@ -103,4 +129,41 @@
 	width: 100%;
 	color: rgba(255, 255, 255, 0.25);
 	font-size: 11px;
+}
+
+/*mobile and tablet*/
+@media (max-width: 991px) {
+	.tt-login-form-sm {
+		width: 261px;
+	}
+
+	.tt-col-sm-offset-9 {
+		margin-left: 75%;
+	}
+}
+
+/*tablet*/
+@media (max-width: 991px) and (min-width: 768px) {
+	.form-horizontal .tt-login-label-sm {
+		text-align: left;
+		padding-top: 0;
+	}
+
+	.tt-login-text-sm {
+		margin-right: 50px;
+	}
+
+	.tt-login-welcome-sm {
+		width: 700px;
+		margin-left: -350px;
+	}
+}
+
+/*mobile*/
+@media (max-width: 767px) {
+	.tt-login-welcome-sm {
+		position: relative;
+		left: 10%;
+		margin:	30px 0 0 0;
+	}
 }
