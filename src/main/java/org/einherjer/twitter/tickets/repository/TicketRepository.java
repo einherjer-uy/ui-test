@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.repository.annotation.RestResource;
 
-@RestResource(path = "ticket", rel = "ticket")
+@RestResource(path = "ticket", rel = "ticket") //TODO: not working, still publishes /tickets (plural)
 public interface TicketRepository extends PagingAndSortingRepository<Ticket, Long> {
 
     @Query("select max(t.number) from Ticket t where t.project = ?1")
@@ -15,6 +15,7 @@ public interface TicketRepository extends PagingAndSortingRepository<Ticket, Lon
     Ticket findByProjectAndNumber(Project project, Integer ticketNumber);
 
     //override CrudRepository methods and hide them from the rest exporter
+    //TODO: for some reason adding @RestResource(exported = false) makes the call to the repository fail even from another Service  
     /*@Override
     @RestResource(exported = false)
     <S extends Ticket> S save(S entity);

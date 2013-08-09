@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean;
@@ -16,7 +15,8 @@ import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,7 +44,7 @@ public class MvcWebApplicationInitializer extends AbstractAnnotationConfigDispat
 
     @Override
     protected String[] getServletMappings() {
-        return new String[] { "*.html", "/api/*" };
+        return new String[] { "/tt/*" };
     }
 
     //Needed because after the @Service returns the @Transactional method ends and the @Entity gets detached,
@@ -76,20 +76,21 @@ public class MvcWebApplicationInitializer extends AbstractAnnotationConfigDispat
      */
 
     /**
-    * Web layer configuration enabling Spring MVC, Spring Hateoas hypermedia support.
-    */
+     * Web layer configuration enabling Spring MVC, Spring Hateoas hypermedia support.
+     */
     //Represents the settings that would otherwise go in xxx-servlet.xml
     @Configuration
+    @EnableWebMvc
     //no need for @EnableWebMvc cause all it does is @Import(DelegatingWebMvcConfiguration.class),
     //and here we are extending DelegatingWebMvcConfiguration directly. Extending gives us the option to override.
     //To summarize there are several options here, for more info see http://static.springsource.org/spring/docs/3.2.x/javadoc-api/org/springframework/web/servlet/config/annotation/EnableWebMvc.html
     //1- only @EnableWebMvc -- applies default spring mvc config
     //2- @EnableWebMvc + extends WebMvcConfigurerAdapter  -- default config + ability to override
     //3- no @EnableWebMvc, but extends DelegatingWebMvcConfiguration (or its superclass WebMvcConfigurationSupport as the docs mention) -- default config + greater ability to override than WebMvcConfigurerAdapter
-    @EnableHypermediaSupport
-    //    @Import(RepositoryRestMvcConfiguration.class) //enables spring-data-rest
+    //@EnableHypermediaSupport //TODO: HATEOAS
+    //@Import(RepositoryRestMvcConfiguration.class) //enables spring-data-rest (commented for the time being cause it handles the GET / (prints list of rest services) and we want it to be the index.html page, and @RestResource on the Repositories doesn't seem to be working)
     @ComponentScan(basePackageClasses = TicketController.class) //include controllers here cause otherwise the resource mappings doesn't work, all other beans are taken from the parent context (see ApplicationConfig)
-    public static class WebConfiguration extends DelegatingWebMvcConfiguration {
+    public static class WebConfiguration extends WebMvcConfigurerAdapter {
 
         @Override
         public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
@@ -122,6 +123,23 @@ public class MvcWebApplicationInitializer extends AbstractAnnotationConfigDispat
             return bean;
         }
 
+        //allows for mapping the DispatcherServlet to "/" (thus overriding the mapping of the web server's default Servlet),
+        //while still allowing static resource requests to be handled by the web server's default Servlet; but in this case we are mapping to "/tt"
+        //        @Override
+        //        public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+        //            configurer.enable();
+        //        }
+
+        //For static resources (html) no need for ViewResolver, just forward and the web server root servlet will respond (see LoginController)
+        //        @Bean
+        //        public UrlBasedViewResolver viewResolver(){
+        //            UrlBasedViewResolver viewResolver = new UrlBasedViewResolver();
+        //            viewResolver.setViewClass(JstlView.class);
+        //            viewResolver.setPrefix("/WEB-INF/jsp/");
+        //            viewResolver.setSuffix(".jsp");
+        //            return viewResolver;
+        //        }
+                
     }
 }
 

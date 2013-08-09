@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--see http://getbootstrap.com/css/-->
     <title>Twitter - Corporate Events Tracking System</title>
-    <link rel="stylesheet" href="resources/lib/bootstrap/css/bootstrap.css" media="screen">
-    <link rel="stylesheet" href="resources/css/tt.css">
+    <link rel="stylesheet" href="../public/lib/bootstrap/css/bootstrap.css" media="screen">
+    <link rel="stylesheet" href="../public/css/tt.css">
 </head>
 <body>
 	<div class="tt-login-background">
-		<img class="tt-login-image" src="resources/img/5.jpg">
+		<img class="tt-login-image" src="../public/img/5.jpg">
 	</div>
 
 	<section class="tt-login-wrapper">
@@ -27,17 +27,20 @@
 				<h3>Corporate Events Ticket System</h3>
 			</div>
 			<div class="panel tt-login-form">
-				<form class="form-horizontal" method="post" action="../../j_spring_security_check"> <!-- action="http://localhost:8080/api/login" -->
+				<div class="alert alert-danger hide">
+					Incorrect user name or password.
+				</div>
+				<form class="form-horizontal" method="post" action="/login"> <!-- action="http://localhost:8080/api/login" -->
 					<div class="form-group">
 						<label class="col-12 col-lg-3 control-label hidden-sm" for="username">Username</label>
 						<div class="col-12 col-lg-9">
-							<input type="email" id="username" name="j_username" class="form-control input-small" placeholder="Enter email" autofocus/>
+							<input type="email" id="username" name="username" class="form-control input-small" placeholder="Enter email" autofocus/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-12 col-lg-3 control-label hidden-sm" for="password">Password</label>
 						<div class="col-12 col-lg-9">
-							<input type="password" id="password" name="j_password" class="form-control input-small" placeholder="Password"/>
+							<input type="password" id="password" name="password" class="form-control input-small" placeholder="Password"/>
 						</div>
 					</div>
 					<div class="form-group">
@@ -55,12 +58,16 @@
 
 	</section>
 
-	<script src="resources/lib/jquery/jquery.js"></script>
-	<script src="resources/lib/underscore/underscore.js"></script>
-	<script src="resources/lib/backbone/backbone.js"></script>
-	<script src="resources/lib/bootstrap/js/bootstrap.js"></script>
+	<script src="../public/lib/jquery/jquery.js"></script>
+	<script src="../public/lib/underscore/underscore.js"></script>
+	<script src="../public/lib/backbone/backbone.js"></script>
+	<script src="../public/lib/bootstrap/js/bootstrap.js"></script>
 	<script>
-	  // Your code goes here
+		$(document).ready(function () {
+			if (window.location.search=="?error") {
+		  		$(".alert").removeClass("hide");
+		  	}
+		});
 	</script>
 </body>
 </html>

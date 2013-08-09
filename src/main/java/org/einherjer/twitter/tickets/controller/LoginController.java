@@ -14,6 +14,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -29,8 +30,8 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
      * returning String and receiving ModelMap is the same as receiving and returning ModelAndView, and setting ModelAndView.setViewName
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login(ModelMap model) {
-        return "login";
+    public String login(@RequestParam(value = "error", required = false) boolean error, @RequestParam(value = "logout", required = false) boolean logout, ModelMap model) {
+        return "forward:/content/login.html"; //for static resources no need for ViewResolver, just forward and the web server root servlet will respond
     }
 
     /**
