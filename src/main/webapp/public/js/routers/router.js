@@ -1,8 +1,7 @@
 var app = app || {};
 
-(function () {
-	"use strict";
-
+(function () { "use strict";
+	
 	var Workspace = Backbone.Router.extend({
 		routes: {
 			'*filter': 'setFilter'

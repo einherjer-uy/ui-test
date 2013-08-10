@@ -16,14 +16,43 @@
 		<section id="main">
 			<!--<input id="toggle-all" type="checkbox">-->
 			<!--<label for="toggle-all">Mark all as complete</label>-->
+			<a data-toggle="modal" data-keyboard="false" data-backdrop="static" href="#addEditModal" class="btn">Create new ticket</a>
 			<ul id="ticket-list"></ul>
+
+			<!-- Add/Edit ticket modal -->
+			<div class="modal fade" id="addEditModal">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<h4 class="modal-title">Modal title</h4>
+						</div>
+						<div class="modal-body">
+							<div class="form-horizontal">
+								<div class="form-group">
+									<label class="col-12 col-lg-3 control-label" for="title">Title</label>
+									<div class="col-12 col-lg-9">
+										<input type="input" id="title" class="form-control input-small" autofocus/>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button type="button" id="saveButton" class="btn btn-primary">Save changes</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+
 		</section>
 		<footer id="footer"></footer>
 	</section>
 
 	<script type="text/template" id="item-template">
 		<div>
-			{{ title }}
+			<label>{{ number }}</label> - {{ title }} - {{ status }}
+			<button class="destroy"></button>
 		</div>
 	</script>
 	<script type="text/template" id="footer-template">

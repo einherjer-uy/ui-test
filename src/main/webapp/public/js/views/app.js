@@ -1,7 +1,6 @@
 var app = app || {};
 
-(function ($) {
-	"use strict";
+(function ($) { "use strict";
 
 	// The Application
 	// ---------------
@@ -17,18 +16,19 @@ var app = app || {};
 		footerTemplate: _.template($('#footer-template').html()),
 
 		// Delegated events for creating new items, and clearing completed ones.
-		/*events: {
-			'keypress #new-todo': 'createOnEnter',
-			'click #clear-completed': 'clearCompleted',
-			'click #toggle-all': 'toggleAllComplete'
-		},*/
+		events: {
+			'click #saveButton' : 'save'
+			//'keypress #new-todo': 'createOnEnter',
+			//'click #clear-completed': 'clearCompleted',
+			//'click #toggle-all': 'toggleAllComplete'
+		},
 
 		// At initialization we bind to the relevant events on the `Todos`
 		// collection, when items are added or changed. Kick things off by
 		// loading any preexisting todos that might be saved in *localStorage*.
 		initialize: function () {
 			//this.allCheckbox = this.$('#toggle-all')[0];
-			//this.$input = this.$('#new-todo');
+			this.$title = this.$('#title');
 			this.$footer = this.$('#footer');
 			this.$main = this.$('#main');
 
@@ -82,32 +82,31 @@ var app = app || {};
 			app.tickets.each(this.addOne, this);
 		},
 
+		save: function (e) {
+			//if (/*e.which !== ENTER_KEY || */!this.$input.val().trim()) {
+			//	return;
+			//}
+
+			app.tickets.create(this.newAttributes());
+			//this.$input.val('');
+		},
+
+		newAttributes: function () {
+			return {
+				project : {prefix : "PR1"},
+				title : this.$title.val().trim(),
+				description : "d",
+				status : "OPEN",
+				assignee : {username : "user@twitter.com"}
+			};
+		},
+
 		/*filterOne: function (todo) {
 			todo.trigger('visible');
 		},
 
 		filterAll: function () {
 			app.todos.each(this.filterOne, this);
-		},
-
-		// Generate the attributes for a new Todo item.
-		newAttributes: function () {
-			return {
-				title: this.$input.val().trim(),
-				order: app.todos.nextOrder(),
-				completed: false
-			};
-		},
-
-		// If you hit return in the main input field, create new **Todo** model,
-		// persisting it to *localStorage*.
-		createOnEnter: function (e) {
-			if (e.which !== ENTER_KEY || !this.$input.val().trim()) {
-				return;
-			}
-
-			app.todos.create(this.newAttributes());
-			this.$input.val('');
 		},
 
 		// Clear all completed todo items, destroying their models.

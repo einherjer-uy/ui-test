@@ -1,7 +1,6 @@
 var app = app || {};
 
-(function ($) {
-	"use strict";
+(function ($) { "use strict";
 
 	// Todo Item View
 	// --------------
