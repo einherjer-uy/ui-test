@@ -5,19 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--see http://getbootstrap.com/css/-->
     <title>Twitter - Corporate Events Tracking System</title>
     <link rel="stylesheet" href="../public/lib/bootstrap/css/bootstrap.css" media="screen">
-    <link rel="stylesheet" href="../public/css/tt.css">
+    <link rel="stylesheet" href="../public/css/tt.css" media="screen">
 </head>
 <body>
-	<section class="tt-login-wrapper">
-		<h1>Index</h1>
+	<section id="ttApp">
+		<header id="header">
+			<h1>tickets</h1>
+			<!--<input id="new-todo" placeholder="What needs to be done?" autofocus>-->
+		</header>
+		<section id="main">
+			<!--<input id="toggle-all" type="checkbox">-->
+			<!--<label for="toggle-all">Mark all as complete</label>-->
+			<ul id="ticket-list"></ul>
+		</section>
+		<footer id="footer"></footer>
 	</section>
 
+	<script type="text/template" id="item-template">
+		<div>
+			{{ title }}
+		</div>
+	</script>
+	<script type="text/template" id="footer-template">
+		<div>
+			{{ test }}
+		</div>
+	</script>
 	<script src="../public/lib/jquery/jquery.js"></script>
 	<script src="../public/lib/underscore/underscore.js"></script>
+	<script>
+		_.templateSettings = { interpolate : /\{\{(.+?)\}\}/g }; //use {{ }} instead of <%= %> in underscore templates
+	</script>
 	<script src="../public/lib/backbone/backbone.js"></script>
 	<script src="../public/lib/bootstrap/js/bootstrap.js"></script>
-	<script>
-	  // Your code goes here
-	</script>
+	<script src="../public/js/models/ticket.js"></script>
+	<script src="../public/js/collections/tickets.js"></script>
+	<script src="../public/js/views/ticket.js"></script>
+	<script src="../public/js/views/app.js"></script>
+	<script src="../public/js/routers/router.js"></script>
+	<script src="../public/js/app.js"></script>
 </body>
 </html>

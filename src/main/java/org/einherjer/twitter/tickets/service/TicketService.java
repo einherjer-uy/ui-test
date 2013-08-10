@@ -21,6 +21,10 @@ public class TicketService {
     @Autowired
     private UserRepository userRepository;
 
+    public Iterable<Ticket> findAll() {
+        return ticketRepository.findAll();
+    }
+
     public Ticket find(String projectPrefix, Integer ticketNumber) {
         return this.find(projectPrefix, ticketNumber, false);
     }

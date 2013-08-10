@@ -26,6 +26,11 @@ public class TicketController {
     private TicketService ticketService;
 
 
+    @RequestMapping(value = "/tickets", method = RequestMethod.GET)
+    public @ResponseBody Iterable<Ticket> getTickets() {
+        return ticketService.findAll();
+    }
+    
     /**
      * Get ticket
      */
