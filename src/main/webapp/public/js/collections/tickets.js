@@ -6,7 +6,7 @@ var app = app || {};
 		
 		model: app.Ticket,
 
-		url: "/tt/tickets",
+		url: "/tt/tickets"
 
 		// Filter down the list of all todo items that are finished.
 		/*completed: function () {

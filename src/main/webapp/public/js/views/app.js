@@ -73,7 +73,7 @@ var app = app || {};
 		// appending its element to the `<ul>`.
 		addOne: function (ticket) {
 			var view = new app.TicketView({ model: ticket });
-			$('#ticket-list').append(view.render().el);
+			this.$('#ticket-list').append(view.render().el);
 		},
 
 		// Add all items in the **Tickets** collection at once.
@@ -95,11 +95,11 @@ var app = app || {};
 			return {
 				project : {prefix : "PR1"},
 				title : this.$title.val().trim(),
-				description : "d",
+				description : "desc",
 				status : "OPEN",
 				assignee : {username : "user@twitter.com"}
 			};
-		},
+		}
 
 		/*filterOne: function (todo) {
 			todo.trigger('visible');

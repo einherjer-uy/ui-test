@@ -49,7 +49,7 @@ public class TicketController {
      * { "project":{"prefix":"PR1"}, "title":"t", "description":"d", "status":"OPEN", "assignee":{"username":"user@twitter.com"} }
      */
     @RequestMapping(value = "/tickets", method = RequestMethod.POST)
-    public ResponseEntity<String> putTicket(@RequestBody Ticket jsonBody) {
+    public ResponseEntity<String> postTicket(@RequestBody Ticket jsonBody) {
         this.validateTicketDTO(jsonBody);
         Assert.notNull(jsonBody.getProject(), "Project cannot be null");
         Assert.notNull(jsonBody.getProject().getPrefix(), "Project cannot be null");
@@ -67,7 +67,7 @@ public class TicketController {
      * { "title":"t", "description":"d", "status":"OPEN", "assignee":{"username":"user@twitter.com"} }
      */
     @RequestMapping(value = "/tickets/{project}-{number}", method = RequestMethod.PUT)
-    public ResponseEntity<String> postTicket(
+    public ResponseEntity<String> putTicket(
             @RequestBody Ticket jsonBody,
             @PathVariable("project") String projectPrefix, 
             @PathVariable("number") Integer ticketNumber) {

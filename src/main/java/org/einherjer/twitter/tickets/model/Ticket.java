@@ -23,14 +23,20 @@ import lombok.Setter;
 import org.einherjer.twitter.tickets.ServiceLocator;
 import org.einherjer.twitter.tickets.repository.TicketRepository;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @NoArgsConstructor
 //table name is plural to avoid restricted keywords in some databases like "user" and "comment"
 @Table(name = "Tickets", uniqueConstraints = @UniqueConstraint(columnNames = { "ticket_number", "project_id" }))
+@JsonIgnoreProperties(ignoreUnknown = true) //needed so that when BackboneJS sends a json with "number":null (when creating a new ticket, cause it always sends the id field) the parsing of the json doesn't fail because of the absence of a getNumber here
 public class Ticket extends AbstractEntity {
 
+    @JsonIgnore //we'll use getNumber as the ticket number (id for the rest api)
     @Column(name = "ticket_number", nullable = false) //just "number" is restricted in some databases
-    private @Getter Integer number;
+    private Integer number;
     
     @ManyToOne(optional = false)
     @JoinColumn(name = "project_id", nullable = false)
@@ -67,6 +73,12 @@ public class Ticket extends AbstractEntity {
 
     public Ticket(Project project, Ticket data) {
         this(project, data.title, data.description, data.assignee);
+    }
+
+    //we'll use this as the id for the rest api
+    @JsonProperty("number")
+    public String getTicketId() {
+        return this.project.getPrefix() + "-" + this.number;
     }
 
     public void set(Ticket data) {
@@ -115,7 +127,8 @@ public class Ticket extends AbstractEntity {
     public static enum Status {
         OPEN,
         IN_PROGRESS,
-        DONE;
+        DONE,
+        CANCELLED;
     }
     
 }

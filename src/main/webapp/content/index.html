@@ -16,7 +16,7 @@
 		<section id="main">
 			<!--<input id="toggle-all" type="checkbox">-->
 			<!--<label for="toggle-all">Mark all as complete</label>-->
-			<a data-toggle="modal" data-keyboard="false" data-backdrop="static" href="#addEditModal" class="btn">Create new ticket</a>
+			<a data-toggle="modal" data-keyboard="false" data-backdrop="static" href="#addEditModal" class="btn btn-primary btn-small">Create new ticket</a>
 			<ul id="ticket-list"></ul>
 
 			<!-- Add/Edit ticket modal -->
@@ -51,7 +51,7 @@
 
 	<script type="text/template" id="item-template">
 		<div>
-			<label>{{ number }}</label> - {{ title }} - {{ status }}
+			<label> {{ number }} </label> - {{ title }} - {{ status }}
 			<button class="destroy"></button>
 		</div>
 	</script>
