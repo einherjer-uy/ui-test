@@ -2,21 +2,25 @@ package org.einherjer.twitter.tickets.controller;
 
 import java.io.IOException;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.einherjer.twitter.tickets.model.Attachment;
 import org.einherjer.twitter.tickets.model.Comment;
 import org.einherjer.twitter.tickets.model.Ticket;
+import org.einherjer.twitter.tickets.service.TicketNotFoundException;
 import org.einherjer.twitter.tickets.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
@@ -49,7 +53,7 @@ public class TicketController {
      * { "project":{"prefix":"PR1"}, "title":"t", "description":"d", "status":"OPEN", "assignee":{"username":"user@twitter.com"} }
      */
     @RequestMapping(value = "/tickets", method = RequestMethod.POST)
-    public ResponseEntity<String> postTicket(@RequestBody Ticket jsonBody) {
+    public ResponseEntity<String> postTicket(@RequestBody Ticket jsonBody) throws TicketNotFoundException {
         this.validateTicketDTO(jsonBody);
         Assert.notNull(jsonBody.getProject(), "Project cannot be null");
         Assert.notNull(jsonBody.getProject().getPrefix(), "Project cannot be null");
@@ -70,7 +74,7 @@ public class TicketController {
     public ResponseEntity<String> putTicket(
             @RequestBody Ticket jsonBody,
             @PathVariable("project") String projectPrefix, 
-            @PathVariable("number") Integer ticketNumber) {
+            @PathVariable("number") Integer ticketNumber) throws TicketNotFoundException {
         this.validateTicketDTO(jsonBody);
         ticketService.save(projectPrefix, ticketNumber, jsonBody);
         return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
@@ -84,6 +88,31 @@ public class TicketController {
         Assert.notNull(jsonBody.getAssignee().getUsername(), "Assignee cannot be null");
     }
     
+    /**
+     * Patch ticket
+     * 
+     * Example request:
+     * PATCH /api/tickets/PR1-1 HTTP/1.1
+     * Host: localhost:8080
+     * Content-Type: application/json
+     * { "status":"CANCELLED" }
+     */
+    @RequestMapping(value = "/tickets/{project}-{number}", method = RequestMethod.PATCH)
+    public ResponseEntity<String> patchTicket(
+            @RequestBody Ticket jsonBody,
+            @PathVariable("project") String projectPrefix, 
+            @PathVariable("number") Integer ticketNumber) throws TicketNotFoundException {
+        ticketService.patch(projectPrefix, ticketNumber, jsonBody);
+        return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+    }
+    
+    @ExceptionHandler(TicketNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody
+    ExceptionBody handleTicketNotFoundException(TicketNotFoundException e) {
+        return new ExceptionBody(e.getMessage(), ExceptionUtils.getStackTrace(e));
+    }
+
     /**
      * Add Comment
      * 

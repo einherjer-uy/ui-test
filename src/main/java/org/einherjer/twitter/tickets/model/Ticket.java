@@ -82,10 +82,10 @@ public class Ticket extends AbstractEntity {
     }
 
     public void set(Ticket data) {
-        this.title = data.title;
-        this.description = data.description;
-        this.status = data.status;
-        this.assignee = data.assignee;
+        if (data.title != null) this.title = data.title;
+        if (data.description != null) this.description = data.description;
+        if (data.status != null) this.status = data.status;
+        if (data.assignee != null) this.assignee = data.assignee;
     }
 
     public List<Comment> getComments() {

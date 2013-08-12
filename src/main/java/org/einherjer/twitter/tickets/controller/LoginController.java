@@ -28,6 +28,8 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
 
     /*
      * returning String and receiving ModelMap is the same as receiving and returning ModelAndView, and setting ModelAndView.setViewName
+     * This method is not used since the login is handled by spring security. It's left only to show how to resolve the view in the case of html resources (see MvcWebApplicationInitializer)
+     * The @RequestParam show how to access query string values (in this case ?error or ?logout were going to be used to show variants of the view)
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(@RequestParam(value = "error", required = false) boolean error, @RequestParam(value = "logout", required = false) boolean logout, ModelMap model) {
@@ -49,7 +51,8 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
     //Note also that we can create an object LoginJson but we can also use the same model entity (Comment or any other).
     //      If we use the model entity not every field need to be present (when serializing the null fields will not appear on the JSON,
     //      when deserializing missing fields in the JSON will be left null in the deserialized object)
-    @RequestMapping(value = "/test/login", method = RequestMethod.POST)
+    //This method is not used since the login is handled by spring security. It's left only to show Jackson full vs simple data binding
+    @RequestMapping(value = "/login2", method = RequestMethod.POST)
     public ResponseEntity<String> /*@ResponseBody Map<String, Object>*/login(/*@RequestBody*/LoginJson jsonBody) throws InvalidLoginException {
         loginService.validateLogin(jsonBody.getUsername(), jsonBody.getPassword());
         //            String sessionID = blogService.startSession(user.getUsername());
@@ -69,6 +72,7 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
         //        };
     }
 
+    //This method is not used since the login is handled by spring security. It's left only to show how to translate exceptions to http status error codes, and include an error message in the response 
     @ExceptionHandler(InvalidLoginException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public @ResponseBody ExceptionBody handleInvalidLoginException(InvalidLoginException e) {
@@ -87,18 +91,6 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
         private String username;
         private String password;
     }
-
-    //	@RequestMapping(value = "/logout", method = RequestMethod.GET)
-    //    public String doLogout(Model model, @CookieValue("session") String sessionID) {
-    //		if (sessionID == null) {
-    //			// no session to end
-    //			return "redirect:login";
-    //		} else {
-    //			// deletes from session table
-    //			userService.endSession(sessionID);
-    //			return "redirect:login";
-    //		}
-    //	}
 
     //    /**
     //     * Exposes the {@link LoginController} to the root resource

@@ -87,16 +87,19 @@ var app = app || {};
 			//	return;
 			//}
 
-			app.tickets.create(this.newAttributes());
-			//this.$input.val('');
+			//var newTicket = app.tickets.create(this.newAttributes());
+			//newTicket.fetch();
+
+			var newTicket = new app.Ticket(this.newAttributes());
+			newTicket.save({wait: true});
+			newTicket.fetch();
+			app.tickets.add(newTicket);
 		},
 
 		newAttributes: function () {
 			return {
-				project : {prefix : "PR1"},
 				title : this.$title.val().trim(),
 				description : "desc",
-				status : "OPEN",
 				assignee : {username : "user@twitter.com"}
 			};
 		}

@@ -40,6 +40,7 @@ public class Password {
         return password == null ? false : password.matches(PASSWORD_PATTERN);
     }
 
+    //This method is not used since the login is handled by spring security.
     public void validateLogin(String password) throws InvalidLoginException {
         if (password == null) {
             throw new InvalidLoginException("Null password");

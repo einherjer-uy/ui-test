@@ -17,7 +17,7 @@ var app = app || {};
 		events: {
 			//'click .toggle': 'toggleCompleted',
 			'dblclick': 'edit',
-			'click .destroy': 'clear',
+			'click .destroy': 'clear'
 			//'keypress .edit': 'updateOnEnter',
 			//'blur .edit': 'close'
 		},
@@ -92,9 +92,8 @@ var app = app || {};
 */
 		clear: function () {
 			//this.model.destroy(); //in this case we never delete tickets from the database, we just mark them as completed
-			//this.model.set();
-			this.model.save({status:"CANCELLED"}, {wait: true});
-			this.model.fetch();
-		}
+			this.model.save("status", "CANCELLED", {patch:true}); //sends only the specified fields to the server
+		},
+
 	});
 })(jQuery);
