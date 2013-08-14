@@ -6,8 +6,52 @@
     <title>Twitter - Corporate Events Tracking System</title>
     <link rel="stylesheet" href="../public/lib/bootstrap/css/bootstrap.css" media="screen">
     <link rel="stylesheet" href="../public/css/tt.css" media="screen">
+    <link rel="stylesheet" href="../public/css/jquery-ui-timepicker-addon.css" media="screen">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+
+    <script src="../public/lib/jquery/jquery.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>    
+    <script src="../public/js/utils/jquery-ui-timepicker-addon.js"></script>
 </head>
 <body>
+
+<div class="control-group error" id="password-control">
+<label class="control-label" for="password-confirm">Confirm Password</label>
+<input type="password" size="30" name="register[confirm]" id="password-confirm" class="span11">
+<span class="help-inline">password did not match</span>
+
+<div class="control-group warning">
+  <label class="control-label" for="inputWarning">Input with warning</label>
+  <div class="controls">
+    <input type="text" id="inputWarning">
+    <span class="help-inline">Something may have gone wrong</span>
+  </div>
+</div>
+ 
+<div class="control-group error">
+  <label class="control-label" for="inputError">Input with error</label>
+  <div class="controls">
+    <input type="text" id="inputError">
+    <span class="help-inline">Please correct the error</span>
+  </div>
+</div>
+ 
+<div class="control-group info">
+  <label class="control-label" for="inputInfo">Input with info</label>
+  <div class="controls">
+    <input type="text" id="inputInfo">
+    <span class="help-inline">Username is already taken</span>
+  </div>
+</div>
+ 
+<div class="control-group success">
+  <label class="control-label" for="inputSuccess">Input with success</label>
+  <div class="controls">
+    <input type="text" id="inputSuccess">
+    <span class="help-inline">Woohoo!</span>
+  </div>
+</div>
+
 	<section id="ttApp">
 		<header id="header">
 			<h1>tickets</h1>
@@ -33,16 +77,63 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-							<h4 class="modal-title">Modal title</h4>
+							<h4 class="modal-title">New / Edit Ticket</h4>
 						</div>
 						<div class="modal-body">
 							<div class="form-horizontal">
 								<div class="form-group">
 									<label class="col-12 col-lg-3 control-label" for="title">Title</label>
 									<div class="col-12 col-lg-9">
-										<input type="input" id="title" class="form-control input-small" autofocus/>
+										<input type="input" id="title" class="form-control input-small" autofocus required>
 									</div>
 								</div>
+
+
+
+								<div class="form-group">
+							    	<label class="col-12 col-lg-3 control-label" for="type">Type</label>
+							    	<div class="col-12 col-lg-9">
+										<select class="form-control input-small" id="type">
+							    			<option>Type 1</option>
+							    			<option>Type 2</option>
+							    			<option>Type 3</option>
+							    		</select>
+							    	</div>
+							  	</div>
+			  
+								<div class="form-group">
+							    	<label class="col-12 col-lg-3 control-label" for="priority">Priority</label>
+							    	<div class="col-12 col-lg-9">
+										<select class="form-control input-small" id="priority">
+								    		<option>High</option>
+								    		<option>Medium</option>
+								    		<option>Low</option>
+							    		</select>
+							    	</div>
+							  	</div>
+
+								<div class="form-group">
+									<label class="col-12 col-lg-3 control-label" for="dueDate">Due Date</label>
+									<div class="col-12 col-lg-9">
+										<input type="input" id="dueDate" class="form-control input-small" />
+										<script>$( "#dueDate" ).datepicker();</script>
+									</div>
+								</div>
+
+								<div class="form-group">	
+									<label class="col-12 col-lg-3 control-label" for="dueTime">Due Time</label>
+									<div class="col-12 col-lg-9">
+										<input type="input" id="dueTime" class="form-control input-small" />
+										<script>$('#dueTime').timepicker();</script>
+									</div>									
+								</div>	
+
+								<div class="form-group">
+							    	<label class="col-12 col-lg-3 control-label" for="description">Description</label>
+							    	<div class="col-12 col-lg-9">
+										<textarea id="description" class="form-control input-small" ></textarea>
+							    	</div>
+							  	</div>
 							</div>
 						</div>
 						<div class="modal-footer">
@@ -77,7 +168,6 @@
 		</div>
 	</script>
 
-	<script src="../public/lib/jquery/jquery.js"></script>
 	<script src="../public/lib/underscore/underscore.js"></script>
 	<script>
 		_.templateSettings = { interpolate : /\{\{(.+?)\}\}/g }; //use {{ }} instead of <%= %> in underscore templates
