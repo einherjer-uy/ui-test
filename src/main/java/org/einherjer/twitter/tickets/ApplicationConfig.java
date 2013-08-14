@@ -23,7 +23,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 //represents the (usually named) root-context.xml
 @Configuration
@@ -41,25 +40,6 @@ public class ApplicationConfig {
     private DataSource inMemoryHSQLDataSource() {
         EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
         return builder.setType(EmbeddedDatabaseType.HSQL).build();
-    }
-
-    private DataSource externalOracleDataSource() {
-        ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        try {
-            dataSource.setDriverClass("oracle.jdbc.OracleDriver");
-        }
-        catch (PropertyVetoException e) {
-            throw new RuntimeException("Unexpected error", e);
-        }
-        dataSource.setJdbcUrl("jdbc:oracle:thin:@localhost:1521:xe");
-        dataSource.setUser("twittertickets");
-        dataSource.setPassword("twittertickets");
-        dataSource.setAcquireIncrement(1);
-        dataSource.setMaxPoolSize(1);
-        dataSource.setMinPoolSize(1);
-        dataSource.setMaxStatements(0);
-        dataSource.setIdleConnectionTestPeriod(100);
-        return dataSource;
     }
 
     @Bean

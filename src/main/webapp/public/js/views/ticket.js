@@ -8,7 +8,7 @@ var app = app || {};
 	// The DOM element for a todo item...
 	app.TicketView = Backbone.View.extend({
 		//... is a list tag.
-		tagName:  'li',
+		tagName:  'tr',
 
 		// Cache the template function for a single item.
 		template: _.template($('#item-template').html()),
@@ -16,8 +16,9 @@ var app = app || {};
 		// The DOM events specific to an item.
 		events: {
 			//'click .toggle': 'toggleCompleted',
-			'dblclick': 'edit',
-			'click .destroy': 'clear'
+			'click .tt-action-edit': 'edit',
+			'click .tt-action-cancel': 'cancel',
+			'click .tt-action-approve': 'approve'
 			//'keypress .edit': 'updateOnEnter',
 			//'blur .edit': 'close'
 		},
@@ -90,9 +91,13 @@ var app = app || {};
 			}
 		},
 */
-		clear: function () {
+		cancel: function () {
 			//this.model.destroy(); //in this case we never delete tickets from the database, we just mark them as completed
 			this.model.save("status", "CANCELLED", {patch:true}); //sends only the specified fields to the server
+		},
+
+		approve: function () {
+			this.model.save("status", "APPROVED", {patch:true}); //sends only the specified fields to the server
 		},
 
 	});

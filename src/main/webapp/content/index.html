@@ -17,7 +17,15 @@
 			<!--<input id="toggle-all" type="checkbox">-->
 			<!--<label for="toggle-all">Mark all as complete</label>-->
 			<a data-toggle="modal" data-keyboard="false" data-backdrop="static" href="#addEditModal" class="btn btn-primary btn-small">Create new ticket</a>
-			<ul id="ticket-list"></ul>
+			<table id="ticket-list" class="table table-striped table-hover">
+				<thead><tr>
+					<th>Id</th>
+					<th>Title</th>
+					<th>Date Created</th>
+					<th>Date Modified</th>
+					<th colspan="4">Status</th>					
+				</tr></thead>
+			</table>
 
 			<!-- Add/Edit ticket modal -->
 			<div class="modal fade" id="addEditModal">
@@ -49,18 +57,26 @@
 		<footer id="footer"></footer>
 	</section>
 
+	<!--template de la tabla de tickets-->
 	<script type="text/template" id="item-template">
-		<div>
-			<label> {{ number }} </label> - {{ title }} - {{ status }}
-			<a href="#" class="btn delete">Delete</a>
-			<button class="destroy"></button>
-		</div>
+        <td>{{ number }}</td>
+        <td>{{ title }}</td>
+        <td></td>
+        <td></td>
+        <td>{{ status }}</td>
+        <td></td>
+        <td width="40px"><button title="Edit" class="tt-action-edit">✎</button></td>
+		<td width="40px"><button title="Cancel" class="tt-action-cancel">✖</button></td>
+		<td width="40px"><button title="Approve" class="tt-action-approve">✔</button></td>
 	</script>
+
 	<script type="text/template" id="footer-template">
-		<div>
+		<div><!--
 			{{ test }}
+			-->
 		</div>
 	</script>
+
 	<script src="../public/lib/jquery/jquery.js"></script>
 	<script src="../public/lib/underscore/underscore.js"></script>
 	<script>
