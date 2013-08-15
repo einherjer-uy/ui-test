@@ -2,6 +2,10 @@ package org.einherjer.twitter.tickets.controller;
 
 import java.io.IOException;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.einherjer.twitter.tickets.model.Attachment;
 import org.einherjer.twitter.tickets.model.Comment;
@@ -22,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Controller
 public class TicketController {
@@ -53,12 +59,19 @@ public class TicketController {
      * { "project":{"prefix":"PR1"}, "title":"t", "description":"d", "status":"OPEN", "assignee":{"username":"user@twitter.com"} }
      */
     @RequestMapping(value = "/tickets", method = RequestMethod.POST)
-    public ResponseEntity<String> postTicket(@RequestBody Ticket jsonBody) throws TicketNotFoundException {
+    public @ResponseBody TicketIdInfo /*ResponseEntity<String>*/ postTicket(@RequestBody Ticket jsonBody) throws TicketNotFoundException {
         this.validateTicketDTO(jsonBody);
         Assert.notNull(jsonBody.getProject(), "Project cannot be null");
         Assert.notNull(jsonBody.getProject().getPrefix(), "Project cannot be null");
-        ticketService.save(jsonBody.getProject().getPrefix(), -1, jsonBody);
-        return new ResponseEntity<String>(HttpStatus.CREATED);
+        Ticket ticket = ticketService.save(jsonBody.getProject().getPrefix(), -1, jsonBody);
+        /*return new ResponseEntity<String>(responseHeaders, HttpStatus.CREATED);*///usually a POST will return HttpStatus.CREATED and an empty body, but in this case we include the ticket id that the server generated in the response
+        return new TicketIdInfo(ticket.getTicketId()); 
+    }
+    
+    @AllArgsConstructor
+    public static class TicketIdInfo {
+        @JsonProperty("number")
+        private @Getter @Setter String ticketId;
     }
     
     /**

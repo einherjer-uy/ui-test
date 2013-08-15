@@ -26,39 +26,18 @@ var app = app || {};
 			return this;
 		},
 
-/*
-		// Close the `"editing"` mode, saving changes to the todo.
-		close: function () {
-			var value = this.$input.val().trim();
-
-			if (value) {
-				this.model.save({ title: value });
-			} else {
-				this.clear();
-			}
-
-			this.$el.removeClass('editing');
-		},
-
-		// If you hit `enter`, we're through editing the item.
-		updateOnEnter: function (e) {
-			if (e.which === ENTER_KEY) {
-				this.close();
-			}
-		},d
-*/
 		save: function (e) {
-			//if (/*e.which !== ENTER_KEY || */!this.$input.val().trim()) {
-			//	return;
-			//}
-
-			//var newTicket = app.tickets.create(this.newAttributes());
-			//newTicket.fetch();
-
 			this.model.set(this.newAttributes());
-			this.model.save({wait: true});
-			this.model.fetch();
-			app.tickets.add(this.model);
+			if (this.model.isNew()) {
+				this.model.save(null,{
+					success:function(model, response, options) {
+						model.set({number:response.number});
+					}
+				});
+				app.tickets.add(this.model);
+	        } else {
+	            this.model.save(this.model.changedAttributes(), {patch:true});
+	        }
 			this.$addEditModal.modal("hide");
 		},
 
@@ -67,10 +46,6 @@ var app = app || {};
 				title : $('#addEditModal #title').val().trim(), //in this case we cannot "cache" the selection in initialize() cause initialized is fired in the construction and only after that the html is appended to the modal (see app.AppView.add or app.TicketRowView.edit)
 				description : $('#addEditModal #description').val().trim()
 			};
-		},
-
-		close: function() {
-
 		}
 
 	});

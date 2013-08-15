@@ -40,16 +40,16 @@ public class TicketService {
     }
 
     @Transactional
-    public void save(String projectPrefix, Integer ticketNumber, Ticket data) throws TicketNotFoundException {
-        internalSaveOrPatch(projectPrefix, ticketNumber, data, false);
+    public Ticket save(String projectPrefix, Integer ticketNumber, Ticket data) throws TicketNotFoundException {
+        return internalSaveOrPatch(projectPrefix, ticketNumber, data, false);
     }
 
     @Transactional
-    public void patch(String projectPrefix, Integer ticketNumber, Ticket data) throws TicketNotFoundException {
-        internalSaveOrPatch(projectPrefix, ticketNumber, data, true);
+    public Ticket patch(String projectPrefix, Integer ticketNumber, Ticket data) throws TicketNotFoundException {
+        return internalSaveOrPatch(projectPrefix, ticketNumber, data, true);
     }
 
-    private void internalSaveOrPatch(String projectPrefix, Integer ticketNumber, Ticket data, boolean patch) throws TicketNotFoundException {
+    private Ticket internalSaveOrPatch(String projectPrefix, Integer ticketNumber, Ticket data, boolean patch) throws TicketNotFoundException {
         if (!patch) {
             data.setAssignee(userRepository.findByUsername(data.getAssignee().getUsername()));
             Assert.notNull(data.getAssignee(), "No user matches the specified username");
@@ -63,11 +63,12 @@ public class TicketService {
                 Project project = projectRepository.findByPrefix(projectPrefix);
                 Assert.notNull(project, "No project matches the specified prefix");
                 ticket = new Ticket(project, data);
-                ticketRepository.save(ticket);
+                return ticketRepository.save(ticket);
             }
         }
         else {
             ticket.set(data);
+            return ticket;
         }
     }
 
