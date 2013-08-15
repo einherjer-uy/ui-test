@@ -16,7 +16,7 @@
 		<header class="navbar navbar-inverse navbar-static-top tt-navbar">
 			<div class="container">
 				<a class="navbar-brand" href="http://www.twitter.com">
-					<span class="tt-icon tt-bird"/>
+					<span class="tt-icon tt-bird"></span>
 				</a>
 			</div>
 		</header>
@@ -34,13 +34,13 @@
 					<div class="form-group">
 						<label class="col-12 col-lg-3 control-label hidden-sm" for="username">Username</label>
 						<div class="col-12 col-lg-9">
-							<input type="email" id="username" name="username" class="form-control input-small" placeholder="Enter email" autofocus/>
+							<input type="email" id="username" name="username" class="form-control input-small" placeholder="Enter email" autofocus></input>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-12 col-lg-3 control-label hidden-sm" for="password">Password</label>
 						<div class="col-12 col-lg-9">
-							<input type="password" id="password" name="password" class="form-control input-small" placeholder="Password"/>
+							<input type="password" id="password" name="password" class="form-control input-small" placeholder="Password"></input>
 						</div>
 					</div>
 					<div class="form-group">
@@ -58,9 +58,9 @@
 
 	</section>
 
-	<script src="../public/lib/jquery/jquery.js"></script>
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 	<script>
-		$(document).ready(function () {
+		$(function () { //$() shorthand for $(document).ready()
 			if (window.location.search=="?error") {
 		  		$(".alert").removeClass("hide");
 		  	}

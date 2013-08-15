@@ -9,8 +9,11 @@ var app = app || {};
 
 		defaults: {
 			number: null,
+			title : "",
+			description : "",
 			project : {prefix : "PR1"},
-			status : "OPEN"
+			status : "OPEN",
+			assignee : {username : "user@twitter.com"}
 		}
 
 		/*"manual"(jquery) ajax call

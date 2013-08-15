@@ -2,7 +2,7 @@ var app = app || {};
 
 (function () { "use strict";
 	
-	var Workspace = Backbone.Router.extend({
+	var AppRouter = Backbone.Router.extend({
 		routes: {
 			'*filter': 'setFilter'
 		},
@@ -17,6 +17,6 @@ var app = app || {};
 		}
 	});
 
-	app.TicketRouter = new Workspace();
+	app.Router = new AppRouter();
 	Backbone.history.start();
 })();
