@@ -65,11 +65,17 @@ var app = app || {};
 		},
 
 		add: function() {
-			var ticket = new app.Ticket();
-        	this.$addEditModal.html(new app.TicketView({model: ticket}).render().el);
+			this.showModal(new app.Ticket());
+		},
+		
+		//TODO: duplicated with TicketRowView.showModal
+		showModal: function(ticket) {
+			this.$addEditModal.html(new app.TicketView({model: ticket}).render().el);
+        	$("#dueTime").timepicker();
+        	$("#dueDate").datepicker();
         	this.$addEditModal.modal({keyboard: false, backdrop: "static"});
 		}
-		
+
 		/*filterOne: function (todo) {
 			todo.trigger('visible');
 		},

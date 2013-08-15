@@ -30,7 +30,14 @@ var app = app || {};
 		},
 
 		edit: function () {
-        	this.$addEditModal.html(new app.TicketView({model: this.model}).render().el);
+			this.showModal(this.model);
+		},
+
+		//TODO: duplicated with AppView.showModal
+		showModal: function(ticket) {
+			this.$addEditModal.html(new app.TicketView({model: ticket}).render().el);
+        	$("#dueTime").timepicker();
+        	$("#dueDate").datepicker();
         	this.$addEditModal.modal({keyboard: false, backdrop: "static"});
 		},
 

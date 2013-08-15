@@ -72,10 +72,6 @@
 		<footer id="footer"></footer>
 	</section>
 
-	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    <script src="../public/js/utils/jquery-ui-timepicker-addon.js"></script>
-
 	<!--template de la tabla de tickets-->
 	<script type="text/template" id="item-template">
         <td>{{ number }}</td>
@@ -111,8 +107,6 @@
 						</div>
 					</div>
 
-
-
 					<div class="form-group">
 				    	<label class="col-12 col-lg-3 control-label hidden-sm" for="type">Type</label>
 				    	<div class="col-xs-12 col-sm-8 col-md-4 col-lg-3">
@@ -139,8 +133,6 @@
 						<label class="col-12 col-lg-3 control-label hidden-sm" for="dueDate">Due Date</label>
 						<div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
 							<input type="input" id="dueDate" class="form-control input-small" placeholder="Due Date"></input>
-							<!--TODO: apparently we cannot just execute this on document ready cause it causes the template to show. Perhaps we should move it to the backbone view before opening the modal-->
-							<!--<script>$( "#dueDate" ).datepicker();</script>-->
 						</div>
 					</div>
 
@@ -148,15 +140,13 @@
 						<label class="col-12 col-lg-3 control-label hidden-sm" for="dueTime">Due Time</label>
 						<div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
 							<input type="input" id="dueTime" class="form-control input-small" placeholder="Due Time"></input>
-							<!--TODO: apparently we cannot just execute this on document ready cause it causes the template to show. Perhaps we should move it to the backbone view before opening the modal-->
-							<!--<script>$('#dueTime').timepicker();</script>-->
 						</div>									
 					</div>	
 
 					<div class="form-group">
 				    	<label class="col-12 col-lg-3 control-label hidden-sm" for="description">Description</label>
 				    	<div class="col-12 col-lg-9">
-							<textarea id="description" value="{{description}}" class="form-control input-small" rows="4" placeholder="Description" ></textarea>
+							<textarea id="description" class="form-control input-small" rows="4" placeholder="Description">{{description}}</textarea>
 				    	</div>
 				  	</div>
 				</div>
@@ -168,12 +158,16 @@
 		</div><!-- /.modal-content -->
 	</script>
 
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="../public/js/utils/jquery-ui-timepicker-addon.js"></script>
 	<script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
 	<script>
 		_.templateSettings = { interpolate : /\{\{(.+?)\}\}/g }; //use {{ }} instead of <%= %> in underscore templates
 	</script>
 	<script src="http://documentcloud.github.com/backbone/backbone-min.js"></script>
 	<script src="../public/lib/bootstrap/js/bootstrap.js"></script>
+
 	<script src="../public/js/models/ticket.js"></script>
 	<script src="../public/js/collections/tickets.js"></script>
 	<script src="../public/js/views/ticket.js"></script>
