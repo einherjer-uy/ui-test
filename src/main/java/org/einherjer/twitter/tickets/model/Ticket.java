@@ -128,7 +128,8 @@ public class Ticket extends AbstractEntity {
         OPEN,
         IN_PROGRESS,
         DONE,
-        CANCELLED;
+        CANCELLED,
+        APPROVED;
     }
     
 }
