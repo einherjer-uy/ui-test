@@ -27,6 +27,7 @@ var app = app || {};
 		},
 
 		save: function (e) {
+			this.hideErrors();
 			this.model.set(this.newAttributes());
 			if (this.model.isNew()) {
 				this.model.save(null,{
@@ -34,12 +35,36 @@ var app = app || {};
 						model.set({number:response.number});
 					}
 				});
-				app.tickets.add(this.model);
+				if (!this.model.validationError) {
+					app.tickets.add(this.model);
+				}
 	        } else {
 	            this.model.save(this.model.changedAttributes(), {patch:true});
 	        }
-			this.$addEditModal.modal("hide");
+	        if (this.model.validationError) {
+				this.showErrors(this.model.validationError);
+			}else{
+				this.$addEditModal.modal("hide");	
+			}
 		},
+
+		showErrors: function(errors) {
+        	_.each(errors, function (error) {
+
+	            var alertContainer = $('#ticket-alert-container');
+	            alertContainer.append("<div class='alert alert-error'><a class='close' data-dismiss='alert'>×</a><strong>Error: </strong>" + error.message + "</div>") ;
+	        
+	            var controlGroup = $('#' + error.name);
+	            controlGroup.parent().parent().addClass("has-error");
+        	}, this);
+ 		},
+
+		hideErrors: function () {
+	        var alertContainer = $('#ticket-alert-container');
+	        alertContainer.html('');
+
+	        $('.form-group').removeClass('has-error');	
+	    },
 
 		newAttributes: function () {
 			return {

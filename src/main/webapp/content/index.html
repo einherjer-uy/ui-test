@@ -11,43 +11,7 @@
 </head>
 <body>
 
-<div class="control-group error" id="password-control">
-<label class="control-label" for="password-confirm">Confirm Password</label>
-<input type="password" size="30" name="register[confirm]" id="password-confirm" class="span11">
-<span class="help-inline">password did not match</span>
-
-<div class="control-group warning">
-  <label class="control-label" for="inputWarning">Input with warning</label>
-  <div class="controls">
-    <input type="text" id="inputWarning">
-    <span class="help-inline">Something may have gone wrong</span>
-  </div>
-</div>
- 
-<div class="control-group error">
-  <label class="control-label" for="inputError">Input with error</label>
-  <div class="controls">
-    <input type="text" id="inputError">
-    <span class="help-inline">Please correct the error</span>
-  </div>
-</div>
- 
-<div class="control-group info">
-  <label class="control-label" for="inputInfo">Input with info</label>
-  <div class="controls">
-    <input type="text" id="inputInfo">
-    <span class="help-inline">Username is already taken</span>
-  </div>
-</div>
- 
-<div class="control-group success">
-  <label class="control-label" for="inputSuccess">Input with success</label>
-  <div class="controls">
-    <input type="text" id="inputSuccess">
-    <span class="help-inline">Woohoo!</span>
-  </div>
-</div>
-
+</form>
 	<section id="ttApp">
 		<header id="header">
 			<h1>tickets</h1>
@@ -98,16 +62,20 @@
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				<h4 class="modal-title">New / Edit Ticket</h4>
 			</div>
-			<div class="modal-body">
-				<div class="form-horizontal">
-					<div class="form-group">
-						<label class="col-12 col-lg-3 control-label hidden-sm" for="title">Title</label>
-						<div class="col-12 col-lg-9">
-							<input type="input" id="title" value="{{title}}" class="form-control input-small" placeholder="Title" autofocus required></input>
-						</div>
-					</div>
+			<div class="modal-body" id="ticket-modal-body">
+			
+				<form class="form-horizontal" >
 
+				<div class="alert-container" id="ticket-alert-container">
+				</div>
 					<div class="form-group">
+			        	<label class="col-12 col-lg-3 control-label hidden-sm" for="title">Title</label>
+			        	<div class="col-12 col-lg-9">
+			            	<input type="text" class="form-control input-small" id="title" value="{{title}}" placeholder="The ticket title">
+			            </div>
+			        </div>
+
+					<div class="form-group" >
 				    	<label class="col-12 col-lg-3 control-label hidden-sm" for="type">Type</label>
 				    	<div class="col-xs-12 col-sm-8 col-md-4 col-lg-3">
 							<select class="form-control input-small" id="type" placeholder="Type">
@@ -115,11 +83,11 @@
 				    			<option>Type 2</option>
 				    			<option>Type 3</option>
 				    		</select>
-				    	</div>
-				  	</div>
-  
-					<div class="form-group">
-				    	<label class="col-12 col-lg-3 control-label hidden-sm" for="priority">Priority</label>
+				    	</div>						    		    	
+				  	</div>	
+
+					<div class="form-group" >
+				  		<label class="col-12 col-lg-3 control-label hidden-sm" for="priority">Priority</label>
 				    	<div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
 							<select class="form-control input-small" id="priority" placeholder="Priority">
 					    		<option>High</option>
@@ -127,7 +95,7 @@
 					    		<option>Low</option>
 				    		</select>
 				    	</div>
-				  	</div>
+				    </div>				  	
 
 					<div class="form-group">
 						<label class="col-12 col-lg-3 control-label hidden-sm" for="dueDate">Due Date</label>
@@ -136,20 +104,20 @@
 						</div>
 					</div>
 
-					<div class="form-group">	
+					<div class="form-group">
 						<label class="col-12 col-lg-3 control-label hidden-sm" for="dueTime">Due Time</label>
 						<div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
 							<input type="input" id="dueTime" class="form-control input-small" placeholder="Due Time"></input>
-						</div>									
-					</div>	
-
+						</div>					
+					</div>
+					
 					<div class="form-group">
 				    	<label class="col-12 col-lg-3 control-label hidden-sm" for="description">Description</label>
 				    	<div class="col-12 col-lg-9">
 							<textarea id="description" class="form-control input-small" rows="4" placeholder="Description">{{description}}</textarea>
 				    	</div>
 				  	</div>
-				</div>
+	   			 </form>	
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

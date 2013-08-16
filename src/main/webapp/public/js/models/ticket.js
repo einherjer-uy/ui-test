@@ -14,6 +14,17 @@ var app = app || {};
 			project : {prefix : "PR1"},
 			status : "OPEN",
 			assignee : {username : "user@twitter.com"}
+		},
+		
+		validate: function (attrs) {
+		   var errors = [];
+
+		   if (!attrs.title) {
+		       errors.push({name: 'title', message: 'Title field is mandatory.'});
+			}
+
+			console.log(errors);
+			return errors.length > 0 ? errors : false;
 		}
 
 		/*"manual"(jquery) ajax call
