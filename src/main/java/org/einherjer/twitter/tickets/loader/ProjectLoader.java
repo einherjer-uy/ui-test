@@ -16,6 +16,7 @@ public class ProjectLoader {
 
     public static final String PR1_PREFIX = "PR1";
     public static final String PR2_PREFIX = "PR2";
+    public static final String TT_PREFIX = "TT";
 
     @Autowired
     public ProjectLoader(ProjectRepository repository) {
@@ -32,6 +33,10 @@ public class ProjectLoader {
         Project p2 = new Project(PR2_PREFIX, "Project 2");
         repository.save(p2);
         log.info("Created Project " + p2);
+
+        Project p3 = new Project(TT_PREFIX, "Twitter Tickets");
+        repository.save(p3);
+        log.info("Created Project " + p3);
     }
 
 }

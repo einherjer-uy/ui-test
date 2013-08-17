@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--see http://getbootstrap.com/css/-->
     <title>Twitter - Corporate Events Tracking System</title>
     <link rel="stylesheet" href="../public/lib/bootstrap/css/bootstrap.css" media="screen">
+    <link rel="stylesheet" href="../public/css/bootstrap-glyphicons.css" media="screen">
     <link rel="stylesheet" href="../public/css/tt.css" media="screen">
     <link rel="stylesheet" href="../public/css/jquery-ui-timepicker-addon.css" media="screen">
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
@@ -44,9 +45,9 @@
         <td></td>
         <td>{{ status }}</td>
         <td></td>
-        <td width="40px"><button title="Edit" id="action-edit" class="tt-action">✎</button></td>
-		<td width="40px"><button title="Cancel" id="action-cancel" class="tt-action">✖</button></td>
-		<td width="40px"><button title="Approve" id="action-approve" class="tt-action">✔</button></td>
+        <td width="40px"><span id="action-edit" class="glyphicon glyphicon-pencil tt-action"></span></td>
+		<td width="40px"><span id="action-approve" class="glyphicon glyphicon-ok tt-action"></span></td>
+		<td width="40px"><span id="action-cancel" class="glyphicon glyphicon-remove tt-action"></span></td>
 	</script>
 
 	<script type="text/template" id="footer-template">

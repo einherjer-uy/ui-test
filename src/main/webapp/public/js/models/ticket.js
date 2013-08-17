@@ -11,7 +11,7 @@ var app = app || {};
 			number: null,
 			title : "",
 			description : "",
-			project : {prefix : "PR1"},
+			project : {prefix : "TT"},
 			status : "OPEN",
 			assignee : {username : "user@twitter.com"}
 		},

@@ -31,14 +31,14 @@ public class TicketLoader {
 
         User u1 = userRepository.findByUsername(new EmailAddress("user@twitter.com"));
 
-        Project p1 = projectRepository.findByPrefix(ProjectLoader.PR1_PREFIX);
+        Project p1 = projectRepository.findByPrefix(ProjectLoader.TT_PREFIX);
+
         Ticket t1 = new Ticket(p1, "Some title", "Some description", u1);
         t1.addComment("Hello World!");
         ticketRepository.save(t1);
         log.info("Created Ticket " + t1);
 
-        Project p2 = projectRepository.findByPrefix(ProjectLoader.PR2_PREFIX);
-        Ticket t2 = new Ticket(p2, "Some title 2", "Some description 2", u1);
+        Ticket t2 = new Ticket(p1, "Some title 2", "Some description 2", u1);
         t2.addComment("Hello World 2!");
         ticketRepository.save(t2);
         log.info("Created Ticket " + t2);
