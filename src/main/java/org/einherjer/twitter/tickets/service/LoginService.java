@@ -5,7 +5,9 @@ import org.einherjer.twitter.tickets.model.InvalidLoginException;
 import org.einherjer.twitter.tickets.model.User;
 import org.einherjer.twitter.tickets.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 @Service
 public class LoginService {
@@ -22,6 +24,13 @@ public class LoginService {
         }
         user.getPassword().validateLogin(password);
         return user;
+    }
+
+    public User getLoggedUser() {
+        org.springframework.security.core.userdetails.User u = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User loggedUser = userRepository.findByUsername(new EmailAddress(u.getUsername()));
+        Assert.notNull(loggedUser, "Error while retrieving logged user");
+        return loggedUser;
     }
 
 }

@@ -33,11 +33,14 @@ var app = app || {};
 			this.showModal(this.model);
 		},
 
-		//TODO: duplicated with AppView.showModal
+		//TODO: duplicated with AppView.showModal, move to util.js
 		showModal: function(ticket) {
 			this.$addEditModal.html(new app.TicketView({model: ticket}).render().el);
-        	$("#dueTime").timepicker();
-        	$("#dueDate").datepicker();
+        	$("#dueDate").datetimepicker({
+        		separator: "-",
+				stepMinute: 30,
+				controlType: 'select'
+        	});
         	this.$addEditModal.modal({keyboard: false, backdrop: "static"});
 		},
 

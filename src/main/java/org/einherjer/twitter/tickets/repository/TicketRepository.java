@@ -14,7 +14,7 @@ public interface TicketRepository extends PagingAndSortingRepository<Ticket, Lon
 
     Ticket findByProjectAndNumber(Project project, Integer ticketNumber);
 
-    //override CrudRepository methods and hide them from the rest exporter
+    //override CrudRepository methods and hide them from the rest exporter with exporter = false
     //TODO: for some reason adding @RestResource(exported = false) makes the call to the repository fail even from another Service  
     /*@Override
     @RestResource(exported = false)

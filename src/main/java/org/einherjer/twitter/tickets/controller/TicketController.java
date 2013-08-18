@@ -1,15 +1,18 @@
 package org.einherjer.twitter.tickets.controller;
 
 import java.io.IOException;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.einherjer.twitter.tickets.model.Attachment;
-import org.einherjer.twitter.tickets.model.Comment;
+import org.einherjer.twitter.tickets.model.CommentLogEntry;
+import org.einherjer.twitter.tickets.model.SimpleJson;
 import org.einherjer.twitter.tickets.model.Ticket;
+import org.einherjer.twitter.tickets.model.Ticket.TicketPriority;
+import org.einherjer.twitter.tickets.model.Ticket.TicketStatus;
+import org.einherjer.twitter.tickets.model.Ticket.TicketType;
 import org.einherjer.twitter.tickets.service.TicketNotFoundException;
 import org.einherjer.twitter.tickets.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,20 +30,59 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 @Controller
 public class TicketController {
 
     @Autowired
     private TicketService ticketService;
 
-
     @RequestMapping(value = "/tickets", method = RequestMethod.GET)
     public @ResponseBody Iterable<Ticket> getTickets() {
         return ticketService.findAll();
     }
     
+    /**
+     * Get ticket types
+     */
+    @RequestMapping(value = "/ticketTypes", method = RequestMethod.GET)
+    public @ResponseBody List<Map<String, Object>> getTicketTypes() {
+        List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+        for (final TicketType type : Ticket.TicketType.values()) {
+            result.add(new SimpleJson()
+                .append("value", type.toString())
+                .append("description", type.getDescription()));
+        }
+        return result;
+    }
+    
+    /**
+     * Get ticket priorities
+     */
+    @RequestMapping(value = "/ticketPriorities", method = RequestMethod.GET)
+    public @ResponseBody List<Map<String, Object>> getTicketPriorities() {
+        List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+        for (final TicketPriority priority : Ticket.TicketPriority.values()) {
+            result.add(new SimpleJson()
+                .append("value", priority.toString())
+                .append("description", priority.getDescription()));
+        }
+        return result;
+    }
+
+    /**
+     * Get ticket statuses
+     */
+    @RequestMapping(value = "/ticketStatuses", method = RequestMethod.GET)
+    public @ResponseBody List<Map<String, Object>> getTicketStatuses() {
+        List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+        for (final TicketStatus status : Ticket.TicketStatus.values()) {
+            result.add(new SimpleJson()
+                .append("value", status.toString())
+                .append("description", status.getDescription()));
+        }
+        return result;
+    }
+
     /**
      * Get ticket
      */
@@ -59,21 +101,15 @@ public class TicketController {
      * { "project":{"prefix":"PR1"}, "title":"t", "description":"d", "status":"OPEN", "assignee":{"username":"user@twitter.com"} }
      */
     @RequestMapping(value = "/tickets", method = RequestMethod.POST)
-    public @ResponseBody TicketIdInfo /*ResponseEntity<String>*/ postTicket(@RequestBody Ticket jsonBody) throws TicketNotFoundException {
+    public @ResponseBody Map<String, Object> /*ResponseEntity<String>*/postTicket(@RequestBody Ticket jsonBody) throws TicketNotFoundException {
         this.validateTicketDTO(jsonBody);
         Assert.notNull(jsonBody.getProject(), "Project cannot be null");
         Assert.notNull(jsonBody.getProject().getPrefix(), "Project cannot be null");
-        Ticket ticket = ticketService.save(jsonBody.getProject().getPrefix(), -1, jsonBody);
+        final Ticket ticket = ticketService.save(jsonBody.getProject().getPrefix(), -1, jsonBody);
         /*return new ResponseEntity<String>(responseHeaders, HttpStatus.CREATED);*///usually a POST will return HttpStatus.CREATED and an empty body, but in this case we include the ticket id that the server generated in the response
-        return new TicketIdInfo(ticket.getTicketId()); 
+        return new SimpleJson().append("number", ticket.getTicketId());
     }
-    
-    @AllArgsConstructor
-    public static class TicketIdInfo {
-        @JsonProperty("number")
-        private @Getter @Setter String ticketId;
-    }
-    
+
     /**
      * Update ticket
      * 
@@ -99,6 +135,8 @@ public class TicketController {
         Assert.notNull(jsonBody.getStatus(), "Status cannot be null");
         Assert.notNull(jsonBody.getAssignee(), "Assignee cannot be null");
         Assert.notNull(jsonBody.getAssignee().getUsername(), "Assignee cannot be null");
+        Assert.notNull(jsonBody.getType(), "Type cannot be null");
+        Assert.notNull(jsonBody.getPriority(), "Priority cannot be null");
     }
     
     /**
@@ -121,8 +159,7 @@ public class TicketController {
     
     @ExceptionHandler(TicketNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody
-    ExceptionBody handleTicketNotFoundException(TicketNotFoundException e) {
+    public @ResponseBody ExceptionBody handleTicketNotFoundException(TicketNotFoundException e) {
         return new ExceptionBody(e.getMessage(), ExceptionUtils.getStackTrace(e));
     }
 
@@ -137,7 +174,7 @@ public class TicketController {
      */
     @RequestMapping(value = "/tickets/{project}-{number}/comment", method = RequestMethod.POST)
     public ResponseEntity<String> addComment(
-            @RequestBody Comment jsonBody,
+            @RequestBody CommentLogEntry jsonBody,
             @PathVariable("project") String projectPrefix,
             @PathVariable("number") Integer ticketNumber) {
         ticketService.addComment(projectPrefix, ticketNumber, jsonBody.getText());

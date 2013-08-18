@@ -12,15 +12,18 @@ var app = app || {};
 			title : "",
 			description : "",
 			project : {prefix : "TT"},
-			status : "OPEN",
-			assignee : {username : "user@twitter.com"}
+			status : "NEW",
+			assignee : {username : "user@twitter.com"},
+			type: "HARDWARE",
+			priority: "LOW",
+			due: null
 		},
 		
 		validate: function (attrs) {
 		   var errors = [];
 
-		   if (!attrs.title) {
-		       errors.push({name: 'title', message: 'Title field is mandatory.'});
+		   if (!attrs.description) {
+		       errors.push({name: 'description', message: 'Description field is mandatory.'});
 			}
 
 			console.log(errors);

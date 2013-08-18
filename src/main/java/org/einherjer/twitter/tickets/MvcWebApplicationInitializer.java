@@ -1,8 +1,11 @@
 package org.einherjer.twitter.tickets;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.einherjer.twitter.tickets.controller.TicketController;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +22,16 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 //AbstractAnnotationConfigDispatcherServletInitializer provides a convenient way to initialize DispatcherServlet (spring mvc)
@@ -100,17 +112,39 @@ public class MvcWebApplicationInitializer extends AbstractAnnotationConfigDispat
         private ObjectMapper objectMapper() {
             Jackson2ObjectMapperFactoryBean bean = new Jackson2ObjectMapperFactoryBean();
             bean.setIndentOutput(true);
-            bean.setSimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            bean.setSimpleDateFormat("MM/dd/yyyy-HH:mm");// ignored according to http://www.lorrin.org/blog/2013/06/28/custom-joda-time-dateformatter-in-jackson/
             bean.afterPropertiesSet();
             ObjectMapper objectMapper = bean.getObject();
-            objectMapper.registerModule(new JodaModule());
+            objectMapper.registerModule(new JodaModule()); //JodaModule includes a series of serializers and deserializers but not for this particular "pattern" so we add an additional SimpleModule below
+            objectMapper.registerModule(new SimpleModule() {
+                {
+                    addSerializer(DateTime.class, new StdSerializer<DateTime>(DateTime.class) {
+                        @Override
+                        public void serialize(DateTime value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
+                            jgen.writeString(DateTimeFormat.forPattern("MM/dd/yyyy-HH:mm").print(value));
+                        }
+                    });
+                    addDeserializer(DateTime.class, new StdDeserializer<DateTime>(DateTime.class) {
+                        @Override
+                        public DateTime deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+                            String str = jp.getText().trim();
+                            if (str.length() == 0) {
+                                return null;
+                            }
+                            return DateTimeFormat.forPattern("MM/dd/yyyy-HH:mm").parseDateTime(str);
+                        }
+                    });
+                }
+            });
             return objectMapper;
         }
+
         private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
             MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
             converter.setObjectMapper(objectMapper());
             return converter;
         }
+
         @Override
         public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
             converters.add(mappingJackson2HttpMessageConverter());

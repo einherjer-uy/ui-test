@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.einherjer.twitter.tickets.model.InvalidLoginException;
+import org.einherjer.twitter.tickets.model.User;
 import org.einherjer.twitter.tickets.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -103,4 +104,9 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
     //        return resource;
     //    }
 
+    @RequestMapping(value = "/loggedUser", method = RequestMethod.GET)
+    public @ResponseBody User getLoggedUser() {
+        return loginService.getLoggedUser();
+    }
+        
 }

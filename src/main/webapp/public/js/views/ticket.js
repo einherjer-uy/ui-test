@@ -23,6 +23,23 @@ var app = app || {};
 
 		render: function () {
 			this.$el.html(this.template(this.model.toJSON()));
+			this.$description = this.$('#description'); //in this case we cannot "cache" the selection in initialize() cause initialized is fired in the construction and only after that the html is appended to the modal (see app.AppView.add or app.TicketRowView.edit), but we can use view.$ (shorthand for $(view.el).find) after $el is populated
+			this.$type = this.$('#type');
+			this.$priority = this.$('#priority');
+			this.$dueDate = this.$('#dueDate');
+
+			var self = this;
+			
+		    $.each(app.ticketTypes, function(item) {
+		        self.$type.append(this);
+		    });
+		    this.$type.val(this.model.get("type"));
+		    
+		    $.each(app.ticketPriorities, function(item) {
+		        self.$priority.append(this);
+		    });
+		    this.$priority.val(this.model.get("priority"));
+		    
 			return this;
 		},
 
@@ -52,7 +69,7 @@ var app = app || {};
         	_.each(errors, function (error) {
 
 	            var alertContainer = $('#ticket-alert-container');
-	            alertContainer.append("<div class='alert alert-error'><a class='close' data-dismiss='alert'>×</a><strong>Error: </strong>" + error.message + "</div>") ;
+	            alertContainer.append("<div class='alert alert-error'><a class='close' data-dismiss='alert'>&times;</a><strong>Error: </strong>" + error.message + "</div>") ;
 	        
 	            var controlGroup = $('#' + error.name);
 	            controlGroup.parent().parent().addClass("has-error");
@@ -68,8 +85,10 @@ var app = app || {};
 
 		newAttributes: function () {
 			return {
-				title : $('#addEditModal #title').val().trim(), //in this case we cannot "cache" the selection in initialize() cause initialized is fired in the construction and only after that the html is appended to the modal (see app.AppView.add or app.TicketRowView.edit)
-				description : $('#addEditModal #description').val().trim()
+				description: this.$description.val().trim(),
+				type: this.$type.val(),
+				priority: this.$priority.val(),
+				due: this.$dueDate.val(),
 			};
 		}
 

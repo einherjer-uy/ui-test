@@ -15,6 +15,8 @@ import org.springframework.util.Assert;
 public class TicketService {
 
     @Autowired
+    private LoginService loginService;
+    @Autowired
     private TicketRepository ticketRepository;
     @Autowired
     private ProjectRepository projectRepository;
@@ -62,7 +64,7 @@ public class TicketService {
             else{
                 Project project = projectRepository.findByPrefix(projectPrefix);
                 Assert.notNull(project, "No project matches the specified prefix");
-                ticket = new Ticket(project, data);
+                ticket = new Ticket(project, data, loginService.getLoggedUser());
                 return ticketRepository.save(ticket);
             }
         }
@@ -75,7 +77,7 @@ public class TicketService {
     @Transactional
     public void addComment(String projectPrefix, Integer ticketNumber, String comment) {
         Ticket ticket = this.find(projectPrefix, ticketNumber);
-        ticket.addComment(comment);
+        ticket.addComment(comment, loginService.getLoggedUser());
     }
 
     public Attachment getAttachment(String projectPrefix, Integer ticketNumber, Long attachmentId) {

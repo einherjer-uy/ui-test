@@ -23,9 +23,10 @@
 					<thead>
 						<tr>
 							<th>Id</th>
-							<th>Title</th>
-							<th>Date Created</th>
-							<th>Date Modified</th>
+							<th>Description</th>
+							<th>Type</th>
+							<th>Priority</th>
+							<th>Due date</th>
 							<th colspan="4">Status</th>					
 						</tr>
 					</thead>
@@ -42,9 +43,10 @@
 	<!--Template for the tickets table-->
 	<script type="text/template" id="item-template">
         <td>{{ number }}</td>
-        <td>{{ title }}</td>
-        <td></td>
-        <td></td>
+        <td>{{ description }}</td>
+        <td>{{ type }}</td>
+        <td>{{ priority }}</td>
+        <td>{{ due }}</td>
         <td>{{ status }}</td>
         <td></td>
         <td width="40px"><span id="action-edit" class="glyphicon glyphicon-pencil tt-action"></span></td>
@@ -63,54 +65,32 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">New / Edit Ticket</h4>
+				<h4 class="modal-title">Add / Edit Ticket</h4>
 			</div>
 			<div class="modal-body" id="ticket-modal-body">
 			
 				<form class="form-horizontal" >
 
-				<div class="alert-container" id="ticket-alert-container">
-				</div>
-					<div class="form-group">
-			        	<label class="col-12 col-lg-3 control-label hidden-sm" for="title">Title</label>
-			        	<div class="col-12 col-lg-9">
-			            	<input type="text" class="form-control input-small" id="title" value="{{title}}" placeholder="The ticket title">
-			            </div>
-			        </div>
+					<div class="alert-container" id="ticket-alert-container"></div>
 
 					<div class="form-group" >
 				    	<label class="col-12 col-lg-3 control-label hidden-sm" for="type">Type</label>
 				    	<div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
-							<select class="form-control input-small" id="type" placeholder="Type">
-				    			<option>Type 1</option>
-				    			<option>Type 2</option>
-				    			<option>Type 3</option>
-				    		</select>
+							<select id="type" class="form-control input-small" placeholder="Type" value={{type}}></select>
 				    	</div>						    		    	
 				  	</div>	
 
 					<div class="form-group" >
 				  		<label class="col-12 col-lg-3 control-label hidden-sm" for="priority">Priority</label>
 				    	<div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
-							<select class="form-control input-small" id="priority" placeholder="Priority">
-					    		<option>High</option>
-					    		<option>Medium</option>
-					    		<option>Low</option>
-				    		</select>
+							<select id="priority" class="form-control input-small" placeholder="Priority" value={{priority}}></select>
 				    	</div>
 				    </div>				  	
 
 					<div class="form-group">
 						<label class="col-12 col-lg-3 control-label hidden-sm" for="dueDate">Due Date</label>
 						<div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
-							<input type="input" id="dueDate" class="form-control input-small" placeholder="Due Date"></input>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<label class="col-12 col-lg-3 control-label hidden-sm" for="dueTime">Due Time</label>
-						<div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
-							<input type="input" id="dueTime" class="form-control input-small" placeholder="Due Time"></input>
+							<input type="input" id="dueDate" class="form-control input-small" placeholder="Due Date" value={{due == null ? "" : due}}></input>
 						</div>					
 					</div>
 					
@@ -145,6 +125,7 @@
 	<script src="../public/js/views/ticketRow.js"></script>
 	<script src="../public/js/views/app.js"></script>
 	<script src="../public/js/routers/router.js"></script>
+	<script src="../public/js/util.js"></script>
 	<script src="../public/js/app.js"></script>
 </body>
 </html>
