@@ -26,7 +26,7 @@ var app = app || {};
 			this.$description = this.$('#description'); //in this case we cannot "cache" the selection in initialize() cause initialized is fired in the construction and only after that the html is appended to the modal (see app.AppView.add or app.TicketRowView.edit), but we can use view.$ (shorthand for $(view.el).find) after $el is populated
 			this.$type = this.$('#type');
 			this.$priority = this.$('#priority');
-			this.$dueDate = this.$('#dueDate');
+			this.$due = this.$('#due');
 
 			var self = this;
 			
@@ -88,7 +88,7 @@ var app = app || {};
 				description: this.$description.val().trim(),
 				type: this.$type.val(),
 				priority: this.$priority.val(),
-				due: this.$dueDate.val(),
+				due: this.$due.val(),
 			};
 		}
 

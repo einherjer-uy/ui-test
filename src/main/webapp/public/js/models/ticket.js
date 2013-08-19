@@ -26,7 +26,17 @@ var app = app || {};
 		       errors.push({name: 'description', message: 'Description field is mandatory.'});
 			}
 
-			console.log(errors);
+			if (attrs.due) {
+				var nowDateTime = new Date();
+				var sixHoursLater = new Date(nowDateTime.getTime() + 6*60*60000);
+				var dueDate = new Date(attrs.due);
+
+				if (sixHoursLater > dueDate) {	
+					errors.push({name: 'due', message: 'Due field must be 6 hours greater than now.'});	
+				}
+			}	
+
+			//console.log(errors);
 			return errors.length > 0 ? errors : false;
 		}
 
