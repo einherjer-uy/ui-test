@@ -15,6 +15,7 @@ var app = app || {};
 		initialize: function () {
 			this.$footer = this.$('#footer');
 			this.$main = this.$('#main');
+			this.$progress = this.$('#progress');
 			this.$ticketList = this.$('#ticket-list');
 			this.$addEditModal = $('#addEditModal');
 
@@ -22,15 +23,19 @@ var app = app || {};
 			this.listenTo(app.tickets, 'reset', this.addAll);
 			this.listenTo(app.tickets, 'all', this.render);
 
-			app.tickets.fetch(); //call server to fetch the collection, which will in turn trigger the update of the view
+			this.$main.hide();
+
+	        app.tickets.fetch(); //call server to fetch the collection, which will in turn trigger the update of the view
 		},
 
 		render: function () {
 			//var completed = app.tickets.completed().length;
 			//var remaining = app.tickets.remaining().length;
 
-			if (app.tickets.length) {
-				this.$main.show();
+			this.$progress.hide();
+
+			if (app.tickets.length) {	
+				this.$main.show();				
 				this.$footer.show();
 
 				this.$footer.html(this.footerTemplate({
