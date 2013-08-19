@@ -27,11 +27,9 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
     @Autowired
     private LoginService loginService;
 
-    /*
-     * returning String and receiving ModelMap is the same as receiving and returning ModelAndView, and setting ModelAndView.setViewName
-     * This method is not used since the login is handled by spring security. It's left only to show how to resolve the view in the case of html resources (see MvcWebApplicationInitializer)
-     * The @RequestParam show how to access query string values (in this case ?error or ?logout were going to be used to show variants of the view)
-     */
+    //returning String and receiving ModelMap is the same as receiving and returning ModelAndView, and setting ModelAndView.setViewName
+    //This method is not used since the login is handled by spring security. It's left only to show how to resolve the view in the case of html resources (see MvcWebApplicationInitializer)
+    //The @RequestParam show how to access query string values (in this case ?error or ?logout were going to be used to show variants of the view)
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(@RequestParam(value = "error", required = false) boolean error, @RequestParam(value = "logout", required = false) boolean logout, ModelMap model) {
         return "forward:/content/login.html"; //for static resources no need for ViewResolver, just forward and the web server root servlet will respond

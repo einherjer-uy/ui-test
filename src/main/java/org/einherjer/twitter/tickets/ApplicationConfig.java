@@ -1,6 +1,5 @@
 package org.einherjer.twitter.tickets;
 
-import java.beans.PropertyVetoException;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;

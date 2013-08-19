@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.einherjer.twitter.tickets.model.Attachment;
-import org.einherjer.twitter.tickets.model.CommentLogEntry;
 import org.einherjer.twitter.tickets.model.SimpleJson;
 import org.einherjer.twitter.tickets.model.Ticket;
 import org.einherjer.twitter.tickets.model.Ticket.TicketPriority;
@@ -164,6 +165,28 @@ public class TicketController {
     }
 
     /**
+     * Change priority
+     * 
+     * Example request:
+     * POST /api/tickets/PR1-1/priority HTTP/1.1
+     * Host: localhost:8080
+     * Content-Type: application/json
+     * {"priority":"HIGH", "text": "comment"} (with comment)
+     *  OR
+     *  {"priority":"HIGH"} (no comment)
+     */
+    @RequestMapping(value = "/tickets/{project}-{number}/priority", method = RequestMethod.POST)
+    public ResponseEntity<String> changePriority(
+            @PathVariable("project") String projectPrefix,
+            @PathVariable("number") Integer ticketNumber,
+            @RequestBody SimpleJson jsonBody) throws TicketNotFoundException {
+        ticketService.changePriority(projectPrefix, ticketNumber,
+                TicketPriority.valueOf(jsonBody.get("priority").toString()),
+                jsonBody.get("text") == null ? null : jsonBody.get("text").toString());
+        return new ResponseEntity<String>(HttpStatus.CREATED);
+    }
+    
+    /**
      * Add Comment
      * 
      * Example request:
@@ -174,11 +197,87 @@ public class TicketController {
      */
     @RequestMapping(value = "/tickets/{project}-{number}/comment", method = RequestMethod.POST)
     public ResponseEntity<String> addComment(
-            @RequestBody CommentLogEntry jsonBody,
             @PathVariable("project") String projectPrefix,
-            @PathVariable("number") Integer ticketNumber) {
+            @PathVariable("number") Integer ticketNumber,
+            @RequestBody TextJson jsonBody) {
         ticketService.addComment(projectPrefix, ticketNumber, jsonBody.getText());
         return new ResponseEntity<String>(HttpStatus.CREATED);
+    }
+    
+    @Getter
+    public static class TextJson {
+        private String text;
+    }
+    
+    /**
+     * Cancel
+     * 
+     * Example request:
+     * POST /api/tickets/PR1-1/cancel HTTP/1.1
+     * Host: localhost:8080
+     * Content-Type: application/json
+     * {"text":"cancelation reason"} OR {} (empty json if no cancellation reason)
+     */
+    @RequestMapping(value = "/tickets/{project}-{number}/cancel", method = RequestMethod.POST)
+    public ResponseEntity<String> cancel(
+            @PathVariable("project") String projectPrefix, 
+            @PathVariable("number") Integer ticketNumber,
+            @RequestBody SimpleJson jsonBody) {
+        ticketService.cancel(projectPrefix, ticketNumber, jsonBody.get("text") != null ? jsonBody.get("text").toString() : null);
+        return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * Reject
+     * 
+     * Example request:
+     * POST /api/tickets/PR1-1/reject HTTP/1.1
+     * Host: localhost:8080
+     * Content-Type: application/json
+     * {"text":"rejection message"}
+     */
+    @RequestMapping(value = "/tickets/{project}-{number}/reject", method = RequestMethod.POST)
+    public ResponseEntity<String> reject(
+            @PathVariable("project") String projectPrefix, 
+            @PathVariable("number") Integer ticketNumber,
+            @RequestBody TextJson jsonBody) {
+        ticketService.reject(projectPrefix, ticketNumber, jsonBody.getText());
+        return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+    }
+   
+    /**
+     * Approve
+     * 
+     * Example request:
+     * POST /api/tickets/PR1-1/approve HTTP/1.1
+     * Host: localhost:8080
+     * Content-Type: application/json
+     * {"text":"approval reason"} OR {} (empty json if no approval reason)
+     */
+    @RequestMapping(value = "/tickets/{project}-{number}/approve", method = RequestMethod.POST)
+    public ResponseEntity<String> approve(
+            @PathVariable("project") String projectPrefix, 
+            @PathVariable("number") Integer ticketNumber,
+            @RequestBody SimpleJson jsonBody) {
+        ticketService.approve(projectPrefix, ticketNumber, jsonBody.get("text") != null ? jsonBody.get("text").toString() : null);
+        return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+    }
+    
+    /**
+     * Done
+     * 
+     * Example request:
+     * POST /api/tickets/PR1-1/done HTTP/1.1
+     * Host: localhost:8080
+     * Content-Type: application/json
+     * no body
+     */
+    @RequestMapping(value = "/tickets/{project}-{number}/done", method = RequestMethod.POST)
+    public ResponseEntity<String> done(
+            @PathVariable("project") String projectPrefix, 
+            @PathVariable("number") Integer ticketNumber) {
+        ticketService.done(projectPrefix, ticketNumber);
+        return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
     }
     
     /**

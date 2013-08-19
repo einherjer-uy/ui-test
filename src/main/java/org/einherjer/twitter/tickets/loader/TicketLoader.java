@@ -18,7 +18,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 @Component
-@DependsOn({ "serviceLocator", "userLoader", "projectLoader"})
+//we depend on serviceLocator for instance to calculate the next tickt number by project. Since that happens in runtime Spring doesn't know of the dependency and doesnt initialize ServiceLocator before TicketLoader  
+//also, run userLoader and projectLoader first cause we need users and projects to create a ticket
+@DependsOn({ "serviceLocator", "userLoader", "projectLoader" })
 @Slf4j
 public class TicketLoader {
 
@@ -36,15 +38,13 @@ public class TicketLoader {
 
         Project p = projectRepository.findByPrefix(ProjectLoader.TT_PREFIX);
 
-        Ticket data = new Ticket(p, "Some title", "Some description", u, TicketType.APPLICATIONS, TicketPriority.LOW, null);
-        Ticket t = new Ticket(p, data, u);
-        t.addComment("Hello World!", u);
+        Ticket t = new Ticket(p, "Some title", "Some description", u, TicketType.APPLICATIONS, TicketPriority.LOW, null);
+        t.addComment("Hello World!");
         ticketRepository.save(t);
         log.info("Created Ticket " + t);
 
-        data = new Ticket(p, "Some title 2", "Some description 2", u, TicketType.HARDWARE, TicketPriority.MEDIUM, new DateTime());
-        t = new Ticket(p, data, u);
-        t.addComment("Hello World 2!", u);
+        t = new Ticket(p, "Some title 2", "Some description 2", u, TicketType.HARDWARE, TicketPriority.MEDIUM, new DateTime());
+        t.addComment("Hello World 2!");
         ticketRepository.save(t);
         log.info("Created Ticket " + t);
     }

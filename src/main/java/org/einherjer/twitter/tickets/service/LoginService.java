@@ -27,6 +27,11 @@ public class LoginService {
     }
 
     public User getLoggedUser() {
+        //if we are creating test data (TicketLoader for instance) there's no logged user so return a test user as well
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            return userRepository.findByUsername(new EmailAddress("user@twitter.com"));
+        }
+
         org.springframework.security.core.userdetails.User u = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User loggedUser = userRepository.findByUsername(new EmailAddress(u.getUsername()));
         Assert.notNull(loggedUser, "Error while retrieving logged user");

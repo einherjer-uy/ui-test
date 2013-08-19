@@ -87,16 +87,11 @@ public class Ticket extends AbstractEntity {
         this.type = type;
         this.priority = priority;
         this.due = due;
+        this.log.add(CreationLogEntry.create());
     }
 
-    /**
-     * Constructor used by the service when creating a new Ticket. It's the only place where createdBy and createdTimestamp are set
-     * @param project
-     * @param data
-     */
-    public Ticket(Project project, Ticket data, User createdBy) {
+    public Ticket(Project project, Ticket data) {
         this(project, data.title, data.description, data.assignee, data.type, data.priority, data.due);
-        this.logCreation(createdBy);
     }
 
     //we'll use this as the id for the rest api
@@ -122,12 +117,31 @@ public class Ticket extends AbstractEntity {
         return Collections.unmodifiableList(log);
     }
 
-    public void addComment(String text, User user) {
-        this.log.add(new CommentLogEntry(user, text));
+    public User createdBy() {
+        for (LogEntry e : this.log) {
+            if (e.createdBy() != null) {
+                return e.createdBy();
+            }
+        }
+        throw new RuntimeException("This ticket doesn't have a log entry for its creation");
     }
 
-    public void logCreation(User user) {
-        this.log.add(new CreationLogEntry(user));
+    public void addComment(String text) {
+        this.log.add(CommentLogEntry.create(text));
+    }
+
+    public void changeStatus(TicketStatus newStatus, String comment) {
+        this.status = newStatus;
+        this.log.add(StatusChangeLogEntry.create(newStatus, comment));
+    }
+
+    public void changePriority(TicketPriority newPriority, String comment) {
+        this.priority = newPriority;
+        this.log.add(PriorityChangeLogEntry.create(newPriority, comment));
+    }
+
+    public void logUpdate() {
+        this.log.add(UpdateLogEntry.create());
     }
 
     public Set<Attachment> getAttachments() {
@@ -162,7 +176,9 @@ public class Ticket extends AbstractEntity {
     public static enum TicketStatus {
         NEW("New"),
         CANCELLED("Cancelled"),
-        APPROVED("Approved");
+        APPROVED("Approved"),
+        REJECTED("Rejected"),
+        DONE("Done");
         private @Getter String description;
     }
     

@@ -7,21 +7,21 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "CreationLogEntries") //table name is plural to avoid restricted keywords in some databases like "user" and "comment"
-public class CreationLogEntry extends LogEntry {
+@Table(name = "UpdateLogEntries")
+public class UpdateLogEntry extends LogEntry {
 
     /**
      * see LogEntry.init javadoc
      */
-    public static CreationLogEntry create() {
-        CreationLogEntry e = new CreationLogEntry();
+    public static UpdateLogEntry create() {
+        UpdateLogEntry e = new UpdateLogEntry();
         e.init();
         return e;
     }
 
     @Override
     public User createdBy() {
-        return this.user;
+        return null;
     }
 
 }

@@ -11,28 +11,38 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import org.einherjer.twitter.tickets.ServiceLocator;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 @Entity
-@Getter
-@NoArgsConstructor
-@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "LogEntries") //table name is plural to avoid restricted keywords in some databases like "user" and "comment"
-public class LogEntry extends AbstractEntity implements Comparable<LogEntry> {
+@Inheritance(strategy = InheritanceType.JOINED)
+@NoArgsConstructor
+@Getter
+public abstract class LogEntry extends AbstractEntity implements Comparable<LogEntry> {
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @Column(nullable = false)
-    private DateTime timestamp;
+    protected DateTime timestamp;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    protected User user;
 
-    public LogEntry(User user) {
+    /**
+     * cannot use loginService in no args constructor cause Hibernate calls the no args constructor during context initialization
+     * (apparently because of the @Inheritance annotation) creating a loop (cause loginService depends on entityManager as well)
+     */
+    protected void init() {
         this.timestamp = new DateTime();
-        this.user = user;
+        this.user = ServiceLocator.getInstance().getLoginService().getLoggedUser();
     }
+
+    /**
+     * returns the user that performed the action, only if the action is "creation"
+     */
+    public abstract User createdBy();
 
     @Override
     public int compareTo(LogEntry o) {

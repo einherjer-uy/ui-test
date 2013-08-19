@@ -44,6 +44,14 @@ button {
 	color: #5CB85C;
 }
 
+#ticket-list tr #action-done:hover {
+	color: #5CB85C;
+}
+
+#ticket-list tr #action-reject:hover {
+	color: #D2322D;
+}
+
 #ticket-list tr #action-cancel:hover {
 	color: #D2322D;
 }
