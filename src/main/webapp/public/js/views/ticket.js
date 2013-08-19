@@ -27,6 +27,7 @@ var app = app || {};
 			this.$type = this.$('#type');
 			this.$priority = this.$('#priority');
 			this.$dueDate = this.$('#dueDate');
+			this.$alertContainer = this.$('#ticket-alert-container');
 
 			var self = this;
 			
@@ -67,20 +68,14 @@ var app = app || {};
 
 		showErrors: function(errors) {
         	_.each(errors, function (error) {
-
-	            var alertContainer = $('#ticket-alert-container');
-	            alertContainer.append("<div class='alert alert-error'><a class='close' data-dismiss='alert'>&times;</a><strong>Error: </strong>" + error.message + "</div>") ;
-	        
-	            var controlGroup = $('#' + error.name);
-	            controlGroup.parent().parent().addClass("has-error");
+	            this.$alertContainer.append("<div class='alert alert-error'><a class='close' data-dismiss='alert'>&times;</a><strong>Error: </strong>" + error.message + "</div>") ;
+	            $('#' + error.name).parent().parent().addClass("has-error");
         	}, this);
  		},
 
 		hideErrors: function () {
-	        var alertContainer = $('#ticket-alert-container');
-	        alertContainer.html('');
-
-	        $('.form-group').removeClass('has-error');	
+	        this.$alertContainer.html('');
+	        this.$alertContainer.removeClass('has-error');	
 	    },
 
 		newAttributes: function () {

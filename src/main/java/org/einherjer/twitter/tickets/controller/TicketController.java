@@ -37,6 +37,45 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
+    //abandoned effort to send a Content-Length header. At this point the the header bytes are missing and the output string escapes double quotes, and maybe other issues.
+    //Anyway it's a good example of how can we use ResponseEntity and use jackson to serialize the object representing the body
+    //note that we need to instantiate a new ObjectMapper (the "new" is important, we cannot use Jackson2ObjectMapperFactoryBean.getObjector or @Autowire the objectMapper
+    //from the servlet context (which BTW needs to declare it as @Bean and "public", not "private" as of now), cause this seems to cause some exception with Spring Security,
+    //need to investigate more, anyway this works albeit of the duplicated code)
+    //    public ObjectMapper objectMapper() {
+    //        ObjectMapper objectMapper = new ObjectMapper();
+    //        objectMapper.registerModule(new JodaModule());
+    //        objectMapper.registerModule(new SimpleModule() {
+    //            {
+    //                addSerializer(DateTime.class, new StdSerializer<DateTime>(DateTime.class) {
+    //                    @Override
+    //                    public void serialize(DateTime value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
+    //                        jgen.writeString(DateTimeFormat.forPattern("MM/dd/yyyy-HH:mm").print(value));
+    //                    }
+    //                });
+    //                addDeserializer(DateTime.class, new StdDeserializer<DateTime>(DateTime.class) {
+    //                    @Override
+    //                    public DateTime deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    //                        String str = jp.getText().trim();
+    //                        if (str.length() == 0) {
+    //                            return null;
+    //                        }
+    //                        return DateTimeFormat.forPattern("MM/dd/yyyy-HH:mm").parseDateTime(str);
+    //                    }
+    //                });
+    //            }
+    //        });
+    //        return objectMapper;
+    //    }
+    //    @RequestMapping(value = "/tickets", method = RequestMethod.GET)
+    //    public ResponseEntity<String> getTickets() throws JsonProcessingException, UnsupportedEncodingException {
+    //        Iterable<Ticket> tickets = ticketService.findAll();
+    //        String body = this.objectMapper().writeValueAsString(tickets);
+    //        HttpHeaders responseHeaders = new HttpHeaders();
+    //        responseHeaders.set("Content-Length", Integer.toString(body.getBytes("UTF-8").length));
+    //        return new ResponseEntity<String>(body, responseHeaders, HttpStatus.OK);
+    //    }
+
     @RequestMapping(value = "/tickets", method = RequestMethod.GET)
     public @ResponseBody Iterable<Ticket> getTickets() {
         return ticketService.findAll();
@@ -102,13 +141,13 @@ public class TicketController {
      * { "project":{"prefix":"PR1"}, "title":"t", "description":"d", "status":"OPEN", "assignee":{"username":"user@twitter.com"} }
      */
     @RequestMapping(value = "/tickets", method = RequestMethod.POST)
-    public @ResponseBody Map<String, Object> /*ResponseEntity<String>*/postTicket(@RequestBody Ticket jsonBody) throws TicketNotFoundException {
+    public @ResponseBody SimpleJson postTicket(@RequestBody Ticket jsonBody) throws TicketNotFoundException {
         this.validateTicketDTO(jsonBody);
         Assert.notNull(jsonBody.getProject(), "Project cannot be null");
         Assert.notNull(jsonBody.getProject().getPrefix(), "Project cannot be null");
         final Ticket ticket = ticketService.save(jsonBody.getProject().getPrefix(), -1, jsonBody);
-        /*return new ResponseEntity<String>(responseHeaders, HttpStatus.CREATED);*///usually a POST will return HttpStatus.CREATED and an empty body, but in this case we include the ticket id that the server generated in the response
         return new SimpleJson().append("number", ticket.getTicketId());
+        //usually a POST will return HttpStatus.CREATED and an empty body, but in this case we include the ticket id that the server generated in the response (we can still change the status code from OK to CREATED using the approach of getTickets()
     }
 
     /**

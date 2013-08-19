@@ -13,10 +13,10 @@ var app = app || {};
 		},
 
 		initialize: function () {
-			this.$footer = this.$('#footer');
-			this.$main = this.$('#main');
-			this.$ticketList = this.$('#ticket-list');
+			this.$tableFooter = this.$('#tableFooter');
+			this.$ticketTable = this.$('#ticketTable');
 			this.$addEditModal = $('#addEditModal');
+			this.$messagesDiv = $('#dashboardMessages'); 
 
 			this.listenTo(app.tickets, 'add', this.addOne);
 			this.listenTo(app.tickets, 'reset', this.addAll);
@@ -28,12 +28,11 @@ var app = app || {};
 		render: function () {
 			//var completed = app.tickets.completed().length;
 			//var remaining = app.tickets.remaining().length;
+			this.$messagesDiv.html('');
 
 			if (app.tickets.length) {
-				this.$main.show();
-				this.$footer.show();
-
-				this.$footer.html(this.footerTemplate({
+				this.$ticketTable.show();
+				this.$tableFooter.html(this.footerTemplate({
 					test : "test"
 					//completed: completed,
 					//remaining: remaining
@@ -44,23 +43,21 @@ var app = app || {};
 				//	.filter('[href="#/' + (app.TodoFilter || '') + '"]')
 				//	.addClass('selected');
 			} else {
-				this.$main.hide();
-				this.$footer.hide();
+				this.$ticketTable.hide();
+				this.$tableFooter.hide();
+				app.util.displayInfo(this.$messagesDiv, "No tickets found", false);
 			}
 
 			//this.allCheckbox.checked = !remaining;
 		},
 
-		// Add a single ticket to the list by creating a view for it, and
-		// appending its element to the `<ul>`.
 		addOne: function (ticket) {
 			var view = new app.TicketRowView({ model: ticket });
-			this.$ticketList.append(view.render().el);
+			this.$ticketTable.append(view.render().el);
 		},
 
-		// Add all items in the **Tickets** collection at once.
 		addAll: function () {
-			this.$ticketList.html('');
+			this.$ticketTable.html('');
 			app.tickets.each(this.addOne, this);
 		},
 
@@ -70,11 +67,12 @@ var app = app || {};
 		
 		//TODO: duplicated with TicketRowView.showModal, move to util.js
 		showModal: function(ticket) {
+			this.$messagesDiv.html('');
 			this.$addEditModal.html(new app.TicketView({model: ticket}).render().el);
         	$("#dueDate").datetimepicker({
         		separator: "-",
 				stepMinute: 30,
-				controlType: 'select'
+				controlType: "select"
         	});
         	this.$addEditModal.modal({keyboard: false, backdrop: "static"});
 		}

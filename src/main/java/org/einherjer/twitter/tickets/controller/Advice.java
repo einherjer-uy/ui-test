@@ -21,6 +21,18 @@ public class Advice {
         return new ExceptionBody(e.getMessage(), ExceptionUtils.getStackTrace(e));
     }
 
+    @ExceptionHandler(SecurityException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody ExceptionBody handleSecurityException(SecurityException e) {
+        return new ExceptionBody(e.getMessage(), ExceptionUtils.getStackTrace(e));
+    }
+    
+    @ExceptionHandler(UnsupportedOperationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody ExceptionBody handleUnsupportedOperationException(UnsupportedOperationException e) {
+        return new ExceptionBody(e.getMessage(), ExceptionUtils.getStackTrace(e));
+    }
+    
     //hack to be able to debug bad request exceptions that doesn't show up in the log
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)

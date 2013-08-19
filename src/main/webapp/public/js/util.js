@@ -8,6 +8,26 @@ var app = app || {};
 			        out.push($("<option />").val(this.value).text(this.description));
 			    });
 			});
+		},
+
+		displayError: function(errorDiv, message, dismissable) {
+			dismissable = dismissable || true;
+			errorDiv.html('');
+			errorDiv.append("<div class='alert alert-danger'>" +
+				(dismissable ? "<a class='close' data-dismiss='alert'>&times;</a>" : "") +
+				"<strong>Error: </strong>" +
+				message +
+				"</div>") ;
+		},
+
+		displayInfo: function(errorDiv, message, dismissable) {
+			dismissable = dismissable || true;
+			errorDiv.html('');
+			errorDiv.append("<div class='alert alert-info'>" +
+				(dismissable ? "<a class='close' data-dismiss='alert'>&times;</a>" : "") +
+				"<strong>Info: </strong>" +
+				message +
+				"</div>") ;
 		}
 	};
 })(jQuery);
