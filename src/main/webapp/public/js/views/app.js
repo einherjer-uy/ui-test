@@ -71,7 +71,7 @@ var app = app || {};
 		//TODO: duplicated with TicketRowView.showModal, move to util.js
 		showModal: function(ticket) {
 			this.$addEditModal.html(new app.TicketView({model: ticket}).render().el);
-        	$("#dueDate").datetimepicker({
+        	$("#due").datetimepicker({
         		separator: "-",
 				stepMinute: 30,
 				controlType: 'select'
