@@ -12,44 +12,49 @@
 </head>
 <body>
 
-	<div class="container">
-				
-		<section id="ttApp">
-			<header id="header">
-				<h1>Tickets</h1>
-			</header>
+	<header class="navbar navbar-inverse navbar-static-top tt-navbar">
+		<div class="container">
+			<a class="navbar-brand" href="http://www.twitter.com">
+				<span class="tt-icon tt-bird"></span>
+			</a>
+			<div class="pull-right"><a id="logoutLink" class="tt-inverse-text" href="/logout">Logout</a></div>
+		</div>
+	</header>
 
-			<section id="progress">			
-				<div  class="progress progress-striped active" style="width: 25%">
-						<div id="ticket-progress" class="progress-bar" role="progressbar" style="width: 100%">
-							<div class="bar" style="width: 100%"></div>
-						</div>
+	<section id="ttApp" class="container">
+		<header id="header">
+			<h1>Tickets</h1>
+		</header>
+		
+		<section id="progress">			
+			<div class="progress progress-striped active" style="width: 25%">
+				<div id="ticket-progress" class="progress-bar" role="progressbar" style="width: 100%">
+					<div class="bar" style="width: 100%"></div>
 				</div>
-			</section>
-
-			<section id="main" style="display:none;">
-				<table id="ticket-list" class="table table-striped table-hover">
-					<thead>
-						<tr>
-							<th>Id</th>
-							<th>Description</th>
-							<th>Type</th>
-							<th>Priority</th>
-							<th>Due date</th>
-							<th colspan="4">Status</th>					
-						</tr>
-					</thead>
-				</table>
-
-
-				<a id="addButton" class="btn btn-primary btn-small pull-right">Create new ticket</a>
-				<!-- Add/Edit ticket modal -->
-				<div class="modal fade" id="addEditModal"></div>
-
-			</section>
-			<footer id="footer"></footer>
+			</div>
 		</section>
-	</div>
+
+		<section id="main">
+			<div class="alert-container" id="dashboardMessages"></div>
+			<table id="ticketTable" class="table table-striped table-hover" style="display:none;">
+				<thead>
+					<tr>
+						<th>Id</th>
+						<th>Description</th>
+						<th>Type</th>
+						<th>Priority</th>
+						<th>Due date</th>
+						<th colspan="4">Status</th>					
+					</tr>
+				</thead>
+			</table>
+			<footer id="tableFooter"></footer>
+			<a id="addButton" class="btn btn-primary btn-small pull-right">Create new ticket</a>
+			<!-- Add/Edit ticket modal -->
+			<div class="modal fade" id="addEditModal"></div>
+		</section>
+		
+	</section>
 
 	<!--Template for the tickets table-->
 	<script type="text/template" id="item-template">
@@ -59,12 +64,18 @@
         <td>{{ priority }}</td>
         <td>{{ due }}</td>
         <td>{{ status }}</td>
-        <td></td>
-        <td width="40px"><span id="action-edit" class="glyphicon glyphicon-pencil tt-action"></span></td>
-		<td width="40px"><span id="action-cancel" class="glyphicon glyphicon-remove tt-action"></span></td>
-		<td width="40px"><span id="action-reject" class="glyphicon glyphicon-thumbs-down tt-action"></span></td>
-		<td width="40px"><span id="action-approve" class="glyphicon glyphicon-thumbs-up tt-action"></span></td>
-		<td width="40px"><span id="action-done" class="glyphicon glyphicon-ok tt-action"></span></td>
+        <td width="160px">
+        	<div id="actions"></div>
+		</td>
+	</script>
+
+	<script type="text/template" id="actions">
+		<span id="actionView" title="View" class="glyphicon glyphicon-search tt-action"></span>
+        <span id="actionEdit" title="Edit" class="glyphicon glyphicon-pencil tt-action"></span>
+		<span id="actionCancel" title="Cancel" class="glyphicon glyphicon-remove tt-action"></span>
+		<span id="actionReject" title="Reject" class="glyphicon glyphicon-thumbs-down tt-action"></span>
+		<span id="actionApprove" title="Approve" class="glyphicon glyphicon-thumbs-up tt-action"></span>
+		<span id="actionDone" title="Mark as Done" class="glyphicon glyphicon-ok tt-action"></span>
 	</script>
 
 	<script type="text/template" id="footer-template">
@@ -113,6 +124,8 @@
 							<textarea id="description" class="form-control input-small" rows="4" placeholder="Description">{{description}}</textarea>
 				    	</div>
 				  	</div>
+
+				  	<div id="actions" class="form-group"></div>
 	   			 </form>		
 			</div>
 			<div class="modal-footer">
@@ -135,6 +148,7 @@
 	<script src="../public/js/models/ticket.js"></script>
 	<script src="../public/js/collections/tickets.js"></script>
 	<script src="../public/js/views/ticket.js"></script>
+	<script src="../public/js/views/actions.js"></script>
 	<script src="../public/js/views/ticketRow.js"></script>
 	<script src="../public/js/views/app.js"></script>
 	<script src="../public/js/routers/router.js"></script>

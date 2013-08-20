@@ -27,6 +27,7 @@ var app = app || {};
 			this.$type = this.$('#type');
 			this.$priority = this.$('#priority');
 			this.$due = this.$('#due');
+			this.$alertContainer = this.$('#ticket-alert-container');
 
 			var self = this;
 			
@@ -40,6 +41,25 @@ var app = app || {};
 		    });
 		    this.$priority.val(this.model.get("priority"));
 		    
+		    if (!this.model.isNew()) {
+		    	var view = new app.ActionsView({ model: this.model });
+				view.$addEditModal = undefined; //don't want the actions bar to open a new addEditModal (means view/edit options will be hidden)
+				view.$messagesDiv = this.$messagesDiv;
+				this.$("#actions").append(view.render().el);
+			}
+
+			if(app.loggedUser.role=="APPROVER") {
+				this.$description.prop("readonly",true);
+				this.$due.prop("readonly",true);
+				this.$type.prop("disabled",true);
+			}
+			if(app.loggedUser.role=="EXECUTOR") {
+				this.$description.prop("readonly",true);
+				this.$due.prop("readonly",true);
+				this.$type.prop("disabled",true);
+				this.$priority.prop("disabled",true);
+			}
+
 			return this;
 		},
 
@@ -67,20 +87,14 @@ var app = app || {};
 
 		showErrors: function(errors) {
         	_.each(errors, function (error) {
-
-	            var alertContainer = $('#ticket-alert-container');
-	            alertContainer.append("<div class='alert alert-error'><a class='close' data-dismiss='alert'>&times;</a><strong>Error: </strong>" + error.message + "</div>") ;
-	        
-	            var controlGroup = $('#' + error.name);
-	            controlGroup.parent().parent().addClass("has-error");
+	            this.$alertContainer.append("<div class='alert alert-error'><a class='close' data-dismiss='alert'>&times;</a><strong>Error: </strong>" + error.message + "</div>") ;
+	            $('#' + error.name).parent().parent().addClass("has-error");
         	}, this);
  		},
 
 		hideErrors: function () {
-	        var alertContainer = $('#ticket-alert-container');
-	        alertContainer.html('');
-
-	        $('.form-group').removeClass('has-error');	
+	        this.$alertContainer.html('');
+	        this.$alertContainer.removeClass('has-error');	
 	    },
 
 		newAttributes: function () {

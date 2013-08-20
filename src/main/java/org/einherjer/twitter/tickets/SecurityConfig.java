@@ -19,7 +19,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .inMemoryAuthentication()
                 .withUser("user@twitter.com")
                     .password("Admin_123")
-                    .roles("REQUESTOR");
+                    .roles("REQUESTOR")
+                    .and()
+                .withUser("req@twitter.com")
+                    .password("Admin_123")
+                    .roles("REQUESTOR")
+                    .and()
+                .withUser("app@twitter.com")
+                    .password("Admin_123")
+                    .roles("APPROVER")
+                    .and()
+                .withUser("exe@twitter.com")
+                    .password("Admin_123")
+                    .roles("EXECUTOR");
     }
    
     @Override
@@ -41,13 +53,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/login") //must match the "action" attribute of the <form> in the login page, it can be anything, no need to have a @Controller for that url, Spring Security handles the request 
                 .failureUrl("/content/login.html?error") //always defaults to login?error if not specified
                 //we can specify default-target-url="/home.html", and always-use-default-target="true" if we want the successful login to redirect always to the home page (by default it will redirect to the url that the user requested before being redirected to the login)
-                .permitAll()
-//                .and()
-//            .logout()
-//                .logoutUrl("/tt/login?logout")
-//                .logoutSuccessUrl("/tt/login")
-//                .permitAll()
-                ;
+            .permitAll()
+            .and()
+            .logout()
+//                .logoutUrl("/tt/login?logout") //use default /logout
+                .logoutSuccessUrl("/content/login.html") //use default /login?logout
+            .permitAll();
     }
 
 }

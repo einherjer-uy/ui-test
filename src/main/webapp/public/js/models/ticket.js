@@ -40,20 +40,5 @@ var app = app || {};
 			return errors.length > 0 ? errors : false;
 		}
 
-		/*"manual"(jquery) ajax call
-		add_like: function() {
-		    var _this = this;
-		    $.ajax({
-		        type: 'post',
-		        url: '/some/url/that/increments/the/likes',
-		        success: function(data) {
-		            _this.set('likes', data.likes);
-		        },
-		        error: function() {
-		            // Whatever you need...
-		        }
-		    });
-		}*/
-
 	});
 })();
