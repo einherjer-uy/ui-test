@@ -71,10 +71,9 @@ var app = app || {};
 		showModal: function(ticket) {
 			this.$messagesDiv.html('');
 			this.$addEditModal.html(new app.TicketView({model: ticket}).render().el);
-        	$("#due").datetimepicker({
-        		separator: "-",
-				stepMinute: 30,
-				controlType: "select"
+        	$("#duedate-datetimepicker").datetimepicker({
+        		format: 'dd/MM/yyyy-hh:mm',
+        		pickSeconds: false
         	});
         	this.$addEditModal.modal({keyboard: false, backdrop: "static"});
 		}

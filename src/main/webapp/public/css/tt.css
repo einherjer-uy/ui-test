@@ -278,8 +278,3 @@ button {
 .tt-inverse-text {
 	color: white;
 }
-
-#logoutLink {
-	display: block;
-	padding: 15px 15px;
-}

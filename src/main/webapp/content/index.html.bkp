@@ -4,27 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--see http://getbootstrap.com/css/-->
     <title>Twitter - Corporate Events Tracking System</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" media="screen">
-    <!-- <link rel="stylesheet" href="../public/css/bootstrap-glyphicons.css" media="screen"> -->
+    <link rel="stylesheet" href="../public/lib/bootstrap/css/bootstrap.css" media="screen">
+    <link rel="stylesheet" href="../public/css/bootstrap-glyphicons.css" media="screen">
     <link rel="stylesheet" href="../public/css/tt.css" media="screen">
     <link rel="stylesheet" href="../public/css/jquery-ui-timepicker-addon.css" media="screen">
-    <link rel="stylesheet" href="http://tarruda.github.com/bootstrap-datetimepicker/assets/css/bootstrap-datetimepicker.min.css" type="text/css" media="screen" >
-    
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
 </head>
 <body>
 
-	<div class="navbar navbar-inverse navbar-static-top tt-navbar">
-		<div class="navbar-inner">
-			<div class="container">
-				<a class="brand" href="http://www.twitter.com">
-					<span class="tt-icon tt-bird"></span>
-				</a>
-				<ul class="nav pull-right">
-					<li><a id="logoutLink" class="tt-inverse-text" href="/logout">Logout</a></li>
-				</ul>				
-			</div>
+	<header class="navbar navbar-inverse navbar-static-top tt-navbar">
+		<div class="container">
+			<a class="navbar-brand" href="http://www.twitter.com">
+				<span class="tt-icon tt-bird"></span>
+			</a>
+			<div class="pull-right"><a id="logoutLink" class="tt-inverse-text" href="/logout">Logout</a></div>
 		</div>
-	</div>
+	</header>
 
 	<section id="ttApp" class="container">
 		<header id="header">
@@ -60,7 +55,6 @@
 		</section>
 		
 	</section>
-
 
 	<!--Template for the tickets table-->
 	<script type="text/template" id="item-template">
@@ -103,38 +97,35 @@
 
 					<div class="alert-container" id="ticket-alert-container"></div>
 
-					<div class="control-group" >
-				    	<label class="control-label hidden-phone" for="type">Type</label>
-				    	<div class="controls">
-							<select id="type" placeholder="Type" value={{type}}></select>
+					<div class="form-group" >
+				    	<label class="col-12 col-lg-3 control-label hidden-sm" for="type">Type</label>
+				    	<div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
+							<select id="type" class="form-control input-small" placeholder="Type" value={{type}}></select>
 				    	</div>						    		    	
 				  	</div>	
 
-					<div class="control-group" >
-				  		<label class="control-label hidden-phone" for="priority">Priority</label>
-				    	<div class="controls">
-							<select id="priority" placeholder="Priority" value={{priority}}></select>
+					<div class="form-group" >
+				  		<label class="col-12 col-lg-3 control-label hidden-sm" for="priority">Priority</label>
+				    	<div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
+							<select id="priority" class="form-control input-small" placeholder="Priority" value={{priority}}></select>
 				    	</div>
 				    </div>				  	
 
-					<div class="control-group">
-						<label class="control-label hidden-phone" for="due">Due Date</label>
-						<div class="controls">
-							<div id="duedate-datetimepicker" class="input-append date">
-								<input type="text" date-format="dd/MM/yyyy-hh:mm" id="due" placeholder="Due Date" value={{due == null ? "" : due}}></input>
-								<span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span>
-							</div>
+					<div class="form-group">
+						<label class="col-12 col-lg-3 control-label hidden-sm" for="due">Due Date</label>
+						<div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
+							<input type="input" id="due" class="form-control input-small" placeholder="Due Date" value={{due == null ? "" : due}}></input>
 						</div>					
 					</div>
 					
-					<div class="control-group">
-				    	<label class="control-label hidden-phone" for="description">Description</label>
-				    	<div class="controls">
-							<textarea id="description" rows="6" placeholder="Description">{{description}}</textarea>
+					<div class="form-group">
+				    	<label class="col-12 col-lg-3 control-label hidden-sm" for="description">Description</label>
+				    	<div class="col-12 col-lg-9">
+							<textarea id="description" class="form-control input-small" rows="4" placeholder="Description">{{description}}</textarea>
 				    	</div>
 				  	</div>
 
-				  	<div id="actions" class="control-group"></div>
+				  	<div id="actions" class="form-group"></div>
 	   			 </form>		
 			</div>
 			<div class="modal-footer">
@@ -144,25 +135,16 @@
 		</div><!-- /.modal-content -->
 	</script>
 
-	<!-- jQuery -->
 	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <!-- <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script> -->
-    <!-- <script src="../public/js/utils/jquery-ui-timepicker-addon.js"></script> -->
-
-	<!-- Date-Time Picker -->
-	<script type="text/javascript" src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js"></script>    
-
-    <!-- Backbone -->
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="../public/js/utils/jquery-ui-timepicker-addon.js"></script>
 	<script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
 	<script>
 		_.templateSettings = { interpolate : /\{\{(.+?)\}\}/g }; //use {{ }} instead of <%= %> in underscore templates
 	</script>
 	<script src="http://documentcloud.github.com/backbone/backbone-min.js"></script>
-	
-	<!-- Bootstrap -->
-	<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+	<script src="../public/lib/bootstrap/js/bootstrap.js"></script>
 
-	<!-- Our app -->
 	<script src="../public/js/models/ticket.js"></script>
 	<script src="../public/js/collections/tickets.js"></script>
 	<script src="../public/js/views/ticket.js"></script>
