@@ -54,6 +54,10 @@ button {
 	appearance: none;
 }
 
+textarea {
+    resize: none;
+}
+
 .tt-navbar {
 	margin-bottom: 0; /*override bootstrap navbar, which otherwise would generate a space between the navbar and the content below*/
 }
@@ -218,6 +222,9 @@ button {
 	}
 }
 
+#actions {
+	position: relative; /*allow the popover to retain its position in relation to the action that triggered it when resizing*/
+}
 
 #actions .tt-action {
 	bottom: 0;
@@ -243,6 +250,7 @@ button {
 }
 
 #actions .tt-action:hover {
+	text-decoration: none; /*remove underline from <a>*/
 	text-shadow: 0 0 1px #000;
 	-webkit-transform: scale(1.3);
 	-moz-transform: scale(1.3);
@@ -282,4 +290,12 @@ button {
 #logoutLink {
 	display: block;
 	padding: 15px 15px;
+}
+
+.popover { /*override bootstrap popover to allow display in front of modal*/
+	z-index: 1051; 
+}
+
+.tt-popover {
+	width: 250px;
 }

@@ -7,6 +7,7 @@ var app = app || {};
 		tagName: 'div',
 
 		template: _.template($('#actions').html()),
+		cancelPopoverTemplate: _.template($('#cancelPopover').html()),
 
 		events: {
 			'click #actionView': 'view',
@@ -29,6 +30,19 @@ var app = app || {};
 			this.$actionReject = this.$("#actionReject");
 			this.$actionApprove = this.$("#actionApprove");
 			this.$actionDone = this.$("#actionDone");
+
+			this.$actionView.tooltip({placement:"bottom", title:"View"});
+			this.$actionEdit.tooltip({placement:"bottom", title:"Edit"});
+			this.$actionCancel.tooltip({placement:"bottom", title:"Cancel"});
+			this.$actionReject.tooltip({placement:"bottom", title:"Reject"});
+			this.$actionApprove.tooltip({placement:"bottom", title:"Approve"});
+			this.$actionDone.tooltip({placement:"bottom", title:"Mark as Done"});
+
+			this.$actionCancel.popover({placement:"bottom", title:"Please provide a cancellation reason", html:true, content:this.cancelPopoverTemplate(), container: '#actions'});
+			var self = this;
+			this.$actionCancel.on('shown.bs.popover', function () {
+				self.$actionCancel.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
+			});
 
 			if(!this.showViewEditOptions()) {
 				this.$actionView.hide();
@@ -83,8 +97,6 @@ var app = app || {};
 
 		//TODO: factorize all $.ajax calls
 		cancel: function () {
-			//this.$actionCancel.popover();//{placement:"bottom", title:"xxx", html:"<h2>content</h2>", delay: { show: 500, hide: 0 }});
-
 			/*var self = this;
 		    $.ajax({
   				url: "/tt/tickets/"+this.model.get("number")+"/cancel",

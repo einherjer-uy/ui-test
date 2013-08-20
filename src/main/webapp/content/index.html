@@ -70,12 +70,12 @@
 	</script>
 
 	<script type="text/template" id="actions">
-		<a href="#" id="actionView" title="View" class="glyphicon glyphicon-search tt-action"></a>
-        <a href="#" id="actionEdit" title="Edit" class="glyphicon glyphicon-pencil tt-action"></a>
-		<a href="#" id="actionCancel" title class="glyphicon glyphicon-remove tt-action" data-toggle="popover" data-placement="top" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." title="" data-original-title="Popover on top"></a>
-		<a href="#" id="actionReject" title="Reject" class="glyphicon glyphicon-thumbs-down tt-action"></a>
-		<a href="#" id="actionApprove" title="Approve" class="glyphicon glyphicon-thumbs-up tt-action"></a>
-		<a href="#" id="actionDone" title="Mark as Done" class="glyphicon glyphicon-ok tt-action"></a>
+		<a href="#" id="actionView" class="glyphicon glyphicon-search tt-action"></a>
+        <a href="#" id="actionEdit" class="glyphicon glyphicon-pencil tt-action"></a>
+		<a href="#" id="actionCancel" class="glyphicon glyphicon-remove tt-action"></a>
+		<a href="#" id="actionReject" class="glyphicon glyphicon-thumbs-down tt-action"></a>
+		<a href="#" id="actionApprove" class="glyphicon glyphicon-thumbs-up tt-action"></a>
+		<a href="#" id="actionDone" class="glyphicon glyphicon-ok tt-action"></a>
 	</script>
 
 	<script type="text/template" id="footer-template">
@@ -133,6 +133,16 @@
 				<button type="button" id="saveButton" class="btn btn-primary">Save changes</button>
 			</div>
 		</div><!-- /.modal-content -->
+	</script>
+
+	<script type="text/template" id="cancelPopover">
+		<div class="tt-popover">
+			<textarea class="form-control input-small" rows="4" placeholder="Reason"></textarea>
+			<div>
+				<button type="button" class="btn btn-link btn-mini">Cancel</button>
+				<button type="button" id="saveButton" class="btn btn-primary btn-mini">OK</button>
+			</div>
+		</div>
 	</script>
 
 	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
