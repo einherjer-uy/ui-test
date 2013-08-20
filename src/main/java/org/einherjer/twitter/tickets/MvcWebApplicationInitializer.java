@@ -93,9 +93,7 @@ public class MvcWebApplicationInitializer extends AbstractAnnotationConfigDispat
     //Represents the settings that would otherwise go in xxx-servlet.xml
     @Configuration
     @EnableWebMvc
-    //no need for @EnableWebMvc cause all it does is @Import(DelegatingWebMvcConfiguration.class),
-    //and here we are extending DelegatingWebMvcConfiguration directly. Extending gives us the option to override.
-    //To summarize there are several options here, for more info see http://static.springsource.org/spring/docs/3.2.x/javadoc-api/org/springframework/web/servlet/config/annotation/EnableWebMvc.html
+    //There are several options here, for more info see http://static.springsource.org/spring/docs/3.2.x/javadoc-api/org/springframework/web/servlet/config/annotation/EnableWebMvc.html
     //1- only @EnableWebMvc -- applies default spring mvc config
     //2- @EnableWebMvc + extends WebMvcConfigurerAdapter  -- default config + ability to override
     //3- no @EnableWebMvc, but extends DelegatingWebMvcConfiguration (or its superclass WebMvcConfigurationSupport as the docs mention) -- default config + greater ability to override than WebMvcConfigurerAdapter

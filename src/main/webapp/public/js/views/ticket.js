@@ -26,7 +26,7 @@ var app = app || {};
 			this.$description = this.$('#description'); //in this case we cannot "cache" the selection in initialize() cause initialized is fired in the construction and only after that the html is appended to the modal (see app.AppView.add or app.TicketRowView.edit), but we can use view.$ (shorthand for $(view.el).find) after $el is populated
 			this.$type = this.$('#type');
 			this.$priority = this.$('#priority');
-			this.$due = this.$('#due');
+			this.$alertContainer = this.$('#ticket-alert-container');
 
 			var self = this;
 			
@@ -67,20 +67,14 @@ var app = app || {};
 
 		showErrors: function(errors) {
         	_.each(errors, function (error) {
-
-	            var alertContainer = $('#ticket-alert-container');
-	            alertContainer.append("<div class='alert alert-error'><a class='close' data-dismiss='alert'>&times;</a><strong>Error: </strong>" + error.message + "</div>") ;
-	        
-	            var controlGroup = $('#' + error.name);
-	            controlGroup.parent().parent().addClass("has-error");
+	            this.$alertContainer.append("<div class='alert alert-error'><a class='close' data-dismiss='alert'>&times;</a><strong>Error: </strong>" + error.message + "</div>") ;
+	            $('#' + error.name).parent().parent().addClass("has-error");
         	}, this);
  		},
 
 		hideErrors: function () {
-	        var alertContainer = $('#ticket-alert-container');
-	        alertContainer.html('');
-
-	        $('.form-group').removeClass('has-error');	
+	        this.$alertContainer.html('');
+	        this.$alertContainer.removeClass('has-error');	
 	    },
 
 		newAttributes: function () {

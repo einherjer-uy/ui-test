@@ -23,10 +23,21 @@ public class UserLoader {
             return;
         }
 
-        User u1 = new User("user@twitter.com", "Admin_123", Role.REQUESTOR);
-        repository.save(u1);
-        log.info("Created User " + u1);
+        User u = new User("user@twitter.com", "Admin_123", Role.REQUESTOR);
+        repository.save(u);
+        log.info("Created User " + u);
 
+        u = new User("req@twitter.com", "Admin_123", Role.REQUESTOR);
+        repository.save(u);
+        log.info("Created User " + u);
+
+        u = new User("app@twitter.com", "Admin_123", Role.APPROVER);
+        repository.save(u);
+        log.info("Created User " + u);
+
+        u = new User("exe@twitter.com", "Admin_123", Role.EXECUTOR);
+        repository.save(u);
+        log.info("Created User " + u);
     }
 
 }
