@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--see http://getbootstrap.com/css/-->
     <title>Twitter - Corporate Events Tracking System</title>
-    <link rel="stylesheet" href="../public/lib/bootstrap/css/bootstrap.css" media="screen">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" media="screen">
     <link rel="stylesheet" href="../public/css/tt.css" media="screen">
 </head>
 <body>
@@ -12,40 +12,42 @@
 		<img src="../public/img/5.jpg">
 	</div>
 
-	<section id="login-wrapper">
-		<header class="navbar navbar-inverse navbar-static-top tt-navbar">
-			<div class="container">
-				<a class="navbar-brand" href="http://www.twitter.com">
-					<span class="tt-icon tt-bird"></span>
-				</a>
+	<div id="login-wrapper">
+		<div class="navbar navbar-inverse navbar-static-top tt-navbar">
+			<div class="navbar-inner">
+				<div class="container">
+					<a class="brand" href="http://www.twitter.com">
+						<span class="tt-icon tt-bird"></span>
+					</a>
+				</div>
 			</div>
-		</header>
+		</div>
 
 		<div id="login-welcome">
-			<div id="login-text" class="hidden-sm text-center">
+			<div id="login-text" class="hidden-phone text-center">
 				<h2>Twitter</h2>
 				<h3>Corporate Events Ticket System</h3>
 			</div>
-			<div id="login-form" class="panel">
+			<div id="login-form" class="well">
 				<div class="alert alert-danger hide">
 					Incorrect user name or password.
 				</div>
 				<form class="form-horizontal" method="post" action="/login">
-					<div class="form-group">
-						<label class="col-12 col-lg-3 control-label hidden-sm" for="username">Username</label>
-						<div class="col-12 col-lg-9">
-							<input type="email" id="username" name="username" class="form-control input-small" placeholder="Enter email" autofocus></input>
+					<div class="control-group">
+						<label class="control-label hidden-phone" for="username">Username</label>
+						<div class="controls">
+							<input type="email" id="username" name="username" placeholder="Enter email" autofocus></input>
 						</div>
 					</div>
-					<div class="form-group">
-						<label class="col-12 col-lg-3 control-label hidden-sm" for="password">Password</label>
-						<div class="col-12 col-lg-9">
-							<input type="password" id="password" name="password" class="form-control input-small" placeholder="Password"></input>
+					<div class="control-group">						
+						<label class="control-label hidden-phone" for="password">Password</label>
+						<div class="controls">
+							<input type="password" id="password" name="password" placeholder="Password"></input>
 						</div>
 					</div>
-					<div class="form-group">
-						<div  class="col-12 tt-right-aligned-form-group">
-							<button id="login-button" type="submit" class="btn btn-primary btn-small">Sign in</button>
+					<div class="control-group">
+						<div class="controls pull-right">						
+							<button id="login-button" type="submit" class="btn btn-primary btn-small">Sign in</button>	
 						</div>
 					</div>
 				</form>
@@ -56,7 +58,7 @@
 			<p>© 1998 GSM. All rights reserved.</p>
 		</footer>
 
-	</section>
+	</div>
 
 	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 	<script>
