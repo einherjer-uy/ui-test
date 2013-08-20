@@ -181,7 +181,10 @@ button {
 /*mobile and tablet*/
 @media (max-width: 991px) {
 	#login-form { /*reduce the width of the form so that the user/password inputs remain at the same size, now that the labels show up above the input and not in the same line*/
-		width: 261px;
+		width: 219px;
+	}
+	#login-form .controls {
+		margin-left: 0px;
 	}
 }
 
@@ -210,23 +213,11 @@ button {
 		margin:	30px 0 0 0;
 	}
 
-	.form-horizontal .control-group { /*override bootstrap mobile to make the login form display the same margins in all resolutions*/
-		margin-right: -15px;
-		margin-left: -15px;
-	}
-
 	#login-button { /*on mobile the "sing in" button should take the full width of the form*/
 		width: 100%;
 	}
 }
 
-/*tablet and pc*/
-@media (min-width: 768px) {
-	.tt-right-aligned-form-group { /*align the "sing in" button to the right, override width from col-12*/
-		float: right;
-		width: auto;
-	}
-}
 
 #actions .tt-action {
 	bottom: 0;
