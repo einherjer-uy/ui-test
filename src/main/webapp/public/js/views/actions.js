@@ -23,25 +23,32 @@ var app = app || {};
 
 		render: function () {
 			this.$el.html(this.template(this.model.toJSON()));
+			this.$actionView = this.$("#actionView");
+			this.$actionEdit = this.$("#actionEdit");
+			this.$actionCancel = this.$("#actionCancel");
+			this.$actionReject = this.$("#actionReject");
+			this.$actionApprove = this.$("#actionApprove");
+			this.$actionDone = this.$("#actionDone");
+
 			if(!this.showViewEditOptions()) {
-				this.$("#actionView").hide();
-				this.$("#actionEdit").hide();
+				this.$actionView.hide();
+				this.$actionEdit.hide();
 			}
 			if(app.loggedUser.role=="REQUESTOR") {
-				this.$("#actionView").hide();
-				this.$("#actionApprove").hide();
-				this.$("#actionReject").hide();
-				this.$("#actionDone").hide();
+				this.$actionView.hide();
+				this.$actionApprove.hide();
+				this.$actionReject.hide();
+				this.$actionDone.hide();
 			}
 			if(app.loggedUser.role=="APPROVER") {
-				this.$("#actionView").hide();
-				this.$("#actionDone").hide();
+				this.$actionView.hide();
+				this.$actionDone.hide();
 			}
 			if(app.loggedUser.role=="EXECUTOR") {
-				this.$("#actionEdit").hide();
-				this.$("#actionCancel").hide();
-				this.$("#actionApprove").hide();
-				this.$("#actionReject").hide();
+				this.$actionEdit.hide();
+				this.$actionCancel.hide();
+				this.$actionApprove.hide();
+				this.$actionReject.hide();
 			}
 			return this;
 		},
@@ -76,7 +83,9 @@ var app = app || {};
 
 		//TODO: factorize all $.ajax calls
 		cancel: function () {
-			var self = this;
+			//this.$actionCancel.popover();//{placement:"bottom", title:"xxx", html:"<h2>content</h2>", delay: { show: 500, hide: 0 }});
+
+			/*var self = this;
 		    $.ajax({
   				url: "/tt/tickets/"+this.model.get("number")+"/cancel",
   				type: "POST",
@@ -91,7 +100,7 @@ var app = app || {};
 			    		app.util.displayError(self.$messagesDiv, data.responseJSON.message);
 			    	}
 			    }
-			});
+			});*/
 		},
 
 		//TODO: factorize all $.ajax calls

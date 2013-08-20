@@ -30,6 +30,15 @@ public class TicketService {
         return ticketRepository.findAll();
     }
 
+    public Iterable<Ticket> findAllForRole() {
+        if (loginService.getLoggedUser().getRole() == User.Role.REQUESTOR) {
+            return ticketRepository.findByCreator(loginService.getLoggedUser());
+        }
+        else {
+            return ticketRepository.findAll();
+        }
+    }
+
     public Ticket find(String projectPrefix, Integer ticketNumber) {
         return this.find(projectPrefix, ticketNumber, false);
     }

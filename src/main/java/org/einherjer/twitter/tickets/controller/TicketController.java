@@ -78,7 +78,7 @@ public class TicketController {
 
     @RequestMapping(value = "/tickets", method = RequestMethod.GET)
     public @ResponseBody Iterable<Ticket> getTickets() {
-        return ticketService.findAll();
+        return ticketService.findAllForRole();
     }
     
     /**

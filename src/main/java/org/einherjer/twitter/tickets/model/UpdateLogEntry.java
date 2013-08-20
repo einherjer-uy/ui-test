@@ -13,9 +13,9 @@ public class UpdateLogEntry extends LogEntry {
     /**
      * see LogEntry.init javadoc
      */
-    public static UpdateLogEntry create() {
+    public static UpdateLogEntry create(Ticket ticket) {
         UpdateLogEntry e = new UpdateLogEntry();
-        e.init();
+        e.init(ticket);
         return e;
     }
 

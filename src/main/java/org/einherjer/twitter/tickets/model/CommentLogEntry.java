@@ -16,17 +16,17 @@ public class CommentLogEntry extends LogEntry {
     @Column(nullable = true)
     private String text;
 
-    protected void init(String text) {
-        super.init();
+    protected void init(Ticket ticket, String text) {
+        super.init(ticket);
         this.text = text;
     }
 
     /**
      * see LogEntry.init javadoc
      */
-    public static CommentLogEntry create(String text) {
+    public static CommentLogEntry create(Ticket ticket, String text) {
         CommentLogEntry e = new CommentLogEntry();
-        e.init(text);
+        e.init(ticket, text);
         return e;
     }
 

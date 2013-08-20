@@ -21,9 +21,9 @@ public class StatusChangeLogEntry extends CommentLogEntry {
     /**
      * see LogEntry.init javadoc
      */
-    public static StatusChangeLogEntry create(TicketStatus newStatus, String comment) {
+    public static StatusChangeLogEntry create(Ticket ticket, TicketStatus newStatus, String comment) {
         StatusChangeLogEntry e = new StatusChangeLogEntry();
-        e.init(comment);
+        e.init(ticket, comment);
         e.newStatus = newStatus;
         return e;
     }
