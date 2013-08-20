@@ -27,6 +27,22 @@ var app = app || {};
 				this.$("#actionView").hide();
 				this.$("#actionEdit").hide();
 			}
+			if(app.loggedUser.role=="REQUESTOR") {
+				this.$("#actionView").hide();
+				this.$("#actionApprove").hide();
+				this.$("#actionReject").hide();
+				this.$("#actionDone").hide();
+			}
+			if(app.loggedUser.role=="APPROVER") {
+				this.$("#actionView").hide();
+				this.$("#actionDone").hide();
+			}
+			if(app.loggedUser.role=="EXECUTOR") {
+				this.$("#actionEdit").hide();
+				this.$("#actionCancel").hide();
+				this.$("#actionApprove").hide();
+				this.$("#actionReject").hide();
+			}
 			return this;
 		},
 

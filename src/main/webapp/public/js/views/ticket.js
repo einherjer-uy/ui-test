@@ -48,6 +48,18 @@ var app = app || {};
 				this.$("#actions").append(view.render().el);
 			}
 
+			if(app.loggedUser.role=="APPROVER") {
+				this.$description.prop("readonly",true);
+				this.$due.prop("readonly",true);
+				this.$type.prop("disabled",true);
+			}
+			if(app.loggedUser.role=="EXECUTOR") {
+				this.$description.prop("readonly",true);
+				this.$due.prop("readonly",true);
+				this.$type.prop("disabled",true);
+				this.$priority.prop("disabled",true);
+			}
+
 			return this;
 		},
 
