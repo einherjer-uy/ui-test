@@ -284,7 +284,8 @@ button {
 }
 
 #ticketTable tr:hover .tt-action {
-	display: block;
+	display: inline;
+	padding: 5px 8px;
 }
 
 .tt-inverse-text {

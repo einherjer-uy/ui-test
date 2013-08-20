@@ -64,13 +64,18 @@
         <td>{{ priority }}</td>
         <td>{{ due }}</td>
         <td>{{ status }}</td>
-        <td></td>
-        <td width="40px"><span id="actionView" title="View" class="glyphicon glyphicon-search tt-action"></span></td>
-        <td width="40px"><span id="actionEdit" title="Edit" class="glyphicon glyphicon-pencil tt-action"></span></td>
-		<td width="40px"><span id="actionCancel" title="Cancel" class="glyphicon glyphicon-remove tt-action"></span></td>
-		<td width="40px"><span id="actionReject" title="Reject" class="glyphicon glyphicon-thumbs-down tt-action"></span></td>
-		<td width="40px"><span id="actionApprove" title="Approve" class="glyphicon glyphicon-thumbs-up tt-action"></span></td>
-		<td width="40px"><span id="actionDone" title="Mark as Done" class="glyphicon glyphicon-ok tt-action"></span></td>
+        <td width="150px">
+        	<div id="actions"></div>
+		</td>
+	</script>
+
+	<script type="text/template" id="actions">
+		<span id="actionView" title="View" class="glyphicon glyphicon-search tt-action"></span>
+        <span id="actionEdit" title="Edit" class="glyphicon glyphicon-pencil tt-action"></span>
+		<span id="actionCancel" title="Cancel" class="glyphicon glyphicon-remove tt-action"></span>
+		<span id="actionReject" title="Reject" class="glyphicon glyphicon-thumbs-down tt-action"></span>
+		<span id="actionApprove" title="Approve" class="glyphicon glyphicon-thumbs-up tt-action"></span>
+		<span id="actionDone" title="Mark as Done" class="glyphicon glyphicon-ok tt-action"></span>
 	</script>
 
 	<script type="text/template" id="footer-template">
@@ -119,6 +124,8 @@
 							<textarea id="description" class="form-control input-small" rows="4" placeholder="Description">{{description}}</textarea>
 				    	</div>
 				  	</div>
+
+				  	<div id="actions" class="form-group"></div>
 	   			 </form>		
 			</div>
 			<div class="modal-footer">
@@ -141,6 +148,7 @@
 	<script src="../public/js/models/ticket.js"></script>
 	<script src="../public/js/collections/tickets.js"></script>
 	<script src="../public/js/views/ticket.js"></script>
+	<script src="../public/js/views/actions.js"></script>
 	<script src="../public/js/views/ticketRow.js"></script>
 	<script src="../public/js/views/app.js"></script>
 	<script src="../public/js/routers/router.js"></script>

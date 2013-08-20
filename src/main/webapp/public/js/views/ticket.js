@@ -26,6 +26,7 @@ var app = app || {};
 			this.$description = this.$('#description'); //in this case we cannot "cache" the selection in initialize() cause initialized is fired in the construction and only after that the html is appended to the modal (see app.AppView.add or app.TicketRowView.edit), but we can use view.$ (shorthand for $(view.el).find) after $el is populated
 			this.$type = this.$('#type');
 			this.$priority = this.$('#priority');
+			this.$due = this.$('#due');
 			this.$alertContainer = this.$('#ticket-alert-container');
 
 			var self = this;
@@ -40,6 +41,13 @@ var app = app || {};
 		    });
 		    this.$priority.val(this.model.get("priority"));
 		    
+		    if (!this.model.isNew()) {
+		    	var view = new app.ActionsView({ model: this.model });
+				view.$addEditModal = undefined; //don't want the actions bar to open a new addEditModal (means view/edit options will be hidden)
+				view.$messagesDiv = this.$messagesDiv;
+				this.$("#actions").append(view.render().el);
+			}
+
 			return this;
 		},
 
