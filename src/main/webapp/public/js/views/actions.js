@@ -6,7 +6,7 @@ var app = app || {};
 
 		tagName: 'div',
 
-		template: _.template($('#actions').html()),
+		template: _.template($('#actionsTemplate').html()),
 		commentConfirmationTemplate: _.template($('#commentConfirmationTemplate').html()),
 		yesNoConfirmationTemplate: _.template($('#yesNoConfirmationTemplate').html()),
 
@@ -29,9 +29,9 @@ var app = app || {};
 			'click #doneSpan #confirmCancelButton': 'hideDonePopover'
 		},
 
-		initialize: function () {
+		/*initialize: function () {
 
-		},
+		},*/
 
 		render: function () {
 			this.$el.html(this.template(this.model.toJSON()));
@@ -51,10 +51,21 @@ var app = app || {};
 
 			var self = this;
 
+			var view = new app.PopoverView({ model: this.model });
+			view.$action = this.$cancelAction;
 			this.$cancelAction.popover({placement:"bottom", container: '#cancelSpan', title:"Confirmation", html:true,
-				content:(this.cancelRequiresComment() ? this.commentConfirmationTemplate({mandatoryComment:true}) : this.yesNoConfirmationTemplate())});
+//				content:(this.cancelRequiresComment() ? this.commentConfirmationTemplate({mandatoryComment:true}) : this.yesNoConfirmationTemplate())});
+				content:view.render().el});
 			this.$cancelAction.on('shown.bs.popover', function () {
 				self.$cancelAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
+				//self.$(".tt-action").css("display","inline");
+				/*self.$editAction.css("display","inline");
+				self.$cancelAction.css("display","inline");
+				self.$rejectAction.css("display","inline");
+				self.$approveAction.css("display","inline");*/
+			});
+			this.$cancelAction.on('hidden.bs.popover', function () {
+				//self.$(".tt-action").css("display","none");
 			});
 
 			this.$rejectAction.popover({placement:"bottom", container: '#rejectSpan', title:"Confirmation", html:true,

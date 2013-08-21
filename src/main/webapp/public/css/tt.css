@@ -259,27 +259,27 @@ textarea {
 	transform: scale(1.3);
 }
 
-#actions #actionView:hover {
+#actions #viewAction:hover {
 	color: #3276B1;
 }
 
-#actions #actionEdit:hover {
+#actions #editAction:hover {
 	color: #3276B1;
 }
 
-#actions #actionApprove:hover {
+#actions #approveAction:hover {
 	color: #5CB85C;
 }
 
-#actions #actionDone:hover {
+#actions #doneAction:hover {
 	color: #5CB85C;
 }
 
-#actions #actionReject:hover {
+#actions #rejectAction:hover {
 	color: #D2322D;
 }
 
-#actions #actionCancel:hover {
+#actions #cancelAction:hover {
 	color: #D2322D;
 }
 

@@ -44,7 +44,7 @@ var app = app || {};
 		    if (!this.model.isNew()) {
 		    	var view = new app.ActionsView({ model: this.model });
 				view.$addEditModal = undefined; //don't want the actions bar to open a new addEditModal (means view/edit options will be hidden)
-				view.$messagesDiv = this.$messagesDiv;
+				view.$messagesDiv = this.$alertContainer;
 				this.$("#actions").append(view.render().el);
 			}
 
