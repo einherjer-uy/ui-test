@@ -7,15 +7,26 @@ var app = app || {};
 		tagName: 'div',
 
 		template: _.template($('#actions').html()),
-		cancelPopoverTemplate: _.template($('#cancelPopover').html()),
+		commentConfirmationTemplate: _.template($('#commentConfirmationTemplate').html()),
+		yesNoConfirmationTemplate: _.template($('#yesNoConfirmationTemplate').html()),
 
 		events: {
-			'click #actionView': 'view',
-			'click #actionEdit': 'edit',
-			'click #actionCancel': 'cancel',
-			'click #actionReject': 'reject',
-			'click #actionApprove': 'approve',
-			'click #actionDone': 'done'
+			'click #viewAction': 'view',
+			'click #editAction': 'edit',
+			//these events work because:
+			//1) the binding uses jquery delegate so it works even if the element doesn't exist in the DOM
+			//at the moment the View is instantiated (like in this case, the popover DOM is inserted by bootstrap javascrip)
+			//2) the popover specifies the "container" property (see render() below) which makes the popover DOM a children
+			//of this "container" which is what makes these event selectors find the element
+			'click #cancelSpan #confirmOkButton': 'cancel', 
+			'click #rejectSpan #confirmOkButton': 'reject',
+			'click #approveSpan #confirmOkButton': 'approve',
+			'click #doneSpan #confirmOkButton': 'done',
+
+			'click #cancelSpan #confirmCancelButton': 'hideCancelPopover', 
+			'click #rejectSpan #confirmCancelButton': 'hideRejectPopover',
+			'click #approveSpan #confirmCancelButton': 'hideApprovePopover',
+			'click #doneSpan #confirmCancelButton': 'hideDonePopover'
 		},
 
 		initialize: function () {
@@ -24,53 +35,79 @@ var app = app || {};
 
 		render: function () {
 			this.$el.html(this.template(this.model.toJSON()));
-			this.$actionView = this.$("#actionView");
-			this.$actionEdit = this.$("#actionEdit");
-			this.$actionCancel = this.$("#actionCancel");
-			this.$actionReject = this.$("#actionReject");
-			this.$actionApprove = this.$("#actionApprove");
-			this.$actionDone = this.$("#actionDone");
+			this.$viewAction = this.$("#viewAction");
+			this.$editAction = this.$("#editAction");
+			this.$cancelAction = this.$("#cancelAction");
+			this.$rejectAction = this.$("#rejectAction");
+			this.$approveAction = this.$("#approveAction");
+			this.$doneAction = this.$("#doneAction");
 
-			this.$actionView.tooltip({placement:"bottom", title:"View"});
-			this.$actionEdit.tooltip({placement:"bottom", title:"Edit"});
-			this.$actionCancel.tooltip({placement:"bottom", title:"Cancel"});
-			this.$actionReject.tooltip({placement:"bottom", title:"Reject"});
-			this.$actionApprove.tooltip({placement:"bottom", title:"Approve"});
-			this.$actionDone.tooltip({placement:"bottom", title:"Mark as Done"});
+			this.$viewAction.tooltip({placement:"bottom", title:"View"});
+			this.$editAction.tooltip({placement:"bottom", title:"Edit"});
+			this.$cancelAction.tooltip({placement:"bottom", title:"Cancel"});
+			this.$rejectAction.tooltip({placement:"bottom", title:"Reject"});
+			this.$approveAction.tooltip({placement:"bottom", title:"Approve"});
+			this.$doneAction.tooltip({placement:"bottom", title:"Mark as Done"});
 
-			this.$actionCancel.popover({placement:"bottom", title:"Please provide a cancellation reason", html:true, content:this.cancelPopoverTemplate(), container: '#actions'});
 			var self = this;
-			this.$actionCancel.on('shown.bs.popover', function () {
-				self.$actionCancel.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
+
+			this.$cancelAction.popover({placement:"bottom", container: '#cancelSpan', title:"Confirmation", html:true,
+				content:(this.cancelRequiresComment() ? this.commentConfirmationTemplate({mandatoryComment:true}) : this.yesNoConfirmationTemplate())});
+			this.$cancelAction.on('shown.bs.popover', function () {
+				self.$cancelAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
+			});
+
+			this.$rejectAction.popover({placement:"bottom", container: '#rejectSpan', title:"Confirmation", html:true,
+				content:this.commentConfirmationTemplate({mandatoryComment:true})});
+			this.$rejectAction.on('shown.bs.popover', function () {
+				self.$rejectAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
+			});
+
+			this.$approveAction.popover({placement:"bottom", container: '#approveSpan', title:"Confirmation", html:true,
+				content:this.commentConfirmationTemplate({mandatoryComment:false})});
+			this.$approveAction.on('shown.bs.popover', function () {
+				self.$approveAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
+			});
+
+			this.$doneAction.popover({placement:"bottom", container: '#doneSpan', title:"Confirmation", html:true,
+				content:this.yesNoConfirmationTemplate()});
+			this.$doneAction.on('shown.bs.popover', function () {
+				self.$doneAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
 			});
 
 			if(!this.showViewEditOptions()) {
-				this.$actionView.hide();
-				this.$actionEdit.hide();
+				this.$viewAction.hide();
+				this.$editAction.hide();
 			}
 			if(app.loggedUser.role=="REQUESTOR") {
-				this.$actionView.hide();
-				this.$actionApprove.hide();
-				this.$actionReject.hide();
-				this.$actionDone.hide();
+				this.$viewAction.hide();
+				this.$approveAction.hide();
+				this.$rejectAction.hide();
+				this.$doneAction.hide();
 			}
 			if(app.loggedUser.role=="APPROVER") {
-				this.$actionView.hide();
-				this.$actionDone.hide();
+				this.$viewAction.hide();
+				this.$doneAction.hide();
 			}
 			if(app.loggedUser.role=="EXECUTOR") {
-				this.$actionEdit.hide();
-				this.$actionCancel.hide();
-				this.$actionApprove.hide();
-				this.$actionReject.hide();
+				this.$editAction.hide();
+				this.$cancelAction.hide();
+				this.$approveAction.hide();
+				this.$rejectAction.hide();
 			}
 			return this;
 		},
 
+		cancelRequiresComment: function() {
+			return !(this.model.get("status")=="NEW" && app.loggedUser.role=="REQUESTOR"); //only when the user is a Requestor and the status is New we will delete the ticket. In any other case we require a comment.
+		},
+
+		//$addEditModal can be set after the view is initialized to customize its behavior
 		showViewEditOptions: function() {
 			return typeof this.$addEditModal != "undefined";
 		},
 
+		//$messagesDiv can be set after the view is initialized to customize its behavior
 		showErrors: function() {
 			return typeof this.$messagesDiv != "undefined";
 		},
@@ -97,11 +134,21 @@ var app = app || {};
 
 		//TODO: factorize all $.ajax calls
 		cancel: function () {
-			/*var self = this;
+			var data = null;
+			if (this.cancelRequiresComment()) {
+				data = this.$("textarea").val().trim(); //selector works cause the popover specifies the "container" property, making it a child of $el; and then there's only one "textarea"
+				if (!data) {
+					if (this.showErrors()) {
+			    		app.util.displayError(this.$messagesDiv, "Need to provide a comment to proceed");
+			    	}
+			    	return;	
+			    }
+			}
+			var self = this;
 		    $.ajax({
   				url: "/tt/tickets/"+this.model.get("number")+"/cancel",
   				type: "POST",
-  				data: JSON.stringify({text:"comment"}),
+  				data: JSON.stringify({text:data}),
   				contentType: "application/json; charset=utf-8",
   				dataType: "json",
 				success: function(data){
@@ -111,17 +158,30 @@ var app = app || {};
 			    	if(self.showErrors()) {
 			    		app.util.displayError(self.$messagesDiv, data.responseJSON.message);
 			    	}
+			    },
+			    complete: function() {
+			    	self.hideCancelPopover();
 			    }
-			});*/
+			});
+		},
+		hideCancelPopover: function () {
+			this.$cancelAction.popover("hide");
 		},
 
 		//TODO: factorize all $.ajax calls
 		reject: function () {
+			var data = this.$("textarea").val().trim(); //selector works cause the popover specifies the "container" property, making it a child of $el; and then there's only one "textarea"
+			if (!data) {
+				if (this.showErrors()) {
+		    		app.util.displayError(this.$messagesDiv, "Need to provide a comment to proceed");
+		    	}
+		    	return;	
+		    }
 			var self = this;
 		    $.ajax({
   				url: "/tt/tickets/"+this.model.get("number")+"/reject",
   				type: "POST",
-  				data: JSON.stringify({text:"comment"}),
+  				data: JSON.stringify({text:data}),
   				contentType: "application/json; charset=utf-8",
   				dataType: "json",
 				success: function(data){
@@ -131,8 +191,14 @@ var app = app || {};
 			    	if(self.showErrors()) {
 			    		app.util.displayError(self.$messagesDiv, data.responseJSON.message);
 			    	}
+			    },
+				complete: function() {
+			    	self.hideRejectPopover();
 			    }
 			});
+		},
+		hideRejectPopover: function () {
+			this.$rejectAction.popover("hide");
 		},
 
 		//TODO: factorize all $.ajax calls
@@ -141,7 +207,7 @@ var app = app || {};
 		    $.ajax({
   				url: "/tt/tickets/"+this.model.get("number")+"/approve",
   				type: "POST",
-  				data: JSON.stringify({text:"comment"}),
+  				data: JSON.stringify({text:this.$("textarea").val().trim()}), //selector works cause the popover specifies the "container" property, making it a child of $el; and then there's only one "textarea"
   				contentType: "application/json; charset=utf-8",
   				dataType: "json",
 				success: function(data){
@@ -151,8 +217,14 @@ var app = app || {};
 			    	if(self.showErrors()) {
 			    		app.util.displayError(self.$messagesDiv, data.responseJSON.message);
 			    	}
+			    },
+				complete: function() {
+			    	self.hideApprovePopover();
 			    }
 			});
+		},
+		hideApprovePopover: function () {
+			this.$approveAction.popover("hide");
 		},
 
 		//TODO: factorize all $.ajax calls
@@ -170,9 +242,15 @@ var app = app || {};
 			    	if(self.showErrors()) {
 			    		app.util.displayError(self.$messagesDiv, data.responseJSON.message);
 			    	}
+			    },
+				complete: function() {
+			    	self.hideDonePopover();
 			    }
 			});
 		},
+		hideDonePopover: function () {
+			this.$doneAction.popover("hide");
+		}
 
 	});
 })(jQuery);

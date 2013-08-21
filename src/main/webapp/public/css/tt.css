@@ -295,7 +295,3 @@ textarea {
 .popover { /*override bootstrap popover to allow display in front of modal*/
 	z-index: 1051; 
 }
-
-.tt-popover {
-	width: 250px;
-}
