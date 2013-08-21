@@ -198,14 +198,14 @@
             <scope>runtime</scope>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc6</artifactId>
             <version>11.2.0.2.0</version>
             <scope>runtime</scope>
         </dependency>
         
-        <!-- <dependency>
+         <dependency>
             <groupId>com.mchange</groupId>
             <artifactId>c3p0</artifactId>
             <version>0.9.1.2</version>

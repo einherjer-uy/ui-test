@@ -237,7 +237,7 @@ textarea {
 }
 
 #ticketTable tr #actions .tt-action {
-	display: none;
+	/*display: none;*/
 	-webkit-transition: all 0.2s;
 	-moz-transition: all 0.2s;
 	-ms-transition: all 0.2s;
@@ -245,9 +245,9 @@ textarea {
 	transition: all 0.2s;
 }
 
-#ticketTable tr:hover #actions .tt-action {
+/*#ticketTable tr:hover #actions .tt-action {
 	display: inline;
-}
+}*/
 
 #actions .tt-action:hover {
 	text-decoration: none; /*remove underline from <a>*/
