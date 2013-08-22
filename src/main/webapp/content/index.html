@@ -102,14 +102,14 @@
 					<div class="alert-container" id="ticket-alert-container"></div>
 
 					<div class="control-group" >
-				    	<label class="control-label hidden-phone" for="type">Type</label>
+				    	<label class="control-label hidden-phone" for="type" title="This field is mandatory">Type<font color="red">*</font></label>				    	
 				    	<div class="controls">
 							<select id="type" placeholder="Type" value={{type}}></select>
 				    	</div>						    		    	
 				  	</div>	
 
 					<div class="control-group" >
-				  		<label class="control-label hidden-phone" for="priority">Priority</label>
+				  		<label class="control-label hidden-phone" for="priority" title="This field is mandatory">Priority<font color="red">*</font></label>
 				    	<div class="controls">
 							<select id="priority" placeholder="Priority" value={{priority}}></select>
 				    	</div>
@@ -126,7 +126,7 @@
 					</div>
 					
 					<div class="control-group">
-				    	<label class="control-label hidden-phone" for="description">Description</label>
+				    	<label class="control-label hidden-phone" for="description" title="This field is mandatory">Description<font color="red">*</font></label>
 				    	<div class="controls">
 							<textarea id="description" rows="6" placeholder="Description">{{description}}</textarea>
 				    	</div>
