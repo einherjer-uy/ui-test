@@ -7,16 +7,21 @@ var app = app || {};
 		commentConfirmationTemplate: _.template($('#commentConfirmationTemplate').html()),
 		yesNoConfirmationTemplate: _.template($('#yesNoConfirmationTemplate').html()),
 
-		setParams: function (type, $action, $messages) {
-			this.type = type;
-			this.$action = $action;
-			this.$messages = $messages;
+		initialize: function (options) {
+			this.type = options.type;
+			this.$action = options.$action;
+			this.$messages = options.$messages;
+			this.parentView = options.parentView;
+
 		},
 
-		/*events: {
-			'click #confirmOkButton': 'ok',
-			'click #confirmCancelButton': 'close'
-		},*/
+		events: {
+			//NOTE 1. there are several confirmOkButton, etc in the page (one per row) but backbone makes these selectors relative to the view.$el
+			//NOTE 2. the binding uses jquery "on" (or "delegate" in older jquery) so it works even if the element doesn't exist in the DOM
+			//        at the moment the View is instantiated (like in this case, the DOM containing the elements selected here are created by the render() function)
+			'click .confirmOkButton': 'ok',
+			'click .confirmCancelButton': 'closePopover'
+		},
 
 		render: function () {
 			if (this.type==app.util.CANCEL_POPOVER) {
@@ -36,11 +41,6 @@ var app = app || {};
 			else if (this.type==app.util.DONE_POPOVER) {
 				this.$el.html(this.yesNoConfirmationTemplate());
 			}
-			var self = this;
-			//this.$("#confirmOkButton").on("click", this.ok);
-			this.$("#confirmCancelButton").on("click", function () {
-				self.$action.popover("hide");
-			});
 			return this;
 		},
 
@@ -49,44 +49,55 @@ var app = app || {};
 		},
 		
 		showErrors: function() {
-			return typeof this.$messages != "undefined";
+			return this.$messages !== undefined;
 		},
 
-		close: function() {
-			self.$action.popover("hide");
+		closePopover: function() {
+			this.$action.popover("hide");
+			//FOR SOME REASON if I don't trigger the render of the parent again (which will in turn instantiate new PopupViews and 
+			//call popover() again on the buttons) the events of the popover are lost after the popover is hidden for the first time
+			//
+			//(no need to call stopListening here cause the view doesn "listenTo" any model that could keep a reference to the view preventing its garbage collection)
+			//this.stopListening();
+//			this.parentView.render(); 
+			//btw, tried this also that seems less brute force but didn't work, doesn't even show the popover after the first popover("destroy"), or if using "hide" instead of "destroy" still the events doesn't work
+			//this.$action.popover("hide"); //or popover("destroy")
+			//var popoverView = new app.PopoverView({ model: this.model, type: app.util.CANCEL_POPOVER, $action: this.$action, $messages: this.$messages, parentView: this.parentView})
+			//this.$action.popover({placement:"left", container: false, title:"Confirmation", html:true, 
+			//	content:popoverView.render().el});
 		},
 
 		ok: function() {
-			if (self.type==app.util.CANCEL_POPOVER) {
-				self.cancel();
+			if (this.type==app.util.CANCEL_POPOVER) {
+				this.cancel();
 			}
-			else if (self.type==app.util.REJECT_POPOVER) {
-				self.reject();
+			else if (this.type==app.util.REJECT_POPOVER) {
+				this.reject();
 			}
-			else if (self.type==app.util.APPROVE_POPOVER) {
-				self.approve();
+			else if (this.type==app.util.APPROVE_POPOVER) {
+				this.approve();
 			}
-			else if (self.type==app.util.DONE_POPOVER) {
-				self.done();
+			else if (this.type==app.util.DONE_POPOVER) {
+				this.done();
 			}
 		},
 
 		//TODO: factorize all $.ajax calls
 		cancel: function () {
 			var data = null;
-			if (self.cancelRequiresComment()) {
-				data = self.$("textarea").val().trim(); //selector works cause the popover specifies the "container" property, making it a child of $el; and then there's only one "textarea"
+			if (this.cancelRequiresComment()) {
+				data = this.$("textarea").val().trim(); //selector works cause the popover specifies the "container" property, making it a child of $el; and then there's only one "textarea"
 				if (!data) {
-					if (self.showErrors()) {
+					if (this.showErrors()) {
 			    		app.util.displayError(this.$messages, "Need to provide a comment to proceed");
 			    	}
-			    	self.close();
+			    	this.closePopover();
 			    	return;	
 			    }
 			}
-			//var self = this;
+			var self = this;
 		    $.ajax({
-  				url: "/tt/tickets/"+self.model.get("number")+"/cancel",
+  				url: "/tt/tickets/"+this.model.get("number")+"/cancel",
   				type: "POST",
   				data: JSON.stringify({text:data}),
   				contentType: "application/json; charset=utf-8",
@@ -100,7 +111,7 @@ var app = app || {};
 			    	}
 			    },
 			    complete: function() {
-			    	self.close();
+			    	self.closePopover();
 			    }
 			});
 		},
@@ -112,7 +123,7 @@ var app = app || {};
 				if (this.showErrors()) {
 		    		app.util.displayError(this.$messages, "Need to provide a comment to proceed");
 		    	}
-		    	this.close();
+		    	this.closePopover();
 		    	return;	
 		    }
 			var self = this;
@@ -131,7 +142,7 @@ var app = app || {};
 			    	}
 			    },
 				complete: function() {
-			    	self.close();
+			    	self.closePopover();
 			    }
 			});
 		},
@@ -154,7 +165,7 @@ var app = app || {};
 			    	}
 			    },
 				complete: function() {
-			    	self.close();
+			    	self.closePopover();
 			    }
 			});
 		},
@@ -176,7 +187,7 @@ var app = app || {};
 			    	}
 			    },
 				complete: function() {
-			    	self.close();
+			    	self.closePopover();
 			    }
 			});
 		}

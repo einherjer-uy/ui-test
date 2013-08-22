@@ -222,11 +222,11 @@ textarea {
 	}
 }
 
-#actions {
+.actions {
 	position: relative; /*allow the popover to retain its position in relation to the action that triggered it when resizing*/
 }
 
-#actions .tt-action {
+.actions .tt-action {
 	bottom: 0;
 	width: 20px;
 	height: 20px;
@@ -236,7 +236,7 @@ textarea {
 	padding: 5px 8px;
 }
 
-#ticketTable tr #actions .tt-action {
+#ticketTable tr .actions .tt-action {
 	/*display: none;*/
 	-webkit-transition: all 0.2s;
 	-moz-transition: all 0.2s;
@@ -245,11 +245,11 @@ textarea {
 	transition: all 0.2s;
 }
 
-/*#ticketTable tr:hover #actions .tt-action {
+/*#ticketTable tr:hover .actions .tt-action {
 	display: inline;
 }*/
 
-#actions .tt-action:hover {
+.actions .tt-action:hover {
 	text-decoration: none; /*remove underline from <a>*/
 	text-shadow: 0 0 1px #000;
 	-webkit-transform: scale(1.3);
@@ -259,27 +259,27 @@ textarea {
 	transform: scale(1.3);
 }
 
-#actions #viewAction:hover {
+.actions .viewAction:hover {
 	color: #3276B1;
 }
 
-#actions #editAction:hover {
+.actions .editAction:hover {
 	color: #3276B1;
 }
 
-#actions #approveAction:hover {
+.actions .approveAction:hover {
 	color: #5CB85C;
 }
 
-#actions #doneAction:hover {
+.actions .doneAction:hover {
 	color: #5CB85C;
 }
 
-#actions #rejectAction:hover {
+.actions .rejectAction:hover {
 	color: #D2322D;
 }
 
-#actions #cancelAction:hover {
+.actions .cancelAction:hover {
 	color: #D2322D;
 }
 

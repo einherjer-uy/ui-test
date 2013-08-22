@@ -65,17 +65,17 @@
         <td>{{ due }}</td>
         <td>{{ status }}</td>
         <td width="160px">
-        	<div id="actions"></div>
+        	<div class="actions"></div>
 		</td>
 	</script>
 
 	<script type="text/template" id="actionsTemplate">
-		<span id="viewSpan"><a href="#" id="viewAction" class="glyphicon glyphicon-search tt-action"></a></span>
-        <span id="editSpan"><a href="#" id="editAction" class="glyphicon glyphicon-pencil tt-action"></a></span>
-		<span id="cancelSpan"><a href="#" id="cancelAction" class="glyphicon glyphicon-remove tt-action"></a></span>
-		<span id="rejectSpan"><a href="#" id="rejectAction" class="glyphicon glyphicon-thumbs-down tt-action"></a></span>
-		<span id="approveSpan"><a href="#" id="approveAction" class="glyphicon glyphicon-thumbs-up tt-action"></a></span>
-		<span id="doneSpan"><a href="#" id="doneAction" class="glyphicon glyphicon-ok tt-action"></a></span>
+		<span class="viewSpan"><a href="#" class="viewAction glyphicon glyphicon-search tt-action"></a></span>
+        <span class="editSpan"><a href="#" class="editAction glyphicon glyphicon-pencil tt-action"></a></span>
+		<span class="cancelSpan"><a href="#" class="cancelAction glyphicon glyphicon-remove tt-action"></a></span>
+		<span class="rejectSpan"><a href="#" class="rejectAction glyphicon glyphicon-thumbs-down tt-action"></a></span>
+		<span class="approveSpan"><a href="#" class="approveAction glyphicon glyphicon-thumbs-up tt-action"></a></span>
+		<span class="doneSpan"><a href="#" class="doneAction glyphicon glyphicon-ok tt-action"></a></span>
 	</script>
 
 	<script type="text/template" id="footer-template">
@@ -142,8 +142,8 @@
 				<textarea class="form-control input-small" rows="4" placeholder="Comment" autofocus></textarea>
 			</div>
 			<div style="text-align: right;">
-				<button type="button" id="confirmCancelButton" class="btn btn-link btn-mini">Cancel</button>
-				<button type="button" id="confirmOkButton" class="btn btn-primary btn-mini">OK</button>
+				<button type="button" class="confirmCancelButton btn btn-link btn-mini">Cancel</button>
+				<button type="button" class="confirmOkButton btn btn-primary btn-mini">OK</button>
 			</div>
 		</div>
 	</script>
@@ -154,8 +154,8 @@
 				<label>Are you sure?</label>
 			</div>
 			<div style="text-align: right;">
-				<button type="button" id="confirmCancelButton" class="btn btn-link btn-mini">Cancel</button>
-				<button type="button" id="confirmOkButton" class="btn btn-primary btn-mini">OK</button>
+				<button type="button" class="confirmCancelButton btn btn-link btn-mini">Cancel</button>
+				<button type="button" class="confirmOkButton btn btn-primary btn-mini">OK</button>
 			</div>
 		</div>
 	</script>

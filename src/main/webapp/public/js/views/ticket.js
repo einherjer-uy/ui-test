@@ -42,10 +42,8 @@ var app = app || {};
 		    this.$priority.val(this.model.get("priority"));
 		    
 		    if (!this.model.isNew()) {
-		    	var view = new app.ActionsView({ model: this.model });
-		    	//pass $addEditModal = undefined cause we don't want the actions bar to open a new addEditModal (means view/edit options will be hidden)
-		    	view.setParams(undefined, this.$alertContainer);
-				this.$("#actions").append(view.render().el);
+		    	//pass $addEditModal = undefined to the view ctor cause we don't want the actions bar to open a new addEditModal (means view/edit options will be hidden)
+				this.$("#actions").append(new app.ActionsView({ model: this.model, $messages: this.$alertContainer }).render().el);
 			}
 
 			if(app.loggedUser.role=="APPROVER") {
@@ -67,7 +65,7 @@ var app = app || {};
 			this.hideErrors();
 			this.model.set(this.newAttributes());
 			if (this.model.isNew()) {
-				this.model.save(null,{
+				this.model.save(null, {
 					success:function(model, response, options) {
 						model.set({number:response.number});
 					}
