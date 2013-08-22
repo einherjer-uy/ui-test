@@ -125,10 +125,13 @@
 						</div>					
 					</div>
 					
+    
+
 					<div class="control-group">
 				    	<label class="control-label hidden-phone" for="description" title="This field is mandatory">Description<font color="red">*</font></label>
 				    	<div class="controls">
-							<textarea id="description" rows="6" placeholder="Description">{{description}}</textarea>
+							<textarea id="description" rows="6" placeholder="Description" onkeyup="descriptionModalCountChar(this)">{{description}}</textarea>
+							<div align="center"><small id="descriptionCharNum"></small></div>
 				    	</div>
 				  	</div>
 
@@ -168,5 +171,16 @@
 	<script src="../public/js/routers/router.js"></script>
 	<script src="../public/js/util.js"></script>
 	<script src="../public/js/app.js"></script>
+
+	<script>
+		function descriptionModalCountChar(val) {
+	    	var len = val.value.length;
+	        if (len >= 3000) {
+	        	val.value = val.value.substring(0, 3000);
+	        } else {
+	        	$('#descriptionCharNum').text((3000 - len).toString() + " / 3000") ; 
+	        }
+		};
+	</script>	
 </body>
 </html>
