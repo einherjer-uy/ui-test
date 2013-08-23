@@ -5,6 +5,7 @@ requirements
 ------------
 - java7
 - maven3
+- port 8080
 
 usage
 -----
