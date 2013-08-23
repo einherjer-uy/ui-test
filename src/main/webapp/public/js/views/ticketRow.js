@@ -17,7 +17,7 @@ var app = app || {};
 
 		render: function () {
 			this.$el.html(this.template(this.model.toJSON()));
-			this.$(".actions").append(new app.ActionsView({ model: this.model, $addEditModal: this.$addEditModal, $messages: this.$messages }).render().el);
+			this.$(".actions").append(new app.ActionsView({ model: this.model, onAddEditModal: false, $messages: this.$messages }).render().el);
 			return this;
 		}
 

@@ -8,6 +8,10 @@ var app = app || {};
 		APPROVE_POPOVER: "APPROVE_POPOVER",
 		DONE_POPOVER: "DONE_POPOVER",
 
+		ROLE_REQUESTOR: "REQUESTOR",
+		ROLE_APPROVER: "APPROVER",
+		ROLE_EXECUTOR: "EXECUTOR",
+
 		getDropdownInfo: function(path, out) {
 			$.getJSON(path, function(result) {
 			    $.each(result, function(item) {

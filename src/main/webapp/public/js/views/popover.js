@@ -18,7 +18,8 @@ var app = app || {};
 			this.$action = options.$action;
 			this.$messages = options.$messages;
 			this.parentView = options.parentView;
-
+			this.onAddEditModal = options.onAddEditModal;
+			this.$addEditModal = $('#addEditModal');
 		},
 
 		events: {
@@ -51,7 +52,7 @@ var app = app || {};
 		},
 
 		cancelRequiresComment: function() {
-			return !(this.model.get("status")=="NEW" && app.loggedUser.role=="REQUESTOR"); //only when the user is a Requestor and the status is New we will delete the ticket. In any other case we require a comment.
+			return !(this.model.get("status")=="NEW" && app.loggedUser.role==app.util.ROLE_REQUESTOR); //only when the user is a Requestor and the status is New we will delete the ticket. In any other case we require a comment.
 		},
 		
 		showErrors: function() {
@@ -109,8 +110,11 @@ var app = app || {};
   				data: JSON.stringify({text:data}),
   				contentType: "application/json; charset=utf-8",
   				dataType: "json",
-				success: function(data){
+				success: function(data) {
 				    app.tickets.fetch({reset:true}); //fetch needed only in this case cause the ticket might have been removed on the server
+				    if(self.onAddEditModal) {
+						self.$addEditModal.modal("hide");
+					}
 				},
 			    error: function(data) {
 			    	if(self.showErrors()) {
@@ -142,6 +146,9 @@ var app = app || {};
   				dataType: "json",
 				success: function(data){
 				    self.model.fetch();
+				    if(self.onAddEditModal) {
+						self.$addEditModal.modal("hide");
+					}
 				},
 			    error: function(data) {
 			    	if(self.showErrors()) {
@@ -165,6 +172,9 @@ var app = app || {};
   				dataType: "json",
 				success: function(data){
 				    self.model.fetch();
+				    if(self.onAddEditModal) {
+						self.$addEditModal.modal("hide");
+					}
 				},
 			    error: function(data) {
 			    	if(self.showErrors()) {
@@ -187,6 +197,9 @@ var app = app || {};
   				dataType: "json",
 				success: function(data){
 				    self.model.fetch();
+				    if(self.onAddEditModal) {
+						self.$addEditModal.modal("hide");
+					}
 				},
 			    error: function(data) {
 			    	if(self.showErrors()) {

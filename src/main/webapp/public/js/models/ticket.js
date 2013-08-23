@@ -26,7 +26,7 @@ var app = app || {};
 		        errors.push({name: 'description', message: 'Description field is mandatory.'});
 			}
 
-			if (app.loggedUser.role == "REQUESTOR") { //do not validate the due date when an approver is changing the priority
+			if (app.loggedUser.role == app.util.ROLE_REQUESTOR) { //do not validate the due date when an approver is changing the priority
 				if (attrs.due) {
 					var nowDateTime = new Date();
 					var sixHoursLater = new Date(nowDateTime.getTime() + 6*60*60000);

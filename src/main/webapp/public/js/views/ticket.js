@@ -19,11 +19,10 @@ var app = app || {};
 			// in this case we do it in initialize() (instead of in render()) cause the elements to be selected belong to a separate modal, unrelated to the view's "el" (<li> in this case)
 			// in this case we don't use the syntax this.$(<selector>); cause the edit is done in a separate modal, unrelated to the view's "el" (<li> in this case)
 			this.$addEditModal = $('#addEditModal');
-			this.$outerMessages = options.$outerMessages;
 		},
 
 		render: function () {
-			this.$el.html(this.template(this.model.toJSON()));
+			this.$el.html(this.template(this.getTemplateData()));
 			this.$description = this.$('#description'); //in this case we cannot "cache" the selection in initialize() cause initialized is fired in the construction and only after that the html is appended to the modal (see app.AppView.add or app.TicketRowView.edit), but we can use view.$ (shorthand for $(view.el).find) after $el is populated
 			this.$type = this.$('#type');
 			this.$priority = this.$('#priority');
@@ -44,19 +43,18 @@ var app = app || {};
 		    this.$priority.val(this.model.get("priority"));
 		    
 		    if (!this.model.isNew()) {
-		    	//pass $addEditModal = undefined to the view ctor cause we don't want the actions bar to open a new addEditModal (means view/edit options will be hidden)
-				this.$("#actions").append(new app.ActionsView({ model: this.model, $messages: this.$alertContainer }).render().el);
+				this.$(".actions").append(new app.ActionsView({ model: this.model, onAddEditModal: true, $messages: this.$alertContainer }).render().el);
 			}
 
-			if(app.loggedUser.role=="REQUESTOR") {
+			if(app.loggedUser.role==app.util.ROLE_REQUESTOR) {
 				this.$("#commentDiv").hide();
 			}
-			else if(app.loggedUser.role=="APPROVER") {
+			else if(app.loggedUser.role==app.util.ROLE_APPROVER) {
 				this.$description.prop("readonly",true);
 				this.$due.prop("readonly",true);
 				this.$type.prop("disabled",true);
 			}
-			else if(app.loggedUser.role=="EXECUTOR") {
+			else if(app.loggedUser.role==app.util.ROLE_EXECUTOR) {
 				this.$description.prop("readonly",true);
 				this.$due.prop("readonly",true);
 				this.$type.prop("disabled",true);
@@ -68,48 +66,82 @@ var app = app || {};
 			return this;
 		},
 
+		getTemplateData: function() {
+			var templateData = this.model.toJSON();
+			if (this.model.isNew()) {
+				templateData.modalTitle = "Create ticket";
+			}
+			else {
+				templateData.modalTitle = this.model.id + ": Edit";
+			}
+			return templateData;
+		},
+
 		save: function (e) {
-			if (app.loggedUser.role=="REQUESTOR") {
-				this.hideErrors();
+			this.hideErrors();
+			if (app.loggedUser.role==app.util.ROLE_REQUESTOR) {
 				this.model.set(this.newAttributes());
-				var self = this;
-				//var serverError = null;
+				var serverError;
 				if (this.model.isNew()) {
 					this.model.save(null, { //wait: true,
 						success: function (model, response, options) {
 							model.set({number:response.number});
 						},
 						error: function (model, xhr, options) {
-							//serverError = xhr.responseJSON.message;
-							app.util.displayError(self.$outerMessages, xhr.responseJSON.message);
+							if (data.responseJSON && data.resonseJSON.message) {
+					    		serverError = data.responseJSON.message;
+					    	}
+					    	else { //just in case the server missed to return a proper json with "message" value
+					    		serverError = "Unexpected server error";	
+					    	}
 						}
 					});
 					if (!this.model.validationError) {
 						app.tickets.add(this.model);
 					}
 		        } else {
-		            this.model.save(this.model.changedAttributes(), { patch: true, //wait: true,
-		            	//success: function (model, response, options) {
-						//	console.log('ok');
-						//},
-		                error: function (model, xhr, options) {
-		                	//serverError = xhr.responseJSON.message;
-							app.util.displayError(self.$outerMessages, xhr.responseJSON.message);
-							//app.util.displayError(self.$alertContainer, xhr.responseJSON.message);
-				        }
-		            });
+		        	//in theory we should be able to do something like this, but it doesn't work cause it doesn't allow to wait for
+		        	//server response, even with "wait:true", so using $.ajax instead with "async: false"
+		            //this.model.save(this.model.changedAttributes(), { patch: true, wait: true,
+		            //    error: function (model, xhr, options) {
+					//		serverError = data.responseJSON.message;
+				    //    }
+		            //});
+					var data = this.model.changedAttributes();
+					if (data) { //if nothing changed don't even call the server
+						$.ajax({
+			  				url: "/tt/tickets/"+this.model.get("number"),
+			  				type: "PATCH",
+			  				async: false,
+			  				//TODO: validar que changedAttributes tenga algo si no revienta por bad request
+			  				data: JSON.stringify(data),
+			  				contentType: "application/json; charset=utf-8",
+			  				dataType: "json",
+						    error: function(data) {
+						    	if (data.responseJSON && data.resonseJSON.message) {
+						    		serverError = data.responseJSON.message;
+						    	}
+						    	else { //just in case the server missed to return a proper json with "message" value
+						    		serverError = "Unexpected server error";	
+						    	}
+						    }
+						});
+					}
+					else {
+						serverError = "Save aborted cause apparently you haven't done any change";
+					}
 		        }
 		        if (this.model.validationError) {
 					this.showErrors(this.model.validationError);
 				}
-				//else if(serverError) {
-				//	app.util.displayError(this.$alertContainer, serverError);
-				//}
+				else if(serverError) {
+					app.util.displayError(this.$alertContainer, serverError);
+				}
 				else {
 					this.$addEditModal.modal("hide");	
 				}
 			}
-			else if (app.loggedUser.role=="APPROVER") {
+			else if (app.loggedUser.role==app.util.ROLE_APPROVER) {
 				var self = this;
 			    $.ajax({
 	  				url: "/tt/tickets/"+this.model.get("number")+"/priority",

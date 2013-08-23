@@ -9,8 +9,9 @@ var app = app || {};
 		template: _.template($('#actionsTemplate').html()),
 
 		initialize: function (options) {
-			this.$addEditModal = options.$addEditModal;
 			this.$messages = options.$messages;
+			this.onAddEditModal = options.onAddEditModal;
+			this.$addEditModal = $('#addEditModal');
 		},
 
 		events: {
@@ -39,13 +40,13 @@ var app = app || {};
 
 			var self = this;
 
-			var popoverView = new app.PopoverView({ model: this.model, type: app.util.CANCEL_POPOVER, $action: this.$cancelAction, $messages: this.$messages, parentView: this})
+			var popoverView = new app.PopoverView({ model: this.model, type: app.util.CANCEL_POPOVER, $action: this.$cancelAction, $messages: this.$messages, parentView: this, onAddEditModal: this.onAddEditModal })
 			//WATCH OUT, "container: '.cancelSpan'" doesn't work cause this is not handled by backbone, hence it's relative to the document, not
 			//to the view.$el, so in this case there might be more than one match (one per row in the table actually). Anyway, as expained in popover.js
 			//the container is not really relevant for event bining of the popovers (since they are removed from the DOM so there's only one "ok" and "cancel"
 			//button in the dom at a time anyway); in theory it is only relevant from a visual perspective to ensure the popover remains together with 
 			//the button that triggered it in the case of window resize, but apparently here it stays together even with container: false
-			this.$cancelAction.popover({placement:"bottom", container: false, title:"Confirmation", html:true, 
+			this.$cancelAction.popover({placement:this.popupPlacement(), container: false, title:"Confirmation", html:true, 
 				content:popoverView.render().el});
 			this.$cancelAction.on('shown.bs.popover', function () {
 				self.$cancelAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
@@ -59,48 +60,52 @@ var app = app || {};
 				//self.$(".tt-action").css("display","none");
 			//});
 
-			var popoverView = new app.PopoverView({ model: this.model, type: app.util.REJECT_POPOVER, $action: this.$rejectAction, $messages: this.$messages, parentView: this});
-			this.$rejectAction.popover({placement:"left", container: false, title:"Confirmation", html:true,
+			var popoverView = new app.PopoverView({ model: this.model, type: app.util.REJECT_POPOVER, $action: this.$rejectAction, $messages: this.$messages, parentView: this, onAddEditModal: this.onAddEditModal });
+			this.$rejectAction.popover({placement:this.popupPlacement(), container: false, title:"Confirmation", html:true,
 				content:popoverView.render().el});
 			this.$rejectAction.on('shown.bs.popover', function () {
 				self.$rejectAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
 			});
 
-			popoverView = new app.PopoverView({ model: this.model, type: app.util.APPROVE_POPOVER, $action: this.$approveAction, $messages: this.$messages, parentView: this});
-			this.$approveAction.popover({placement:"left", container: false/*'.approveSpan'*/, title:"Confirmation", html:true,
+			popoverView = new app.PopoverView({ model: this.model, type: app.util.APPROVE_POPOVER, $action: this.$approveAction, $messages: this.$messages, parentView: this, onAddEditModal: this.onAddEditModal });
+			this.$approveAction.popover({placement:this.popupPlacement(), container: false/*'.approveSpan'*/, title:"Confirmation", html:true,
 				content:popoverView.render().el});
 			this.$approveAction.on('shown.bs.popover', function () {
 				self.$approveAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
 			});
 
-			popoverView = new app.PopoverView({ model: this.model, type: app.util.DONE_POPOVER, $action: this.$doneAction, $messages: this.$messages, parentView: this});
-			this.$doneAction.popover({placement:"left", container: false/*'.doneSpan'*/, title:"Confirmation", html:true,
+			popoverView = new app.PopoverView({ model: this.model, type: app.util.DONE_POPOVER, $action: this.$doneAction, $messages: this.$messages, parentView: this, onAddEditModal: this.onAddEditModal });
+			this.$doneAction.popover({placement:this.popupPlacement(), container: false/*'.doneSpan'*/, title:"Confirmation", html:true,
 				content:popoverView.render().el});
 			this.$doneAction.on('shown.bs.popover', function () {
 				self.$doneAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
 			});
 
-			if(this.$addEditModal === undefined) {
+			if(this.onAddEditModal) {
 				this.$viewAction.hide();
 				this.$editAction.hide();
 			}
-			if(app.loggedUser.role=="REQUESTOR") {
+			if(app.loggedUser.role==app.util.ROLE_REQUESTOR) {
 				this.$viewAction.hide();
 				this.$approveAction.hide();
 				this.$rejectAction.hide();
 				this.$doneAction.hide();
 			}
-			if(app.loggedUser.role=="APPROVER") {
+			if(app.loggedUser.role==app.util.ROLE_APPROVER) {
 				this.$viewAction.hide();
 				this.$doneAction.hide();
 			}
-			if(app.loggedUser.role=="EXECUTOR") {
+			if(app.loggedUser.role==app.util.ROLE_EXECUTOR) {
 				this.$editAction.hide();
 				this.$cancelAction.hide();
 				this.$approveAction.hide();
 				this.$rejectAction.hide();
 			}
 			return this;
+		},
+
+		popupPlacement: function () {
+			return this.onAddEditModal ? "top" : "left";
 		},
 
 		edit: function () {
@@ -114,7 +119,7 @@ var app = app || {};
 		//TODO: duplicated with AppView.showModal, move to util.js
 		showModal: function(ticket) {
 			this.$messages.html('');
-			this.$addEditModal.html(new app.TicketView({model: ticket, $outerMessages: this.$messages}).render().el);
+			this.$addEditModal.html(new app.TicketView({model: ticket}).render().el);
         	$("#due").datetimepicker({
         		separator: "-",
 				stepMinute: 30,
