@@ -16,12 +16,14 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @Entity
 @Table(name = "LogEntries") //table name is plural to avoid restricted keywords in some databases like "user" and "comment"
 @Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor
 @Getter
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class") //needed to map polymorphic types (http://wiki.fasterxml.com/JacksonPolymorphicDeserialization)
 public abstract class LogEntry extends AbstractEntity implements Comparable<LogEntry> {
 
     @JsonIgnore //needed in bidirectional association to prevent infinite loop while serializing

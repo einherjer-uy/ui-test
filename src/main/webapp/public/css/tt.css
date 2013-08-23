@@ -124,7 +124,17 @@ textarea {
 	use top:50% to start at the middle and then negative top margin at height/2 to center, instead of a fixed positive top margin (in this case having a fixed top margin is not a problem cause the container is properly centered using the "top:50%"" technique)
 	use  left:0 instead of float to allow 2 divs in the same line
 	this one has the disadvantage that on a smaller screen when the div on the left is hidden the div on the right doesn't move to the left
-	see #login-text-OPTION_2 below*/
+	see #login-text-OPTION_2 below
+.tt-login-text-OPTION_2 {
+	position: absolute;
+	left: 0;
+	top: 50%;
+	height: 110px;
+	margin-top: -55px;
+	padding: 10px 30px 20px;
+	background-color: rgba(0, 0, 0, 0.15); //yes, this is not in line with how twitter.com looks but I wanted to try the effect
+	text-shadow: #000 0 1px 2px; //TODO
+}*/
 
 #login-text h2 {
 	color: #fff;
@@ -154,7 +164,18 @@ textarea {
 	use top:50% to start at the middle and then negative top margin at height/2 to center, instead of a fixed positive top margin (in this case having a fixed top margin is not a problem cause the container is properly centered using the "top:50%"" technique)
 	use  right:0 instead of float to allow 2 divs in the same line
 	this one has the disadvantage that on a smaller screen when the div on the left is hidden the div on the right doesn't move to the left
-	see #login-form-OPTION_2 below*/
+	see #login-form-OPTION_2 below
+.tt-login-form-OPTION_2 {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    margin-top: -70px;
+    width: 350px;
+    margin-bottom: 0px; //override bootstrap panel
+    background: rgba(241, 241, 241, 0.80); //#f1f1f1 //TODO
+    border: 1px solid #e5e5e5; //TODO
+    padding: 10px 10px 0px; //compensate the bottom margin added by bootstrap form-group
+}*/
 
 #login-form .control-group {
 	margin-bottom: 10px; /*override botstrap form-group*/
@@ -237,7 +258,7 @@ textarea {
 }
 
 #ticketTable tr .actions .tt-action {
-	/*display: none;*/
+	display: none;
 	-webkit-transition: all 0.2s;
 	-moz-transition: all 0.2s;
 	-ms-transition: all 0.2s;
@@ -245,9 +266,9 @@ textarea {
 	transition: all 0.2s;
 }
 
-/*#ticketTable tr:hover .actions .tt-action {
+#ticketTable tr:hover .actions .tt-action {
 	display: inline;
-}*/
+}
 
 .actions .tt-action:hover {
 	text-decoration: none; /*remove underline from <a>*/

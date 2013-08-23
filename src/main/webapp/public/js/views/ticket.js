@@ -14,11 +14,12 @@ var app = app || {};
 			'click #closeButton' : 'close'
 		},
 
-		initialize: function () {
+		initialize: function (options) {
 			// to improve performance run the needed selectors only once in the initialize or render funcions and store the references that will be used in other view methods
 			// in this case we do it in initialize() (instead of in render()) cause the elements to be selected belong to a separate modal, unrelated to the view's "el" (<li> in this case)
 			// in this case we don't use the syntax this.$(<selector>); cause the edit is done in a separate modal, unrelated to the view's "el" (<li> in this case)
 			this.$addEditModal = $('#addEditModal');
+			this.$outerMessages = options.$outerMessages;
 		},
 
 		render: function () {
@@ -27,6 +28,7 @@ var app = app || {};
 			this.$type = this.$('#type');
 			this.$priority = this.$('#priority');
 			this.$due = this.$('#due');
+			this.$comment = this.$("textarea#comment");
 			this.$alertContainer = this.$('#ticket-alert-container');
 
 			var self = this;
@@ -46,40 +48,83 @@ var app = app || {};
 				this.$("#actions").append(new app.ActionsView({ model: this.model, $messages: this.$alertContainer }).render().el);
 			}
 
-			if(app.loggedUser.role=="APPROVER") {
+			if(app.loggedUser.role=="REQUESTOR") {
+				this.$("#commentDiv").hide();
+			}
+			else if(app.loggedUser.role=="APPROVER") {
 				this.$description.prop("readonly",true);
 				this.$due.prop("readonly",true);
 				this.$type.prop("disabled",true);
 			}
-			if(app.loggedUser.role=="EXECUTOR") {
+			else if(app.loggedUser.role=="EXECUTOR") {
 				this.$description.prop("readonly",true);
 				this.$due.prop("readonly",true);
 				this.$type.prop("disabled",true);
 				this.$priority.prop("disabled",true);
+				this.$("#commentDiv").hide();
+				this.$("#saveButton").hide();
 			}
 
 			return this;
 		},
 
 		save: function (e) {
-			this.hideErrors();
-			this.model.set(this.newAttributes());
-			if (this.model.isNew()) {
-				this.model.save(null, {
-					success:function(model, response, options) {
-						model.set({number:response.number});
+			if (app.loggedUser.role=="REQUESTOR") {
+				this.hideErrors();
+				this.model.set(this.newAttributes());
+				var self = this;
+				//var serverError = null;
+				if (this.model.isNew()) {
+					this.model.save(null, { //wait: true,
+						success: function (model, response, options) {
+							model.set({number:response.number});
+						},
+						error: function (model, xhr, options) {
+							//serverError = xhr.responseJSON.message;
+							app.util.displayError(self.$outerMessages, xhr.responseJSON.message);
+						}
+					});
+					if (!this.model.validationError) {
+						app.tickets.add(this.model);
 					}
-				});
-				if (!this.model.validationError) {
-					app.tickets.add(this.model);
+		        } else {
+		            this.model.save(this.model.changedAttributes(), { patch: true, //wait: true,
+		            	//success: function (model, response, options) {
+						//	console.log('ok');
+						//},
+		                error: function (model, xhr, options) {
+		                	//serverError = xhr.responseJSON.message;
+							app.util.displayError(self.$outerMessages, xhr.responseJSON.message);
+							//app.util.displayError(self.$alertContainer, xhr.responseJSON.message);
+				        }
+		            });
+		        }
+		        if (this.model.validationError) {
+					this.showErrors(this.model.validationError);
 				}
-	        } else {
-	            this.model.save(this.model.changedAttributes(), {patch:true});
-	        }
-	        if (this.model.validationError) {
-				this.showErrors(this.model.validationError);
-			}else{
-				this.$addEditModal.modal("hide");	
+				//else if(serverError) {
+				//	app.util.displayError(this.$alertContainer, serverError);
+				//}
+				else {
+					this.$addEditModal.modal("hide");	
+				}
+			}
+			else if (app.loggedUser.role=="APPROVER") {
+				var self = this;
+			    $.ajax({
+	  				url: "/tt/tickets/"+this.model.get("number")+"/priority",
+	  				type: "POST",
+	  				data: JSON.stringify({priority: this.$priority.val(), text: this.$comment.val().trim()}),
+	  				contentType: "application/json; charset=utf-8",
+	  				dataType: "json",
+					success: function(data){
+						self.model.set("priority", self.$priority.val());
+					    self.$addEditModal.modal("hide");
+					},
+				    error: function(data) {
+				    	app.util.displayError(self.$alertContainer, data.responseJSON.message);
+				    }
+				});
 			}
 		},
 
@@ -92,7 +137,7 @@ var app = app || {};
 
 		hideErrors: function () {
 	        this.$alertContainer.html('');
-	        this.$alertContainer.removeClass('has-error');	
+	        this.$alertContainer.removeClass('has-error');
 	    },
 
 		newAttributes: function () {

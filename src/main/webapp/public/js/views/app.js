@@ -51,6 +51,9 @@ var app = app || {};
 			}
 
 			//this.allCheckbox.checked = !remaining;
+			if (app.loggedUser.role == "APPROVER" || app.loggedUser.role == "EXECUTOR") {
+				this.$("#addButton").hide();
+			}
 		},
 
 		addOne: function (ticket) {

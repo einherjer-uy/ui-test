@@ -2,6 +2,12 @@ var app = app || {};
 
 (function ($) { "use strict";
 
+	//This view doesn't need to be a separate view, it could be included in ActionsView (using proper selectors to match the events)
+	//		The spans that contain the actions (viewSpan, editSpan, etc) that we added in order to set a "container" to the popover()
+	//		is also useful here to define those selectors (e.g. ".cancelSpan .confirmOkButton", ".cancelSpan .confirmCancelButton", etc)
+	//		given that the button will be contained by the span cause that's defined by the "container" parameter of the popover).
+	//(Actually we wouldn't even need to use the containing span in the selector cause the way the popover works it is added and removed
+	//from the DOM so actually only 1 "confirmOkButton" exists in the "body" at a time.)
 	app.PopoverView = Backbone.View.extend({
 
 		commentConfirmationTemplate: _.template($('#commentConfirmationTemplate').html()),
@@ -54,17 +60,18 @@ var app = app || {};
 
 		closePopover: function() {
 			this.$action.popover("hide");
-			//FOR SOME REASON if I don't trigger the render of the parent again (which will in turn instantiate new PopupViews and 
-			//call popover() again on the buttons) the events of the popover are lost after the popover is hidden for the first time
-			//
-			//(no need to call stopListening here cause the view doesn "listenTo" any model that could keep a reference to the view preventing its garbage collection)
-			//this.stopListening();
-//			this.parentView.render(); 
-			//btw, tried this also that seems less brute force but didn't work, doesn't even show the popover after the first popover("destroy"), or if using "hide" instead of "destroy" still the events doesn't work
-			//this.$action.popover("hide"); //or popover("destroy")
-			//var popoverView = new app.PopoverView({ model: this.model, type: app.util.CANCEL_POPOVER, $action: this.$action, $messages: this.$messages, parentView: this.parentView})
-			//this.$action.popover({placement:"left", container: false, title:"Confirmation", html:true, 
-			//	content:popoverView.render().el});
+			//THE PROBLEM HERE is that popover("hide") removes it from the DOM, so the events get lost, so, the ok/cancel 
+			//		buttons only work the first time the popover (of a specific "action glyphicon") is show.
+			//There are several solutions. Here I'm just calling render() on the parent view again, which will 
+			//		in turn instantiate new PopupViews and  call popover() again on the buttons. There's no need to call stopListening
+			//		cause the view doesn't "listenTo" any model that could keep a reference to the view preventing its garbage collection)
+			//		If that were necessary we would need to keep a list of the 4 PopoverViews instantiated by the parent, and stopListening each of them
+			this.parentView.render(); 
+			//Another option would be to use jquery "on" and bind the clic event to an element that is not removed from the DOM (i.e. the container
+			//		of the popover). E.g. this.$cancelAction.popover({... content:popoverView.render().el}).parent().on('click', 
+			//		'button.confirmCancelButton', <data>, function(event) { event.data... };
+			//		Since popover("hide") removes the popover from the DOM we don't worry about the fact that there might be more than one
+			//		match for the "button.confirmCancelButton" selector, since only one popover and one button with that class will exist at a time
 		},
 
 		ok: function() {
