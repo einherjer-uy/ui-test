@@ -20,10 +20,15 @@ var app = app || {};
 		},
 		
 		validate: function (attrs) {
+			console.log(attrs);
 		   var errors = [];
 
-		   if (!attrs.description) {
+		   	if (!attrs.description) {
 		       errors.push({name: 'description', message: 'Description field is mandatory.'});
+			}else{				
+				if (attrs.description.length >3000) {
+					errors.push({name: 'description', message: 'Description field must have at most 3000 characters.'});
+				};
 			}
 
 			if (attrs.due) {

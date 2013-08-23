@@ -88,13 +88,13 @@ var app = app || {};
 		showErrors: function(errors) {
         	_.each(errors, function (error) {
 	            this.$alertContainer.append("<div class='alert alert-error'><a class='close' data-dismiss='alert'>&times;</a><strong>Error: </strong>" + error.message + "</div>") ;
-	            $('#' + error.name).parent().parent().addClass("has-error");
+	            $('#' + error.name).parent().parent().addClass("error");
         	}, this);
  		},
 
 		hideErrors: function () {
 	        this.$alertContainer.html('');
-	        this.$alertContainer.removeClass('has-error');	
+	        this.$alertContainer.removeClass('error');	
 	    },
 
 		newAttributes: function () {

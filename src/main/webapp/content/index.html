@@ -31,7 +31,7 @@
 		
 		<section id="progress">			
 			<div class="progress progress-striped active" style="width: 25%">
-				<div id="ticket-progress" class="progress-bar" role="progressbar" style="width: 100%">
+				<div id="ticket-progress" class="bar" role="progressbar" style="width: 100%">
 					<div class="bar" style="width: 100%"></div>
 				</div>
 			</div>
@@ -102,14 +102,14 @@
 					<div class="alert-container" id="ticket-alert-container"></div>
 
 					<div class="control-group" >
-				    	<label class="control-label hidden-phone" for="type">Type</label>
+				    	<label class="control-label hidden-phone" for="type" title="This field is mandatory">Type<font color="red">*</font></label>				    	
 				    	<div class="controls">
 							<select id="type" placeholder="Type" value={{type}}></select>
 				    	</div>						    		    	
 				  	</div>	
 
 					<div class="control-group" >
-				  		<label class="control-label hidden-phone" for="priority">Priority</label>
+				  		<label class="control-label hidden-phone" for="priority" title="This field is mandatory">Priority<font color="red">*</font></label>
 				    	<div class="controls">
 							<select id="priority" placeholder="Priority" value={{priority}}></select>
 				    	</div>
@@ -125,10 +125,13 @@
 						</div>					
 					</div>
 					
+    
+
 					<div class="control-group">
-				    	<label class="control-label hidden-phone" for="description">Description</label>
+				    	<label class="control-label hidden-phone" for="description" title="This field is mandatory">Description<font color="red">*</font></label>
 				    	<div class="controls">
-							<textarea id="description" rows="6" placeholder="Description">{{description}}</textarea>
+							<textarea id="description" rows="6" placeholder="Description" onkeyup="descriptionModalCountChar(this)">{{description}}</textarea>
+							<div align="center"><small id="descriptionCharNum"></small></div>
 				    	</div>
 				  	</div>
 
@@ -168,5 +171,16 @@
 	<script src="../public/js/routers/router.js"></script>
 	<script src="../public/js/util.js"></script>
 	<script src="../public/js/app.js"></script>
+
+	<script>
+		function descriptionModalCountChar(val) {
+	    	var len = val.value.length;
+	        if (len >= 3000) {
+	        	val.value = val.value.substring(0, 3000);
+	        } else {
+	        	$('#descriptionCharNum').text((3000 - len).toString() + " / 3000") ; 
+	        }
+		};
+	</script>	
 </body>
 </html>
