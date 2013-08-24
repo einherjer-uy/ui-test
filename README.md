@@ -11,6 +11,7 @@ usage
 -----
 - git clone https://github.com/einherjer-uy/ui-test.git
 - mvn jetty:run
+- browse localhost:8080
 
 users
 -----
