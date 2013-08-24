@@ -253,6 +253,11 @@ body.tt-body {
 
 #ttApp { 
 	margin-top: 10px;
+	min-height: 500px;
+}
+
+#loggedUser {
+	color: #eee;
 }
 
 .actions {
