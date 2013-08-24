@@ -2,6 +2,16 @@ var app = app || {};
 
 (function ($) { "use strict";
 	app.util = {
+
+		CANCEL_POPOVER: "CANCEL_POPOVER",
+		REJECT_POPOVER: "REJECT_POPOVER",
+		APPROVE_POPOVER: "APPROVE_POPOVER",
+		DONE_POPOVER: "DONE_POPOVER",
+
+		ROLE_REQUESTOR: "REQUESTOR",
+		ROLE_APPROVER: "APPROVER",
+		ROLE_EXECUTOR: "EXECUTOR",
+
 		getDropdownInfo: function(path, out) {
 			$.getJSON(path, function(result) {
 			    $.each(result, function(item) {

@@ -11,10 +11,11 @@ var app = app || {};
 
 		events: {
 			'click #saveButton' : 'save',
-			'click #closeButton' : 'close'
+			'click #closeButton' : 'close',
+			'keyup #description' : 'descriptionModalCountChar'
 		},
 
-		initialize: function () {
+		initialize: function (options) {
 			// to improve performance run the needed selectors only once in the initialize or render funcions and store the references that will be used in other view methods
 			// in this case we do it in initialize() (instead of in render()) cause the elements to be selected belong to a separate modal, unrelated to the view's "el" (<li> in this case)
 			// in this case we don't use the syntax this.$(<selector>); cause the edit is done in a separate modal, unrelated to the view's "el" (<li> in this case)
@@ -22,12 +23,19 @@ var app = app || {};
 		},
 
 		render: function () {
-			this.$el.html(this.template(this.model.toJSON()));
+			this.$el.html(this.template(this.getTemplateData()));
 			this.$description = this.$('#description'); //in this case we cannot "cache" the selection in initialize() cause initialized is fired in the construction and only after that the html is appended to the modal (see app.AppView.add or app.TicketRowView.edit), but we can use view.$ (shorthand for $(view.el).find) after $el is populated
 			this.$type = this.$('#type');
 			this.$priority = this.$('#priority');
 			this.$due = this.$('#due');
+			this.$comment = this.$("textarea#comment");
 			this.$alertContainer = this.$('#ticket-alert-container');
+			this.$descriptionCharNum = this.$('#descriptionCharNum');
+
+			this.$("#duedate-datetimepicker").datetimepicker({
+        		format: 'dd/MM/yyyy-hh:mm',
+        		pickSeconds: false
+        	});
 
 			var self = this;
 			
@@ -42,46 +50,126 @@ var app = app || {};
 		    this.$priority.val(this.model.get("priority"));
 		    
 		    if (!this.model.isNew()) {
-		    	var view = new app.ActionsView({ model: this.model });
-				view.$addEditModal = undefined; //don't want the actions bar to open a new addEditModal (means view/edit options will be hidden)
-				view.$messagesDiv = this.$messagesDiv;
-				this.$("#actions").append(view.render().el);
+				this.$(".actions").append(new app.ActionsView({ model: this.model, onAddEditModal: true, $messages: this.$alertContainer }).render().el);
 			}
 
-			if(app.loggedUser.role=="APPROVER") {
+			if(app.loggedUser.role==app.util.ROLE_REQUESTOR) {
+				this.$("#commentDiv").hide();
+			}
+			else if(app.loggedUser.role==app.util.ROLE_APPROVER) {
 				this.$description.prop("readonly",true);
 				this.$due.prop("readonly",true);
 				this.$type.prop("disabled",true);
 			}
-			if(app.loggedUser.role=="EXECUTOR") {
+			else if(app.loggedUser.role==app.util.ROLE_EXECUTOR) {
 				this.$description.prop("readonly",true);
 				this.$due.prop("readonly",true);
 				this.$type.prop("disabled",true);
 				this.$priority.prop("disabled",true);
+				this.$("#commentDiv").hide();
+				this.$("#saveButton").hide();
 			}
 
 			return this;
 		},
 
+		getTemplateData: function() {
+			var templateData = this.model.toJSON();
+			if (this.model.isNew()) {
+				templateData.modalTitle = "Create ticket";
+			}
+			else {
+				templateData.modalTitle = this.model.id + ": Edit";
+			}
+			return templateData;
+		},
+
 		save: function (e) {
 			this.hideErrors();
-			this.model.set(this.newAttributes());
-			if (this.model.isNew()) {
-				this.model.save(null,{
-					success:function(model, response, options) {
-						model.set({number:response.number});
+			if (app.loggedUser.role==app.util.ROLE_REQUESTOR) {
+				this.model.set(this.newAttributes());
+				var serverError;
+				if (this.model.isNew()) {
+					this.model.save(null, { //wait: true,
+						success: function (model, response, options) {
+							model.set({number:response.number});
+						},
+						error: function (model, xhr, options) {
+							if (xhr.responseJSON && xhr.resonseJSON.message) {
+					    		serverError = xhr.responseJSON.message;
+					    	}
+					    	else { //just in case the server missed to return a proper json with "message" value
+					    		serverError = "Unexpected server error";	
+					    	}
+						}
+					});
+					if (!this.model.validationError) {
+						app.tickets.add(this.model);
 					}
-				});
-				if (!this.model.validationError) {
-					app.tickets.add(this.model);
+		        } else {
+		        	//in theory we should be able to do something like this, but it doesn't work cause it doesn't allow to wait for
+		        	//server response, even with "wait:true", so using $.ajax instead with "async: false"
+		            //this.model.save(this.model.changedAttributes(), { patch: true, wait: true,
+		            //    error: function (model, xhr, options) {
+					//		serverError = xhr.responseJSON.message;
+				    //    }
+		            //});
+					var data = this.model.changedAttributes();
+					if (data) { //if nothing changed don't even call the server
+						$.ajax({
+			  				url: "/tt/tickets/"+this.model.get("number"),
+			  				type: "PATCH",
+			  				async: false,
+			  				//TODO: validar que changedAttributes tenga algo si no revienta por bad request
+			  				data: JSON.stringify(data),
+			  				contentType: "application/json; charset=utf-8",
+			  				dataType: "json",
+						    error: function(data) {
+						    	if (data.responseJSON && data.resonseJSON.message) {
+						    		serverError = data.responseJSON.message;
+						    	}
+						    	else { //just in case the server missed to return a proper json with "message" value
+						    		serverError = "Unexpected server error";	
+						    	}
+						    }
+						});
+					}
+					else {
+						serverError = "Save aborted cause apparently you haven't done any change";
+					}
+		        }
+		        if (this.model.validationError) {
+					this.showErrors(this.model.validationError);
 				}
-	        } else {
-	            this.model.save(this.model.changedAttributes(), {patch:true});
-	        }
-	        if (this.model.validationError) {
-				this.showErrors(this.model.validationError);
-			}else{
-				this.$addEditModal.modal("hide");	
+				else if(serverError) {
+					app.util.displayError(this.$alertContainer, serverError);
+				}
+				else {
+					this.$addEditModal.modal("hide");	
+				}
+			}
+			else if (app.loggedUser.role==app.util.ROLE_APPROVER) {
+				var self = this;
+			    $.ajax({
+	  				url: "/tt/tickets/"+this.model.get("number")+"/priority",
+	  				type: "POST",
+	  				data: JSON.stringify({priority: this.$priority.val(), text: this.$comment.val().trim()}),
+	  				contentType: "application/json; charset=utf-8",
+	  				dataType: "json",
+					success: function(data){
+						self.model.set("priority", self.$priority.val());
+					    self.$addEditModal.modal("hide");
+					},
+				    error: function(data) {
+				    	if (data.responseJSON && data.resonseJSON.message) {
+				    		app.util.displayError(self.$alertContainer, data.responseJSON.message);
+				    	}
+				    	else { //just in case the server missed to return a proper json with "message" value
+				    		app.util.displayError(self.$alertContainer, "Unexpected server error");
+				    	}
+				    	
+				    }
+				});
 			}
 		},
 
@@ -104,6 +192,15 @@ var app = app || {};
 				priority: this.$priority.val(),
 				due: this.$due.val(),
 			};
+		},
+
+		descriptionModalCountChar: function() {
+	    	var len = this.$description.val().length;
+	        if (len >= 3000) {
+	        	this.$description.val(this.$description.val().substring(0, 3000));
+	        } else {
+	        	this.$descriptionCharNum.text((3000 - len).toString() + " / 3000") ; 
+	        }
 		}
 
 	});

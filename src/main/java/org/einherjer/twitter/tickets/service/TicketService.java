@@ -30,6 +30,15 @@ public class TicketService {
         return ticketRepository.findAll();
     }
 
+    public Iterable<Ticket> findAllForRole() {
+        if (loginService.getLoggedUser().getRole() == User.Role.REQUESTOR) {
+            return ticketRepository.findByCreator(loginService.getLoggedUser());
+        }
+        else {
+            return ticketRepository.findAll();
+        }
+    }
+
     public Ticket find(String projectPrefix, Integer ticketNumber) {
         return this.find(projectPrefix, ticketNumber, false);
     }
@@ -123,7 +132,7 @@ public class TicketService {
                 throw new UnsupportedOperationException("For Requestors, Cancel is not a valid operation for tickets in status " + ticket.getStatus());
             }
         }
-        else if (loginService.getLoggedUser().getRole() != User.Role.APPROVER) {
+        else if (loginService.getLoggedUser().getRole() == User.Role.APPROVER) {
             if (ticket.getStatus() == TicketStatus.NEW) {
                 if (comment == null || comment.trim().isEmpty()) {
                     throw new IllegalArgumentException("Comment is required in order to cancel an approved ticket");

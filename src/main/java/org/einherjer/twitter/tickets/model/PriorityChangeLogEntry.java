@@ -21,9 +21,9 @@ public class PriorityChangeLogEntry extends CommentLogEntry {
     /**
      * see LogEntry.init javadoc
      */
-    public static PriorityChangeLogEntry create(TicketPriority newPriority, String comment) {
+    public static PriorityChangeLogEntry create(Ticket ticket, TicketPriority newPriority, String comment) {
         PriorityChangeLogEntry e = new PriorityChangeLogEntry();
-        e.init(comment);
+        e.init(ticket, comment);
         e.newPriority = newPriority;
         return e;
     }

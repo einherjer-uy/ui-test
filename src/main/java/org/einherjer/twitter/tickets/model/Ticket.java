@@ -68,8 +68,7 @@ public class Ticket extends AbstractEntity {
     @JoinColumn(name = "assignee_id", nullable = false)
     private @Getter @Setter User assignee;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "ticket_id")
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy(value = "timestamp DESC")
     private List<LogEntry> log = new ArrayList<LogEntry>();
 
@@ -87,7 +86,7 @@ public class Ticket extends AbstractEntity {
         this.type = type;
         this.priority = priority;
         this.due = due;
-        this.log.add(CreationLogEntry.create());
+        this.log.add(CreationLogEntry.create(this));
     }
 
     public Ticket(Project project, Ticket data) {
@@ -127,21 +126,21 @@ public class Ticket extends AbstractEntity {
     }
 
     public void addComment(String text) {
-        this.log.add(CommentLogEntry.create(text));
+        this.log.add(CommentLogEntry.create(this, text));
     }
 
     public void changeStatus(TicketStatus newStatus, String comment) {
         this.status = newStatus;
-        this.log.add(StatusChangeLogEntry.create(newStatus, comment));
+        this.log.add(StatusChangeLogEntry.create(this, newStatus, comment));
     }
 
     public void changePriority(TicketPriority newPriority, String comment) {
         this.priority = newPriority;
-        this.log.add(PriorityChangeLogEntry.create(newPriority, comment));
+        this.log.add(PriorityChangeLogEntry.create(this, newPriority, comment));
     }
 
     public void logUpdate() {
-        this.log.add(UpdateLogEntry.create());
+        this.log.add(UpdateLogEntry.create(this));
     }
 
     public Set<Attachment> getAttachments() {

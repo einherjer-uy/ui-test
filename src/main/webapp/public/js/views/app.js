@@ -51,6 +51,9 @@ var app = app || {};
 			}
 
 			//this.allCheckbox.checked = !remaining;
+			if (app.loggedUser.role == app.util.ROLE_APPROVER || app.loggedUser.role == app.util.ROLE_EXECUTOR) {
+				this.$("#addButton").hide();
+			}
 		},
 
 		addOne: function (ticket) {
@@ -67,14 +70,10 @@ var app = app || {};
 			this.showModal(new app.Ticket());
 		},
 		
-		//TODO: duplicated with TicketRowView.showModal, move to util.js
+		//TODO: duplicated with ActionsView.showModal, move to util.js
 		showModal: function(ticket) {
 			this.$messagesDiv.html('');
 			this.$addEditModal.html(new app.TicketView({model: ticket}).render().el);
-        	$("#duedate-datetimepicker").datetimepicker({
-        		format: 'dd/MM/yyyy-hh:mm',
-        		pickSeconds: false
-        	});
         	this.$addEditModal.modal({keyboard: false, backdrop: "static"});
 		}
 

@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" media="screen">    
     <link rel="stylesheet" href="../public/css/tt.css" media="screen">    
     <link rel="stylesheet" href="../public/css/bootstrap-datetimepicker.min.css" media="screen" >
+    <link rel="stylesheet" href="../public/css/bootstrap-glyphicons.css" media="screen" >
     
 </head>
 <body class="tt-body">
@@ -69,17 +70,17 @@
         <td>{{ due }}</td>
         <td>{{ status }}</td>
         <td width="160px">
-        	<div id="actions"></div>
+        	<div class="actions"></div>
 		</td>
 	</script>
 
-	<script type="text/template" id="actions">
-		<span id="actionView" title="View" class="glyphicon glyphicon-search tt-action"></span>
-        <span id="actionEdit" title="Edit" class="glyphicon glyphicon-pencil tt-action"></span>
-		<span id="actionCancel" title="Cancel" class="glyphicon glyphicon-remove tt-action"></span>
-		<span id="actionReject" title="Reject" class="glyphicon glyphicon-thumbs-down tt-action"></span>
-		<span id="actionApprove" title="Approve" class="glyphicon glyphicon-thumbs-up tt-action"></span>
-		<span id="actionDone" title="Mark as Done" class="glyphicon glyphicon-ok tt-action"></span>
+	<script type="text/template" id="actionsTemplate">
+		<span class="viewSpan"><a href="#" class="viewAction glyphicon glyphicon-search tt-action"></a></span>
+        <span class="editSpan"><a href="#" class="editAction glyphicon glyphicon-pencil tt-action"></a></span>
+		<span class="cancelSpan"><a href="#" class="cancelAction glyphicon glyphicon-remove tt-action"></a></span>
+		<span class="rejectSpan"><a href="#" class="rejectAction glyphicon glyphicon-thumbs-down tt-action"></a></span>
+		<span class="approveSpan"><a href="#" class="approveAction glyphicon glyphicon-thumbs-up tt-action"></a></span>
+		<span class="doneSpan"><a href="#" class="doneAction glyphicon glyphicon-ok tt-action"></a></span>
 	</script>
 
 	<script type="text/template" id="footer-template">
@@ -93,7 +94,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">Add / Edit Ticket</h4>
+				<h4 class="modal-title">{{modalTitle || "Add / Edit Ticket"}}</h4>
 			</div>
 			<div class="modal-body" id="ticket-modal-body">
 			
@@ -124,25 +125,55 @@
 							</div>
 						</div>					
 					</div>
-					
-    
 
 					<div class="control-group">
 				    	<label class="control-label hidden-phone" for="description" title="This field is mandatory">Description<font color="red">*</font></label>
 				    	<div class="controls">
-							<textarea id="description" rows="6" placeholder="Description" onkeyup="descriptionModalCountChar(this)">{{description}}</textarea>
+				    		<!--<span class="help-block">The description given will be used by the executors so it is fundamental to be as detailed as possible</span>-->
+							<textarea id="description" class="input-xlarge" rows="6" placeholder="Description">{{description}}</textarea>
 							<div align="center"><small id="descriptionCharNum"></small></div>
 				    	</div>
 				  	</div>
 
-				  	<div id="actions" class="control-group"></div>
+					<div id="commentDiv" class="control-group"> 
+						<!-- only for approvers changin the priority of a ticket trough this form -->
+				    	<label class="control-label hidden-phone" for="comment">Comment</label>
+				    	<div class="controls">
+							<textarea id="comment" class="input-xlarge" rows="4" placeholder="Comment"></textarea>
+				    	</div>
+				  	</div>
+
 	   			 </form>		
 			</div>
 			<div class="modal-footer">
+				<div class="actions form-group pull-left"></div>
 				<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
 				<button type="button" id="saveButton" class="btn btn-primary">Save changes</button>
 			</div>
 		</div><!-- /.modal-content -->
+	</script>
+
+	<script type="text/template" id="commentConfirmationTemplate">
+		<div style="width: 250px;">
+			<label>{{ mandatoryComment ? "Please provide a comment and confirm" : "Enter an optional comment and confirm" }}</label>
+			<textarea class="form-control" rows="4" placeholder="Comment" autofocus></textarea>
+			<div style="text-align: right;">
+				<button type="button" class="confirmCancelButton btn btn-link btn-small">Cancel</button>
+				<button type="button" class="confirmOkButton btn btn-primary btn-small">OK</button>
+			</div>
+		</div>
+	</script>
+
+	<script type="text/template" id="yesNoConfirmationTemplate">
+		<div style="width: 200px;">
+			<div style="text-align: center;">
+				<label>Are you sure?</label>
+			</div>
+			<div style="text-align: right;">
+				<button type="button" class="confirmCancelButton btn btn-link btn-small">Cancel</button>
+				<button type="button" class="confirmOkButton btn btn-primary btn-small">OK</button>
+			</div>
+		</div>
 	</script>
 
 	<!-- jQuery -->
@@ -165,6 +196,7 @@
 	<script src="../public/js/models/ticket.js"></script>
 	<script src="../public/js/collections/tickets.js"></script>
 	<script src="../public/js/views/ticket.js"></script>
+	<script src="../public/js/views/popover.js"></script>
 	<script src="../public/js/views/actions.js"></script>
 	<script src="../public/js/views/ticketRow.js"></script>
 	<script src="../public/js/views/app.js"></script>
@@ -172,15 +204,5 @@
 	<script src="../public/js/util.js"></script>
 	<script src="../public/js/app.js"></script>
 
-	<script>
-		function descriptionModalCountChar(val) {
-	    	var len = val.value.length;
-	        if (len >= 3000) {
-	        	val.value = val.value.substring(0, 3000);
-	        } else {
-	        	$('#descriptionCharNum').text((3000 - len).toString() + " / 3000") ; 
-	        }
-		};
-	</script>	
 </body>
 </html>

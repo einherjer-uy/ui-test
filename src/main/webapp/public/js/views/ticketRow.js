@@ -10,17 +10,14 @@ var app = app || {};
 
 		initialize: function () {
 			this.$addEditModal = $('#addEditModal');
-			this.$messagesDiv = $('#dashboardMessages');
+			this.$messages = $('#dashboardMessages');
 
 			this.listenTo(this.model, 'change', this.render);
 		},
 
 		render: function () {
 			this.$el.html(this.template(this.model.toJSON()));
-			var view = new app.ActionsView({ model: this.model });
-			view.$addEditModal = this.$addEditModal;
-			view.$messagesDiv = this.$messagesDiv;
-			this.$("#actions").append(view.render().el);
+			this.$(".actions").append(new app.ActionsView({ model: this.model, onAddEditModal: false, $messages: this.$messages }).render().el);
 			return this;
 		}
 

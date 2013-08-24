@@ -54,6 +54,10 @@ button {
 	appearance: none;
 }
 
+textarea {
+    resize: none;
+}
+
 .tt-navbar {
 	margin-bottom: 0; /*override bootstrap navbar, which otherwise would generate a space between the navbar and the content below*/
 }
@@ -120,7 +124,17 @@ button {
 	use top:50% to start at the middle and then negative top margin at height/2 to center, instead of a fixed positive top margin (in this case having a fixed top margin is not a problem cause the container is properly centered using the "top:50%"" technique)
 	use  left:0 instead of float to allow 2 divs in the same line
 	this one has the disadvantage that on a smaller screen when the div on the left is hidden the div on the right doesn't move to the left
-	see #login-text-OPTION_2 below*/
+	see #login-text-OPTION_2 below
+.tt-login-text-OPTION_2 {
+	position: absolute;
+	left: 0;
+	top: 50%;
+	height: 110px;
+	margin-top: -55px;
+	padding: 10px 30px 20px;
+	background-color: rgba(0, 0, 0, 0.15); //yes, this is not in line with how twitter.com looks but I wanted to try the effect
+	text-shadow: #000 0 1px 2px; //TODO
+}*/
 
 #login-text h2 {
 	color: #fff;
@@ -150,7 +164,18 @@ button {
 	use top:50% to start at the middle and then negative top margin at height/2 to center, instead of a fixed positive top margin (in this case having a fixed top margin is not a problem cause the container is properly centered using the "top:50%"" technique)
 	use  right:0 instead of float to allow 2 divs in the same line
 	this one has the disadvantage that on a smaller screen when the div on the left is hidden the div on the right doesn't move to the left
-	see #login-form-OPTION_2 below*/
+	see #login-form-OPTION_2 below
+.tt-login-form-OPTION_2 {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    margin-top: -70px;
+    width: 350px;
+    margin-bottom: 0px; //override bootstrap panel
+    background: rgba(241, 241, 241, 0.80); //#f1f1f1 //TODO
+    border: 1px solid #e5e5e5; //TODO
+    padding: 10px 10px 0px; //compensate the bottom margin added by bootstrap form-group
+}*/
 
 #login-form .control-group {
 	margin-bottom: 10px; /*override botstrap form-group*/
@@ -229,7 +254,12 @@ body.tt-body {
 #ttApp { 
 	margin-top: 10px;
 }
-#actions .tt-action {
+
+.actions {
+	position: relative; /*allow the popover to retain its position in relation to the action that triggered it when resizing*/
+}
+
+.actions .tt-action {
 	bottom: 0;
 	width: 20px;
 	height: 20px;
@@ -239,7 +269,7 @@ body.tt-body {
 	padding: 5px 8px;
 }
 
-#ticketTable tr #actions .tt-action {
+#ticketTable tr .actions .tt-action {
 	display: none;
 	-webkit-transition: all 0.2s;
 	-moz-transition: all 0.2s;
@@ -248,11 +278,12 @@ body.tt-body {
 	transition: all 0.2s;
 }
 
-#ticketTable tr:hover #actions .tt-action {
+#ticketTable tr:hover .actions .tt-action {
 	display: inline;
 }
 
-#actions .tt-action:hover {
+.actions .tt-action:hover {
+	text-decoration: none; /*remove underline from <a>*/
 	text-shadow: 0 0 1px #000;
 	-webkit-transform: scale(1.3);
 	-moz-transform: scale(1.3);
@@ -261,30 +292,35 @@ body.tt-body {
 	transform: scale(1.3);
 }
 
-#actions #actionView:hover {
+.actions .viewAction:hover {
 	color: #3276B1;
 }
 
-#actions #actionEdit:hover {
+.actions .editAction:hover {
 	color: #3276B1;
 }
 
-#actions #actionApprove:hover {
+.actions .approveAction:hover {
 	color: #5CB85C;
 }
 
-#actions #actionDone:hover {
+.actions .doneAction:hover {
 	color: #5CB85C;
 }
 
-#actions #actionReject:hover {
+.actions .rejectAction:hover {
 	color: #D2322D;
 }
 
-#actions #actionCancel:hover {
+.actions .cancelAction:hover {
 	color: #D2322D;
 }
 
 .tt-inverse-text {
 	color: white;
 }
+
+.popover { /*override bootstrap popover to allow display in front of modal*/
+	z-index: 1051; 
+}
+

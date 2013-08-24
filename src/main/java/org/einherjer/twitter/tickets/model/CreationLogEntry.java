@@ -13,9 +13,9 @@ public class CreationLogEntry extends LogEntry {
     /**
      * see LogEntry.init javadoc
      */
-    public static CreationLogEntry create() {
+    public static CreationLogEntry create(Ticket ticket) {
         CreationLogEntry e = new CreationLogEntry();
-        e.init();
+        e.init(ticket);
         return e;
     }
 

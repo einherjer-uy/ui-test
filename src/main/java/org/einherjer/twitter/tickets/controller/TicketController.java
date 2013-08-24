@@ -78,7 +78,7 @@ public class TicketController {
 
     @RequestMapping(value = "/tickets", method = RequestMethod.GET)
     public @ResponseBody Iterable<Ticket> getTickets() {
-        return ticketService.findAll();
+        return ticketService.findAllForRole();
     }
     
     /**
@@ -222,7 +222,7 @@ public class TicketController {
         ticketService.changePriority(projectPrefix, ticketNumber,
                 TicketPriority.valueOf(jsonBody.get("priority").toString()),
                 jsonBody.get("text") == null ? null : jsonBody.get("text").toString());
-        return new ResponseEntity<String>(HttpStatus.CREATED);
+        return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
     }
     
     /**
