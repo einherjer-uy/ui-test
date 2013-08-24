@@ -278,6 +278,7 @@ body.tt-body {
 }
 
 .actions {
+	width: 110px;
 	position: relative; /*allow the popover to retain its position in relation to the action that triggered it when resizing*/
 }
 
