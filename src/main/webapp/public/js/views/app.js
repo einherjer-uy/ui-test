@@ -18,6 +18,7 @@ var app = app || {};
 			this.$ticketTable = this.$('#ticketTable');
 			this.$addEditModal = $('#addEditModal');
 			this.$messagesDiv = $('#dashboardMessages'); 
+			this.$loggedUser = $('#loggedUser');
 
 			this.listenTo(app.tickets, 'add', this.addOne);
 			this.listenTo(app.tickets, 'reset', this.addAll);
@@ -29,6 +30,11 @@ var app = app || {};
 		render: function () {
 			//var completed = app.tickets.completed().length;
 			//var remaining = app.tickets.remaining().length;
+
+			if (app.loggedUser && app.loggedUser.username && app.loggedUser.username.emailAddress) {
+				this.$loggedUser.html(app.loggedUser.username.emailAddress);	
+			};
+			
 			this.$messagesDiv.html('');
 			this.$progress.hide();
 
