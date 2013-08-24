@@ -241,6 +241,11 @@ textarea {
 	#login-button { /*on mobile the "sing in" button should take the full width of the form*/
 		width: 100%;
 	}
+
+	#ticket-form.form-horizontal .controls {
+		margin-left: 0px;
+	}
+
 }
 
 body.tt-body {
