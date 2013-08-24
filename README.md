@@ -10,6 +10,7 @@ requirements
 usage
 -----
 - git clone https://github.com/einherjer-uy/ui-test.git
+- cd ui-test
 - mvn jetty:run
 - browse localhost:8080
 
