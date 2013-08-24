@@ -297,7 +297,15 @@ body.tt-body {
 	padding: 5px 8px;
 }
 
-#ticketTable tr:hover .actions .tt-action {
+.actions .action-disabled {
+	
+}
+
+.actions .action-enabled {
+
+}
+
+#ticketTable tr:hover .actions .action-enabled {
 	color: #888;
 	-webkit-transition: all 0.2s;
 	-moz-transition: all 0.2s;
@@ -306,7 +314,7 @@ body.tt-body {
 	transition: all 0.2s;	
 }
 
-.actions .tt-action:hover {
+.actions .action-enabled:hover {
 	text-decoration: none; /*remove underline from <a>*/
 	text-shadow: 0 0 1px #000;
 	-webkit-transform: scale(1.3);
@@ -316,33 +324,27 @@ body.tt-body {
 	transform: scale(1.3);
 }
 
-.actions .viewAction:hover,
-#ticketTable tr:hover .actions .viewAction:hover {
+.actions .viewSpan .action-enabled:hover {
 	color: #3276B1;
 }
 
-.actions .editAction:hover,
-#ticketTable tr:hover .actions .editAction:hover {
+.actions .editSpan .action-enabled:hover {
 	color: #3276B1;
 }
 
-.actions .approveAction:hover,
-#ticketTable tr:hover .actions .approveAction:hover {
+.actions .approveSpan .action-enabled:hover {
 	color: #5CB85C;
 }
 
-.actions .doneAction:hover,
-#ticketTable tr:hover .actions .doneAction:hover {
+.actions .doneSpan .action-enabled:hover {
 	color: #5CB85C;
 }
 
-.actions .rejectAction:hover,
-#ticketTable tr:hover .actions .rejectAction:hover {
+.actions .rejectSpan .action-enabled:hover {
 	color: #D2322D;
 }
 
-.actions .cancelAction:hover,
-#ticketTable tr:hover .actions .cancelAction:hover {
+.actions .cancelSpan .action-enabled:hover {
 	color: #D2322D;
 }
 

@@ -82,24 +82,36 @@ var app = app || {};
 			});
 
 			if(this.onAddEditModal) {
-				this.$viewAction.hide();
-				this.$editAction.hide();
+				this.$viewAction.addClass('action-disabled');
+				this.$editAction.addClass('action-disabled');
+
+				this.$approveAction.addClass('action-enabled');
+				this.$rejectAction.addClass('action-enabled');
+				this.$doneAction.addClass('action-enabled');
 			}
 			if(app.loggedUser.role==app.util.ROLE_REQUESTOR) {
-				this.$viewAction.hide();
-				this.$approveAction.hide();
-				this.$rejectAction.hide();
-				this.$doneAction.hide();
+				this.$viewAction.addClass('action-disabled');
+				this.$approveAction.addClass('action-disabled');
+				this.$rejectAction.addClass('action-disabled');
+				this.$doneAction.addClass('action-disabled');
+
+				this.$editAction.addClass('action-enabled');
 			}
 			if(app.loggedUser.role==app.util.ROLE_APPROVER) {
-				this.$viewAction.hide();
-				this.$doneAction.hide();
+				this.$viewAction.addClass('action-disabled');
+				this.$doneAction.addClass('action-disabled');
+
+				this.$editAction.addClass('action-enabled');
+				this.$approveAction.addClass('action-enabled');
+				this.$rejectAction.addClass('action-enabled');
 			}
 			if(app.loggedUser.role==app.util.ROLE_EXECUTOR) {
-				this.$editAction.hide();
-				this.$cancelAction.hide();
-				this.$approveAction.hide();
-				this.$rejectAction.hide();
+				this.$editAction.addClass('action-disabled');
+				this.$cancelAction.addClass('action-disabled');
+				this.$approveAction.addClass('action-disabled');
+				this.$rejectAction.addClass('action-disabled');
+
+				this.$viewAction.addClass('action-enabled');				
 			}
 			return this;
 		},
