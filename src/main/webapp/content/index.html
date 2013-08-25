@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../public/css/tt.css" media="screen">    
     <link rel="stylesheet" href="../public/css/bootstrap-datetimepicker.min.css" media="screen" >
     <link rel="stylesheet" href="../public/css/bootstrap-glyphicons.css" media="screen" >
-    
+    <link href="../public/lib/backbone-upload-manager-master/css/backbone.upload-manager.css" rel="stylesheet">
 </head>
 <body class="tt-body">
 
@@ -143,6 +143,8 @@
 				    	</div>
 				  	</div>
 
+					<div id="fileUpload" class="control-group"></div>
+
 					<div id="commentDiv" class="control-group"> 
 						<!-- only for approvers changin the priority of a ticket trough this form -->
 				    	<label class="control-label hidden-phone" for="comment">Comment</label>
@@ -186,6 +188,9 @@
 
 	<!-- jQuery -->
 	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script type="text/javascript" src="../public/lib/jquery/jquery.ui.widget.js"></script>
+	<script type="text/javascript" src="../public/lib/jquery/jquery.iframe-transport.js"></script>
+	<script type="text/javascript" src="../public/lib/jquery/jquery.fileupload.js"></script>
 
 	<!-- Date-Time Picker -->
 	<script src="../public/js/utils/bootstrap-datetimepicker.min.js"></script>    
@@ -196,6 +201,10 @@
 		_.templateSettings = { interpolate : /\{\{(.+?)\}\}/g }; //use {{ }} instead of <%= %> in underscore templates
 	</script>
 	<script src="http://documentcloud.github.com/backbone/backbone-min.js"></script>
+	<script type="text/javascript" src="../public/lib/backbone/backbone.defered-view-loader.js"></script>
+
+	<!-- Upload Manager script -->
+	<script type="text/javascript" src="../public/lib/backbone-upload-manager-master/js/backbone.upload-manager.js"></script>
 	
 	<!-- Bootstrap -->
 	<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>

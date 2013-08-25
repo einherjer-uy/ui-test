@@ -28,6 +28,7 @@ var app = app || {};
 			this.$type = this.$('#type');
 			this.$priority = this.$('#priority');
 			this.$due = this.$('#due');
+			this.$fileUpload = this.$("div#fileUpload");
 			this.$comment = this.$("textarea#comment");
 			this.$alertContainer = this.$('#ticket-alert-container');
 			this.$descriptionCharNum = this.$('#descriptionCharNum');
@@ -70,6 +71,23 @@ var app = app || {};
 				this.$("#saveButton").hide();
 			}
 
+			<!-- Start upload manager -->
+	        // Reset the baseUrl of template manager
+	        Backbone.TemplateManager.baseUrl = '{name}';
+	        
+	        // Create the upload manager object
+	        app.UploadManager = new Backbone.UploadManager({
+	            //uploadUrl: 'http://upload-manager.sroze.io/upload',
+	            uploadUrl: '/tt/tickets/TT-1/attachment',
+	            templates: {
+	                main: '../public/lib/backbone-upload-manager-master/templates/upload-manager.main',
+	                file: '../public/lib/backbone-upload-manager-master/templates/upload-manager.file'
+	            }
+	        });
+	        
+	        // Render it in our div
+	        app.UploadManager.renderTo(this.$fileUpload);			
+
 			return this;
 		},
 
@@ -91,8 +109,14 @@ var app = app || {};
 				var serverError;
 				if (this.model.isNew()) {
 					this.model.save(null, { //wait: true,
-						success: function (model, response, options) {
+						success: function (model, response, options) {							
 							model.set({number:response.number});
+							
+							app.UploadManager.files.each(function(file){											
+						        file.start();
+						    });
+
+							app.tickets.add(model);
 						},
 						error: function (model, xhr, options) {
 							if (xhr.responseJSON && xhr.resonseJSON.message) {
@@ -103,9 +127,8 @@ var app = app || {};
 					    	}
 						}
 					});
-					if (!this.model.validationError) {
-						app.tickets.add(this.model);
-					}
+					/*if (!this.model.validationError) {
+					}*/
 		        } else {
 		        	//in theory we should be able to do something like this, but it doesn't work cause it doesn't allow to wait for
 		        	//server response, even with "wait:true", so using $.ajax instead with "async: false"
@@ -176,7 +199,9 @@ var app = app || {};
 		showErrors: function(errors) {
         	_.each(errors, function (error) {
 	            this.$alertContainer.append("<div class='alert alert-error'><a class='close' data-dismiss='alert'>&times;</a><strong>Error: </strong>" + error.message + "</div>") ;
-	            $('#' + error.name).parent().parent().addClass("error");
+	            if (error.name != '') {
+	            	$('#' + error.name).parent().parent().addClass("error");	
+	            };	            
         	}, this);
  		},
 
