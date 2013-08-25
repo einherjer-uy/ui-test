@@ -43,6 +43,15 @@ var app = app || {};
 				}
 			}
 
+			var totalSize=0;	
+			app.UploadManager.files.each(function(file){
+											totalSize += file.attributes.data.size;						             
+						                });
+
+			if (totalSize > 20*1024*1024) {
+				errors.push({name: '', message: 'The total size of the attachments cannot be above 20 MB.'});	
+			};
+console.log(totalSize);
 			return errors.length > 0 ? errors : false;
 		}
 
