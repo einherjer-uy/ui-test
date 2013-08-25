@@ -38,6 +38,23 @@ var app = app || {};
         	});
 
 			var self = this;
+			if (this.model.isNew()) {
+				this.$("#fileUploadDiv").hide();
+			}
+			else {
+				this.renderAttachments(this.model.get("number"), this.model.get("attachments"));
+				this.$('#fileupload').fileupload({
+			        dataType: 'json',
+			        url: "tt/tickets/"+self.model.get("number")+"/attachment",
+			        done: function (e, data) {
+			            self.renderAttachments(self.model.get("number"), data.result);
+			        },
+			        progressall: function (e, data) {
+			            var progress = parseInt(data.loaded / data.total * 100, 10);
+			            self.$('#progress .bar').css('width',progress + '%');
+			        }
+			    });
+			}
 			
 		    $.each(app.ticketTypes, function(item) {
 		        self.$type.append(this);
@@ -73,13 +90,53 @@ var app = app || {};
 			return this;
 		},
 
+		renderAttachments: function(ticketNumber, data) {
+			var self = this;
+			if (data && data.length>0) {
+				jQuery("#uploaded-files tr:has(td)").remove();
+	            jQuery.each(data, function (index, file) {
+	                jQuery("#uploaded-files").append(
+	                    jQuery('<tr/>')
+	                    .append(jQuery('<td/>').html("<a href='tt/tickets/"+ticketNumber+"/attachment/"+file.id+"'>"+file.fileName+"</a>"))
+	                    .append(jQuery('<td/>').text(file.fileSize))
+	                    .append(jQuery('<td/>').append(
+	                    	jQuery('<a/>').attr('href','#').addClass('btn btn-danger glyphicon glyphicon-trash')
+	                    		.on('click',function() {
+	                    			$.ajax({
+						  				url: "/tt/tickets/"+ticketNumber+"/attachment/"+file.id,
+						  				type: "DELETE",
+						  				data: null,
+						  				contentType: "application/json; charset=utf-8",
+						  				dataType: "json",
+										success: function(data) {
+										    self.model.fetch();
+										    self.renderAttachments(self.model.get("number"), self.model.get("attachments"));
+										},
+									    error: function(data) {
+									    	if (data.responseJSON && data.resonseJSON.message) {
+									    		app.util.displayError(self.$alertContainer, data.responseJSON.message);
+									    	}
+									    	else { //just in case the server missed to return a proper json with "message" value
+									    		app.util.displayError(self.$alertContainer, "Unexpected server error");
+									    	}
+									    }
+									});
+	                    		})
+	                    		/*.tooltip({placement:"bottom", title:"Delete"})*/
+	                    	)
+						)
+					);
+	            });
+	        }
+        },
+
 		getTemplateData: function() {
 			var templateData = this.model.toJSON();
 			if (this.model.isNew()) {
 				templateData.modalTitle = "Create ticket";
 			}
 			else {
-				templateData.modalTitle = this.model.id + ": Edit";
+				templateData.modalTitle = this.model.get("number") + ": Edit";
 			}
 			return templateData;
 		},

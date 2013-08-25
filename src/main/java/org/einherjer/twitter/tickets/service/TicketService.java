@@ -193,11 +193,12 @@ public class TicketService {
     }
 
     @Transactional
-    public void addAttachment(String projectPrefix, Integer ticketNumber, String filename, byte[] bytes) {
+    public Attachment addAttachment(String projectPrefix, Integer ticketNumber, String fileName, String fileSize, String fileType, byte[] bytes) {
         Ticket ticket = this.find(projectPrefix, ticketNumber);
         validateUpdate(ticket);
-        ticket.addAttachment(filename, bytes);
+        Attachment attachment = ticket.addAttachment(fileName, fileSize, fileType, bytes);
         ticket.logUpdate();
+        return attachment;
     }
 
     @Transactional

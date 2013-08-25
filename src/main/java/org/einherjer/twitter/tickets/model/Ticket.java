@@ -147,8 +147,10 @@ public class Ticket extends AbstractEntity {
         return Collections.unmodifiableSet(attachments);
     }
 
-    public void addAttachment(String filename, byte[] bytes) {
-        this.attachments.add(new Attachment(filename, bytes));
+    public Attachment addAttachment(String fileName, String fileSize, String fileType, byte[] bytes) {
+        Attachment attachment = new Attachment(fileName, fileSize, fileType, bytes);
+        this.attachments.add(attachment);
+        return attachment;
     }
 
     public void removeAttachment(Long attachmentId) {
