@@ -81,14 +81,6 @@ var app = app || {};
 				self.$doneAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
 			});
 
-			if(this.onAddEditModal) {
-				this.$viewAction.addClass('action-disabled');
-				this.$editAction.addClass('action-disabled');
-
-				this.$approveAction.addClass('action-enabled');
-				this.$rejectAction.addClass('action-enabled');
-				this.$doneAction.addClass('action-enabled');
-			}
 			if(app.loggedUser.role==app.util.ROLE_REQUESTOR) {
 				this.$viewAction.addClass('action-disabled');
 				this.$approveAction.addClass('action-disabled');
@@ -96,10 +88,12 @@ var app = app || {};
 				this.$doneAction.addClass('action-disabled');
 
 				this.$editAction.addClass('action-enabled');
+				this.$cancelAction.addClass('action-enabled');
 			}
 			if(app.loggedUser.role==app.util.ROLE_APPROVER) {
 				this.$viewAction.addClass('action-disabled');
 				this.$doneAction.addClass('action-disabled');
+				this.$cancelAction.addClass('action-disabled');
 
 				this.$editAction.addClass('action-enabled');
 				this.$approveAction.addClass('action-enabled');
@@ -110,9 +104,14 @@ var app = app || {};
 				this.$cancelAction.addClass('action-disabled');
 				this.$approveAction.addClass('action-disabled');
 				this.$rejectAction.addClass('action-disabled');
+				this.$cancelAction.addClass('action-disabled');
 
 				this.$viewAction.addClass('action-enabled');				
 			}
+
+			this.$('.action-disabled').removeAttr('href');
+			this.$('.action-disabled').popover('destroy');
+			
 			return this;
 		},
 
