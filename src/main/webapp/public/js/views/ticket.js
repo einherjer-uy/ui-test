@@ -51,7 +51,13 @@ var app = app || {};
 			        },
 			        progressall: function (e, data) {
 			            var progress = parseInt(data.loaded / data.total * 100, 10);
-			            self.$('#progress .bar').css('width',progress + '%');
+			            if(progress==100){
+			                self.$('#progress').hide();
+			            }
+			            else {
+			                self.$('#progress').show();
+			                self.$('#progress .bar').css('width',progress + '%');    
+			            }
 			        }
 			    });
 			}
@@ -91,14 +97,14 @@ var app = app || {};
 		},
 
 		renderAttachments: function(ticketNumber, data) {
-			var self = this;
+			jQuery("#uploaded-files tr:has(td)").remove();
 			if (data && data.length>0) {
-				jQuery("#uploaded-files tr:has(td)").remove();
+				var self = this;
 	            jQuery.each(data, function (index, file) {
 	                jQuery("#uploaded-files").append(
 	                    jQuery('<tr/>')
-	                    .append(jQuery('<td/>').html("<a href='tt/tickets/"+ticketNumber+"/attachment/"+file.id+"'>"+file.fileName+"</a>"))
-	                    .append(jQuery('<td/>').text(file.fileSize))
+	                    .append(jQuery('<td/>').html("<a href='tt/tickets/"+ticketNumber+"/attachment/"+file.id+"' title='"+file.fileName+"'>"+file.fileName+"</a>"))
+	                    .append(jQuery('<td/>').text(file.fileSize).css("white-space","nowrap"))
 	                    .append(jQuery('<td/>').append(
 	                    	jQuery('<a/>').attr('href','#').addClass('btn btn-danger glyphicon glyphicon-trash')
 	                    		.on('click',function() {
@@ -106,6 +112,7 @@ var app = app || {};
 						  				url: "/tt/tickets/"+ticketNumber+"/attachment/"+file.id,
 						  				type: "DELETE",
 						  				data: null,
+						  				async: false,
 						  				contentType: "application/json; charset=utf-8",
 						  				dataType: "json",
 										success: function(data) {

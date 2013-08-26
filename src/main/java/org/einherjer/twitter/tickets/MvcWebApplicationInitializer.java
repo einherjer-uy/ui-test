@@ -151,7 +151,7 @@ public class MvcWebApplicationInitializer extends AbstractAnnotationConfigDispat
         @Bean
         public MultipartResolver multipartResolver() {
             CommonsMultipartResolver bean = new CommonsMultipartResolver();
-            bean.setMaxUploadSize(5242880);
+            bean.setMaxUploadSize(20971520);
             return bean;
         }
 
