@@ -42,8 +42,8 @@ var app = app || {};
 					}
 				}
 			}
-
-			var totalSize=0;	
+			//should not be needed cause the files are uploaded as soon as they are selected, so the server can detect the 20mb have been exceeded first
+			/*var totalSize=0;	
 			app.UploadManager.files.each(function(file){
 											totalSize += file.attributes.data.size;						             
 						                });
@@ -52,7 +52,7 @@ var app = app || {};
 				errors.push({name: '', message: 'The total size of the attachments cannot be above 20 MB.'});	
 			};
 console.log(totalSize);
-			return errors.length > 0 ? errors : false;
+			return errors.length > 0 ? errors : false;*/
 		}
 
 	});

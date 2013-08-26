@@ -2,8 +2,12 @@ package org.einherjer.twitter.tickets.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletResponse;
 
 import lombok.Getter;
 
@@ -21,15 +25,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @Controller
 public class TicketController {
@@ -312,7 +317,7 @@ public class TicketController {
      * no body
      */
     @RequestMapping(value = "/tickets/{project}-{number}/done", method = RequestMethod.POST)
-    public ResponseEntity<String> done(
+    public ResponseEntity<String> markAsDone(
             @PathVariable("project") String projectPrefix, 
             @PathVariable("number") Integer ticketNumber) {
         ticketService.done(projectPrefix, ticketNumber);
@@ -320,35 +325,47 @@ public class TicketController {
     }
     
     /**
-     * Get attachment
-     */
-    @RequestMapping(value = "/tickets/{project}-{number}/attachment/{attachId}", method = RequestMethod.GET)
-    public @ResponseBody Attachment getAttachment(
-            @PathVariable("project") String projectPrefix,
-            @PathVariable("number") Integer ticketNumber,
-            @PathVariable("attachId") Long attachmentId) {
-        return ticketService.getAttachment(projectPrefix, ticketNumber, attachmentId);
-    }
-    
-    /**
      * Add attachment
      * 
      * Example request:
      * POST /api/tickets/PR1-1/attachment HTTP/1.1
-     * Content-Type: multipart/mixed
+     * Content-Type: multipart/form-data
      * --edt7Tfrdusa7r3lNQc79vXuhIIMlatb7PQg7Vp
-     * Content-Disposition: form-data; name="file-data"; filename="file.properties"
-     * Content-Type: text/xml
-     * Content-Transfer-Encoding: 8bit
+     * Content-Disposition: form-data; name="files[]"; filename="palacio_salvo.jpg"
+     * Content-Type: image/jpeg
      * ... File Data ...
      */
     @RequestMapping(value = "/tickets/{project}-{number}/attachment", method = RequestMethod.POST)
-    public ResponseEntity<String> addAttachment(
+    public @ResponseBody Set<Attachment> uploadAttachment(
             @PathVariable("project") String projectPrefix,
             @PathVariable("number") Integer ticketNumber,
-            @RequestPart("file-data") MultipartFile file) throws IOException {
-        ticketService.addAttachment(projectPrefix, ticketNumber, file.getOriginalFilename(), file.getBytes());
-        return new ResponseEntity<String>(HttpStatus.CREATED);
+    // this way is simpler but doesn't support multiple files
+    //          @RequestPart("files[]") MultipartFile file) throws IOException {
+    //        ticketService.addAttachment(projectPrefix, ticketNumber, file.getOriginalFilename(), file.getBytes());
+    //    }
+            MultipartHttpServletRequest request) throws IOException {
+        MultipartFile mpf = null;
+        Iterator<String> itr = request.getFileNames();
+        while (itr.hasNext()) {
+            mpf = request.getFile(itr.next());
+            ticketService.addAttachment(projectPrefix, ticketNumber, mpf.getOriginalFilename(), mpf.getSize() / 1024 + " Kb", mpf.getContentType(), mpf.getBytes());
+        }
+        return ticketService.find(projectPrefix, ticketNumber).getAttachments();
+    }
+
+    /**
+     * Download attachment 
+     */
+    @RequestMapping(value = "/tickets/{project}-{number}/attachment/{attachId}", method = RequestMethod.GET)
+    public void downloadAttachment(
+            @PathVariable("project") String projectPrefix,
+            @PathVariable("number") Integer ticketNumber,
+            @PathVariable("attachId") Long attachmentId,
+            HttpServletResponse response) throws IOException {
+        Attachment attachment = ticketService.getAttachment(projectPrefix, ticketNumber, attachmentId);
+        response.setContentType(attachment.getFileType());
+        response.setHeader("Content-disposition", "attachment; filename=\"" + attachment.getFileName() + "\"");
+        FileCopyUtils.copy(attachment.getBytes(), response.getOutputStream());
     }
     
     /**

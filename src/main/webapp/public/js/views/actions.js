@@ -36,7 +36,7 @@ var app = app || {};
 			this.$cancelAction.tooltip({placement:"bottom", title:"Cancel"});
 			this.$rejectAction.tooltip({placement:"bottom", title:"Reject"});
 			this.$approveAction.tooltip({placement:"bottom", title:"Approve"});
-			this.$doneAction.tooltip({placement:"bottom", title:"Mark as Done"});
+			this.$doneAction.tooltip({placement:"bottom", html:true, title:"<span style='white-space:nowrap'>Mark as Done</span>"});
 
 			var self = this;
 
@@ -48,14 +48,15 @@ var app = app || {};
 			//the button that triggered it in the case of window resize, but apparently here it stays together even with container: false
 			this.$cancelAction.popover({placement:this.popupPlacement(), container: false, title:"Confirmation", html:true, 
 				content:popoverView.render().el});
-			this.$cancelAction.on('shown.bs.popover', function () {
-				self.$cancelAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
+			//works only with bootstrap 3
+			//this.$cancelAction.on('shown.bs.popover', function () {
+			//	self.$cancelAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
 				//self.$(".tt-action").css("display","inline");
 				/*self.$editAction.css("display","inline");
 				self.$cancelAction.css("display","inline");
 				self.$rejectAction.css("display","inline");
 				self.$approveAction.css("display","inline");*/
-			});
+			//});
 			//this.$cancelAction.on('hidden.bs.popover', function () {
 				//self.$(".tt-action").css("display","none");
 			//});
@@ -63,23 +64,26 @@ var app = app || {};
 			var popoverView = new app.PopoverView({ model: this.model, type: app.util.REJECT_POPOVER, $action: this.$rejectAction, $messages: this.$messages, parentView: this, onAddEditModal: this.onAddEditModal });
 			this.$rejectAction.popover({placement:this.popupPlacement(), container: false, title:"Confirmation", html:true,
 				content:popoverView.render().el});
-			this.$rejectAction.on('shown.bs.popover', function () {
-				self.$rejectAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
-			});
+			//works only with bootstrap 3
+			//this.$rejectAction.on('shown.bs.popover', function () {
+			//	self.$rejectAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
+			//});
 
 			popoverView = new app.PopoverView({ model: this.model, type: app.util.APPROVE_POPOVER, $action: this.$approveAction, $messages: this.$messages, parentView: this, onAddEditModal: this.onAddEditModal });
 			this.$approveAction.popover({placement:this.popupPlacement(), container: false/*'.approveSpan'*/, title:"Confirmation", html:true,
 				content:popoverView.render().el});
-			this.$approveAction.on('shown.bs.popover', function () {
-				self.$approveAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
-			});
+			//works only with bootstrap 3
+			//this.$approveAction.on('shown.bs.popover', function () {
+			//	self.$approveAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
+			//});
 
 			popoverView = new app.PopoverView({ model: this.model, type: app.util.DONE_POPOVER, $action: this.$doneAction, $messages: this.$messages, parentView: this, onAddEditModal: this.onAddEditModal });
 			this.$doneAction.popover({placement:this.popupPlacement(), container: false/*'.doneSpan'*/, title:"Confirmation", html:true,
 				content:popoverView.render().el});
-			this.$doneAction.on('shown.bs.popover', function () {
-				self.$doneAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
-			});
+			//works only with bootstrap 3
+			//this.$doneAction.on('shown.bs.popover', function () {
+			//	self.$doneAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
+			//});
 
 			if(app.loggedUser.role==app.util.ROLE_REQUESTOR) {
 				this.$viewAction.addClass('action-disabled');
@@ -93,9 +97,9 @@ var app = app || {};
 			if(app.loggedUser.role==app.util.ROLE_APPROVER) {
 				this.$viewAction.addClass('action-disabled');
 				this.$doneAction.addClass('action-disabled');
-				this.$cancelAction.addClass('action-disabled');
 
 				this.$editAction.addClass('action-enabled');
+				this.$cancelAction.addClass('action-enabled');
 				this.$approveAction.addClass('action-enabled');
 				this.$rejectAction.addClass('action-enabled');
 			}
@@ -104,9 +108,9 @@ var app = app || {};
 				this.$cancelAction.addClass('action-disabled');
 				this.$approveAction.addClass('action-disabled');
 				this.$rejectAction.addClass('action-disabled');
-				this.$cancelAction.addClass('action-disabled');
 
 				this.$viewAction.addClass('action-enabled');				
+				this.$doneAction.addClass('action-enabled');
 			}
 
 			this.$('.action-disabled').removeAttr('href');

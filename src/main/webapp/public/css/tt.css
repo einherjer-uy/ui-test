@@ -367,4 +367,3 @@ tr:hover .actions .action-enabled {
 .popover { /*override bootstrap popover to allow display in front of modal*/
 	z-index: 1051; 
 }
-
