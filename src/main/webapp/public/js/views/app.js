@@ -13,7 +13,6 @@ var app = app || {};
 		},
 
 		initialize: function () {
-			this.$progress = this.$('#progress');
 			this.$tableFooter = this.$('#tableFooter');
 			this.$ticketTable = this.$('#ticketTable');
 			this.$addEditModal = $('#addEditModal');
@@ -36,7 +35,10 @@ var app = app || {};
 			};
 			
 			this.$messagesDiv.html('');
-			this.$progress.hide();
+
+			<!--Hide progress bar and black background -->
+			$('#pleaseWaitDialog').hide();
+			$(".modal-backdrop").remove();
 
 			if (app.tickets.length) {
 				this.$ticketTable.show();
