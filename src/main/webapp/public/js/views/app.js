@@ -31,7 +31,7 @@ var app = app || {};
 			//var remaining = app.tickets.remaining().length;
 
 			if (app.loggedUser && app.loggedUser.username && app.loggedUser.username.emailAddress) {
-				this.$loggedUser.html(app.loggedUser.username.emailAddress);	
+				this.$loggedUser.html(app.loggedUser.username.emailAddress + ' ('+ app.loggedUser.role.toLowerCase() +')');	
 			};
 			
 			this.$messagesDiv.html('');
