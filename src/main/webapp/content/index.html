@@ -156,7 +156,7 @@
 				                <div id="progress" class="progress progress-striped active" style="display:none; margin-top:7px;">
 				                    <div class="bar" style="width:0%;"></div>
 				                </div>
-							    <table id="uploaded-files" style="width:100%; margin: 5px, 0;"></table>
+							    <table id="uploadedFiles" style="width:100%; margin: 5px, 0;"></table>
 							</div>
 				    	</div>
 				  	</div>
@@ -179,6 +179,22 @@
 				<button type="button" id="saveButton" class="btn btn-primary">Save changes</button>
 			</div>
 		</div>
+	</script>
+
+	<script type="text/template" id="attachmentRowTemplate">
+    	<td><a href='tt/tickets/TT-3/attachment/{{file.id}}' title='{{file.fileName}}'>{{file.fileName}}</a></td>
+		<td class='white-space:nowrap'>{{file.fileSize}}</td>
+        <td><a href='#' class='deleteAttach btn btn-danger glyphicon glyphicon-trash'></a></td>
+	</script>
+
+	<script type="text/template" id="attachmentsTemplateOLD">
+		<% _.each(attachments, function(file) { %>
+			<tr>
+	        	<td><a href='tt/tickets/{{ticketNumber}}/attachment/{{file.id}}' title='{{file.fileName}}'>{{file.fileName}}</a></td>
+				<td class='white-space:nowrap'>{{file.fileSize}}</td>
+	            <td><a href='#' class='btn btn-danger glyphicon glyphicon-trash'></a></td>
+	        </tr>
+		<% }); %>
 	</script>
 
 	<script type="text/template" id="commentConfirmationTemplate">
@@ -338,7 +354,11 @@
     <!-- Backbone -->
 	<script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
 	<script>
-		_.templateSettings = { interpolate : /\{\{(.+?)\}\}/g }; //use {{ }} instead of <%= %> in underscore templates
+		_.templateSettings = { 
+			evaluate    : /<%([\s\S]+?)%>/g,
+			interpolate : /\{\{(.+?)\}\}/g, //use {{ }} instead of <%= %> in underscore templates
+		    escape      : /<%-([\s\S]+?)%>/g	
+		 };
 	</script>
 	<script src="http://documentcloud.github.com/backbone/backbone-min.js"></script>
 	

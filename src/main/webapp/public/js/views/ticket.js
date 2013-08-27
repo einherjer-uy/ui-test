@@ -8,6 +8,7 @@ var app = app || {};
 		className: 'modal-dialog',
 
 		template: _.template($('#modal-template').html()),
+		attachmentsTemplate: _.template($('#attachmentsTemplateOLD').html()),
 
 		events: {
 			'click #saveButton' : 'save',
@@ -32,6 +33,7 @@ var app = app || {};
 			this.$comment = this.$("textarea#comment");
 			this.$alertContainer = this.$('#ticket-alert-container');
 			this.$descriptionCharNum = this.$('#descriptionCharNum');
+			this.$uploadedFiles = this.$("#uploadedFiles");
 
 			this.$("#duedate-datetimepicker").datetimepicker({
         		format: 'dd/MM/yyyy-hh:mm',
@@ -39,29 +41,26 @@ var app = app || {};
         	});
 
 			var self = this;
-			if (this.model.isNew()) {
-				this.$("#fileUploadDiv").hide();
-			}
-			else {
-				this.renderAttachments(this.model.get("number"), this.model.get("attachments"));
-				this.$('#fileupload').fileupload({
-			        dataType: 'json',
-			        url: "tt/tickets/"+self.model.get("number")+"/attachment",
-			        done: function (e, data) {
-			            self.renderAttachments(self.model.get("number"), data.result);
-			        },
-			        progressall: function (e, data) {
-			            var progress = parseInt(data.loaded / data.total * 100, 10);
-			            if(progress==100){
-			                self.$('#progress').hide();
-			            }
-			            else {
-			                self.$('#progress').show();
-			                self.$('#progress .bar').css('width',progress + '%');    
-			            }
-			        }
-			    });
-			}
+			this.renderAttachments(this.model.get("number"), this.model.get("attachments"));
+			this.$('#fileupload').fileupload({
+		        dataType: 'json',
+		        url: "tt/tickets/"+self.model.get("number")+"/attachment",
+		        done: function (e, data) {
+		        	self.model.set("attachments", data.result);
+		            self.renderAttachments();
+		        },
+		        progressall: function (e, data) {
+		            var progress = parseInt(data.loaded / data.total * 100, 10);
+		            if(progress==100){
+		                self.$('#progress').hide();
+		            }
+		            else {
+		                self.$('#progress').show();
+		                self.$('#progress .bar').css('width',progress + '%');    
+		            }
+		        }
+		    });
+			
 			/*// Start upload manager
 	        // Reset the baseUrl of template manager
 	        Backbone.TemplateManager.baseUrl = '{name}';
@@ -113,12 +112,21 @@ var app = app || {};
 			return this;
 		},
 
-		renderAttachments: function(ticketNumber, data) {
-			jQuery("#uploaded-files tr:has(td)").remove();
+		renderAttachments: function() {
+			//this.$("#uploadedFiles").html("");
+			//_.each(data, function(file){
+			//	jQuery("#uploadedFiles").append(new app.AttachmentRowView({ model: file }).render().el);
+			//});	
+			var data = this.model.get("attachments");
+			this.$uploadedFiles.html("");
 			if (data && data.length>0) {
-				var self = this;
+				this.$uploadedFiles.append(this.attachmentsTemplate({attachments: this.model.get("attachments"), ticketNumber: data}));
+			}
+
+		},
+		/*		var self = this;
 	            jQuery.each(data, function (index, file) {
-	                jQuery("#uploaded-files").append(
+	                jQuery("#uploadedFiles").append(
 	                    jQuery('<tr/>')
 	                    .append(jQuery('<td/>').html("<a href='tt/tickets/"+ticketNumber+"/attachment/"+file.id+"' title='"+file.fileName+"'>"+file.fileName+"</a>"))
 	                    .append(jQuery('<td/>').text(file.fileSize).css("white-space","nowrap"))
@@ -146,13 +154,12 @@ var app = app || {};
 									    }
 									});
 	                    		})
-	                    		/*.tooltip({placement:"bottom", title:"Delete"})*/
 	                    	)
 						)
 					);
 	            });
 	        }
-        },
+        },*/
 
 		getTemplateData: function() {
 			var templateData = this.model.toJSON();
