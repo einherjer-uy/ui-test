@@ -309,7 +309,7 @@ body.tt-body {
 	padding: 5px 8px;
 }
 
-#ticketTable .actions .action-disabled {
+.actions .action-disabled {
 	display: none;
 }
 
