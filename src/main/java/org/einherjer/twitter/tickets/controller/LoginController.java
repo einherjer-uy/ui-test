@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.einherjer.twitter.tickets.model.InvalidLoginException;
 import org.einherjer.twitter.tickets.model.User;
+import org.einherjer.twitter.tickets.repository.UserRepository;
 import org.einherjer.twitter.tickets.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +28,8 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
 
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private UserRepository userRepository;
 
     //returning String and receiving ModelMap is the same as receiving and returning ModelAndView, and setting ModelAndView.setViewName
     //This method is not used since the login is handled by spring security. It's left only to show how to resolve the view in the case of html resources (see MvcWebApplicationInitializer)
@@ -106,5 +110,9 @@ public class LoginController /*implements ResourceProcessor<Resources<Object>>*/
     public @ResponseBody User getLoggedUser() {
         return loginService.getLoggedUser();
     }
-        
+       
+    @RequestMapping(value = "/loggedUser", method = RequestMethod.PUT)
+    public @ResponseBody User putLoggedUser(@RequestBody User user) {
+        return userRepository.save(user);
+    }
 }

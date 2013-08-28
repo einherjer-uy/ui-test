@@ -109,7 +109,7 @@ var app = app || {};
 				this.$approveAction.addClass('action-disabled');
 				this.$rejectAction.addClass('action-disabled');
 
-				this.$viewAction.addClass('action-enabled');				
+				this.$viewAction.addClass('action-enabled');
 				this.$doneAction.addClass('action-enabled');
 			}
 

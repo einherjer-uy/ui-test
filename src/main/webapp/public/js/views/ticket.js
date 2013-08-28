@@ -4,9 +4,6 @@ var app = app || {};
 
 	app.TicketView = Backbone.View.extend({
 
-		tagName: 'div',
-		className: 'modal-dialog',
-
 		template: _.template($('#modal-template').html()),
 
 		events: {
@@ -19,8 +16,8 @@ var app = app || {};
 			// to improve performance run the needed selectors only once in the initialize or render funcions and store the references that will be used in other view methods
 			// in this case we do it in initialize() (instead of in render()) cause the elements to be selected belong to a separate modal, unrelated to the view's "el" (<li> in this case)
 			// in this case we don't use the syntax this.$(<selector>); cause the edit is done in a separate modal, unrelated to the view's "el" (<li> in this case)
-			this.$addEditModal = $('#addEditModal');
 			this.attachmentsTemplate = _.template($('#attachmentsTemplate').html());
+			this.$addEditModal = $('#addEditModal');
 		},
 
 		render: function () {

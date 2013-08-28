@@ -26,10 +26,14 @@ public class User extends AbstractEntity {
     @Column(nullable = false)
     private @Setter Role role;
     
+    @Column(nullable = false)
+    private @Setter DashboardMode dashboardMode;
+    
     public User(String username, String password, Role role) {
         this.username = new EmailAddress(username);
         this.password = new Password(password);
         this.role = role;
+        this.dashboardMode = DashboardMode.LIST;
     }
 
     public static enum Role {
@@ -38,4 +42,9 @@ public class User extends AbstractEntity {
         EXECUTOR;
     }
     
+    public static enum DashboardMode {
+        LIST,
+        CARD;
+    }
+
 }
