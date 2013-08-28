@@ -76,7 +76,7 @@
 				</div>	
 			</section>	
 			<footer>
-				<a id="addButton" class="btn btn-primary btn-small pull-right">Create new ticket</a>
+				<a id="addButton" class="btn btn-primary btn-small pull-right"><i class="glyphicon glyphicon-plus"></i> Create new ticket</a>
 				<!-- Add/Edit ticket modal -->
 				<div class="modal fade" id="addEditModal"></div>
 			</footer>
@@ -104,8 +104,14 @@
 
 	<!--Template for the tickets cards-->
 	<script type="text/template" id="item-card-template">
-        <div>{{ description }}</div>
-       	<div class="actions"></div>
+        <div class="thumbnail">
+			<div class="actions"></div>
+			<div>{{ log[log.length-1].timestamp }}</div>
+			<div>{{ log[log.length-1].user.firstName }}</div>
+			<div>{{ log[log.length-1].user.lastName }}</div>   
+			<div>{{ description }}</div>
+			<div>{{ number }}</div>
+        </div>
 	</script>
 
 	<script type="text/template" id="actionsTemplate">
