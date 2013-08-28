@@ -252,7 +252,7 @@ var app = app || {};
 	        if (len >= 3000) {
 	        	this.$description.val(this.$description.val().substring(0, 3000));
 	        } else {
-	        	this.$descriptionCharNum.text((3000 - len).toString() + " / 3000") ; 
+	        	this.$descriptionCharNum.text((3000 - len).toString()) ; 
 	        }
 		}
 
