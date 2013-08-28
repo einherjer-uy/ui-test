@@ -44,7 +44,8 @@ var app = app || {};
 			//var remaining = app.tickets.remaining().length;
 
 			if (app.loggedUser && app.loggedUser.username && app.loggedUser.username.emailAddress) {
-				this.$loggedUser.html(app.loggedUser.username.emailAddress + ' ('+ app.loggedUser.role.toLowerCase() +')');	
+				this.$loggedUser.html(app.loggedUser.firstName + ' ' + app.loggedUser.lastName + '  |  '+ app.loggedUser.role.toLowerCase());	
+				console.log(app.loggedUser);
 			};
 			
 			//this.allCheckbox.checked = !remaining;
