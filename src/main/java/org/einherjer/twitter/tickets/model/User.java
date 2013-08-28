@@ -29,6 +29,9 @@ public class User extends AbstractEntity {
     @Column(nullable = false)
     private @Setter DashboardMode dashboardMode;
     
+    private @Setter String firstName;
+    private @Setter String lastName;
+
     public User(String username, String password, Role role) {
         this.username = new EmailAddress(username);
         this.password = new Password(password);

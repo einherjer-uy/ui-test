@@ -24,18 +24,26 @@ public class UserLoader {
         }
 
         User u = new User("user@twitter.com", "Admin_123", Role.REQUESTOR);
+        u.setFirstName("Samuel L.");
+        u.setLastName("Jackson");
         repository.save(u);
         log.info("Created User " + u);
 
         u = new User("req@twitter.com", "Admin_123", Role.REQUESTOR);
+        u.setFirstName("Paul");
+        u.setLastName("Newman");
         repository.save(u);
         log.info("Created User " + u);
 
         u = new User("app@twitter.com", "Admin_123", Role.APPROVER);
+        u.setFirstName("Chuck");
+        u.setLastName("Norris");
         repository.save(u);
         log.info("Created User " + u);
 
         u = new User("exe@twitter.com", "Admin_123", Role.EXECUTOR);
+        u.setFirstName("Clint");
+        u.setLastName("Eastwood");
         repository.save(u);
         log.info("Created User " + u);
     }
