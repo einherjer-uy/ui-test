@@ -46,22 +46,34 @@
 		</header>
 		<section id="main">
 			<header>
-				<div class="alert-container" id="dashboardMessages"></div>
-				
+				<div class="alert-container" id="dashboardMessages"></div>				
 			</header>
+
 			<section>
-				<table id="ticketTable" class="table table-striped table-hover" style="display:none;">
-					<thead>
-						<tr>
-							<th>Id</th>
-							<th>Description</th>
-							<th>Type</th>
-							<th>Priority</th>
-							<th>Due date</th>
-							<th colspan="4">Status</th>					
-						</tr>
-					</thead>
-				</table>
+				<ul id="ticketTab" class="nav nav-tabs">
+					<li id="ticketListTab" class="active"><a href="#list" data-toggle="tab">List</a></li>
+	              	<li id="ticketCardTab" class=""><a href="#cards" data-toggle="tab">Cards</a></li>
+	            </ul>
+
+				<div class="tab-content">
+					<div class="tab-pane fade in active" id="list">
+						<table id="ticketTable" class="table table-striped table-hover" style="display:none;">
+							<thead>
+								<tr>
+									<th>Id</th>
+									<th>Description</th>
+									<th>Type</th>
+									<th>Priority</th>
+									<th>Due date</th>
+									<th colspan="4">Status</th>					
+								</tr>
+							</thead>
+						</table>
+					</div>
+					<div class="tab-pane fade in" id="cards">
+						<div id="ticketCards" class="bs-docs-grid"></div>	
+					</div>					
+				</div>	
 			</section>	
 			<footer>
 				<a id="addButton" class="btn btn-primary btn-small pull-right">Create new ticket</a>
@@ -88,6 +100,12 @@
         <td>
         	<div class="actions"></div>
 		</td>
+	</script>
+
+	<!--Template for the tickets cards-->
+	<script type="text/template" id="item-card-template">
+        <div>{{ description }}</div>
+       	<div class="actions"></div>
 	</script>
 
 	<script type="text/template" id="actionsTemplate">
@@ -249,7 +267,10 @@
 	<script src="../public/js/views/popover.js"></script>
 	<script src="../public/js/views/actions.js"></script>
 	<script src="../public/js/views/ticketRow.js"></script>
+	<script src="../public/js/views/ticketCard.js"></script>
 	<script src="../public/js/views/app.js"></script>
+	<script src="../public/js/views/dashboard_cards.js"></script>
+	<script src="../public/js/views/dashboard_list.js"></script>	
 	<script src="../public/js/routers/router.js"></script>
 	<script src="../public/js/utils/util.js"></script>
 	<script src="../public/js/app.js"></script>

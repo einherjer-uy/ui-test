@@ -11,4 +11,6 @@ $(function () { "use strict";  //$() shorthand for $(document).ready()
 	});
 
 	new app.AppView();
+	new app.DashoardListView();
+	new app.DashoardCardsView();
 });

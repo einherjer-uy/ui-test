@@ -13,8 +13,6 @@ var app = app || {};
 		},
 
 		initialize: function () {
-			this.$tableFooter = this.$('#tableFooter');
-			this.$ticketTable = this.$('#ticketTable');
 			this.$addEditModal = $('#addEditModal');
 			this.$messagesDiv = $('#dashboardMessages'); 
 			this.$loggedUser = $('#loggedUser');
@@ -23,7 +21,14 @@ var app = app || {};
 			this.listenTo(app.tickets, 'reset', this.addAll);
 			this.listenTo(app.tickets, 'all', this.render);
 
-	        app.tickets.fetch(); //call server to fetch the collection, which will in turn trigger the update of the view
+	        app.tickets.fetch({  //call server to fetch the collection, which will in turn trigger the update of the view
+		        success: function () {
+		        	<!--Hide progress bar and black background -->
+	                $('#pleaseWaitDialog').hide();
+					$(".modal-backdrop").hide();
+
+	            }	
+	        });
 		},
 
 		render: function () {
@@ -40,21 +45,7 @@ var app = app || {};
 			$('#pleaseWaitDialog').hide();
 			$("#loadingModalBackdrop").remove(); //cannot do $(".modal-backdrop").remove(); cause this might affect the modal backdrops what will exist in the future (for instance the ones created by the add/edit ticket modal)
 
-			if (app.tickets.length) {
-				this.$ticketTable.show();
-				this.$tableFooter.html(this.footerTemplate({
-					test : "test"
-					//completed: completed,
-					//remaining: remaining
-				}));
-
-				//this.$('#filters li a')
-				//	.removeClass('selected')
-				//	.filter('[href="#/' + (app.TodoFilter || '') + '"]')
-				//	.addClass('selected');
-			} else {
-				this.$ticketTable.hide();
-				this.$tableFooter.hide();
+			if (!app.tickets.length) {
 				app.util.displayInfo(this.$messagesDiv, "No tickets found", false);
 			}
 
@@ -62,16 +53,6 @@ var app = app || {};
 			if (app.loggedUser.role == app.util.ROLE_APPROVER || app.loggedUser.role == app.util.ROLE_EXECUTOR) {
 				this.$("#addButton").hide();
 			}
-		},
-
-		addOne: function (ticket) {
-			var view = new app.TicketRowView({ model: ticket });
-			this.$ticketTable.append(view.render().el);
-		},
-
-		addAll: function () {
-			this.$ticketTable.html('');
-			app.tickets.each(this.addOne, this);
 		},
 
 		add: function() {
