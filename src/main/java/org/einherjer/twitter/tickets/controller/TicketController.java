@@ -350,7 +350,7 @@ public class TicketController {
             mpf = request.getFile(itr.next());
             ticketService.addAttachment(projectPrefix, ticketNumber, mpf.getOriginalFilename(), mpf.getSize() / 1024 + " Kb", mpf.getContentType(), mpf.getBytes());
         }
-        return ticketService.find(projectPrefix, ticketNumber).getAttachments();
+        return ticketService.find(projectPrefix, ticketNumber).getAttachments(); //the file upload jquery plugin requires the server to return the list of attachments after POST
     }
 
     /**
@@ -372,12 +372,12 @@ public class TicketController {
      * Delete attachment
      */
     @RequestMapping(value = "/tickets/{project}-{number}/attachment/{attachId}", method = RequestMethod.DELETE)
-    public @ResponseBody Set<Attachment> deleteAttachment(
+    public ResponseEntity<String> deleteAttachment(
             @PathVariable("project") String projectPrefix,
             @PathVariable("number") Integer ticketNumber,
             @PathVariable("attachId") Long attachmentId) {
         ticketService.deleteAttachment(projectPrefix, ticketNumber, attachmentId);
-        return ticketService.find(projectPrefix, ticketNumber).getAttachments();
+        return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
     }
 
 }

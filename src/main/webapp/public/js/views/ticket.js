@@ -35,7 +35,7 @@ var app = app || {};
 			this.$uploadedFiles = this.$("#uploadedFiles");
 
 			this.$("#duedate-datetimepicker").datetimepicker({
-        		format: 'dd/MM/yyyy-hh:mm',
+        		format: 'MM/dd/yyyy-hh:mm',
         		pickSeconds: false
         	});
 
@@ -106,12 +106,16 @@ var app = app || {};
 	  				url: "/tt/tickets/"+self.model.get("number")+"/attachment/"+$(this).attr("id").replace("deleteAttach",""), //note the need of $( ) around this to be able to use jQuery attr, only this doesn't work 
 	  				type: "DELETE",
 	  				data: null,
-	  				async: false,
 	  				contentType: "application/json; charset=utf-8",
 	  				dataType: "json",
-					success: function(data) {
-					    self.model.set("attachments", data);
-		            	self.renderAttachments();
+					success: function() {
+						//careful here, we cannot do model.fetch and then renderAssessment cause fetch is an ajax (asynchronous) call,
+						//so we need to use callbacks yo make sure the request has been completed
+		            	self.model.fetch({
+		            		success: function (model, response, options) {
+		            			self.renderAttachments();
+		            		}
+		            	});
 					},
 				    error: function(data) {
 				    	if (data.responseJSON && data.responseJSON.message) {
@@ -142,7 +146,7 @@ var app = app || {};
 				this.model.set(this.newAttributes());
 				var serverError;
 				if (this.model.isNew()) {
-					this.model.save(null, { //wait: true,
+					this.model.save(null, {
 						success: function (model, response, options) {							
 							model.set({number:response.number});
 							app.tickets.add(model);
@@ -157,8 +161,9 @@ var app = app || {};
 						}
 					});
 		        } else {
-		        	//in theory we should be able to do something like this, but it doesn't work cause it doesn't allow to wait for
-		        	//server response, even with "wait:true", so using $.ajax instead with "async: false"
+		        	//doing something like this doesn't work cause model.save is an ajax (asynchronous call), the rest of the code
+		        	//in app.TicketView.save executes before the "error" callback is called, so the serverError variable is not
+		        	//updated by time the function checks its value to show the error at the end (on "else if(serverError) {" etc etc)
 		            //this.model.save(this.model.changedAttributes(), { patch: true, wait: true,
 		            //    error: function (model, xhr, options) {
 					//		serverError = xhr.responseJSON.message;

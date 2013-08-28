@@ -36,9 +36,9 @@ var app = app || {};
 			
 			this.$messagesDiv.html('');
 
-			<!--Hide progress bar and black background -->
+			//Hide progress bar and black background
 			$('#pleaseWaitDialog').hide();
-			$(".modal-backdrop").remove();
+			$("#loadingModalBackdrop").remove(); //cannot do $(".modal-backdrop").remove(); cause this might affect the modal backdrops what will exist in the future (for instance the ones created by the add/edit ticket modal)
 
 			if (app.tickets.length) {
 				this.$ticketTable.show();
