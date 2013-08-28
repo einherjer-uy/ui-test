@@ -23,10 +23,18 @@ var app = app || {};
 
 	        app.tickets.fetch({  //call server to fetch the collection, which will in turn trigger the update of the view
 		        success: function () {
-		        	<!--Hide progress bar and black background -->
+		        	//Hide progress bar and black background
 	                $('#pleaseWaitDialog').hide();
 					$(".modal-backdrop").hide();
+					
+					$('#dashboardMessages').html('');
 
+					if (!app.tickets.length) {
+						$('#ticketTab').hide();
+						app.util.displayInfo($('#dashboardMessages'), "No tickets found", false);
+					}else{
+						$('#ticketTab').show();
+					}
 	            }	
 	        });
 		},
@@ -39,19 +47,6 @@ var app = app || {};
 				this.$loggedUser.html(app.loggedUser.username.emailAddress + ' ('+ app.loggedUser.role.toLowerCase() +')');	
 			};
 			
-			this.$messagesDiv.html('');
-
-			//Hide progress bar and black background
-			$('#pleaseWaitDialog').hide();
-			$("#loadingModalBackdrop").remove(); //cannot do $(".modal-backdrop").remove(); cause this might affect the modal backdrops what will exist in the future (for instance the ones created by the add/edit ticket modal)
-
-			if (!app.tickets.length) {
-				$('#ticketTab').hide();
-				app.util.displayInfo(this.$messagesDiv, "No tickets found", false);
-			}else{
-				$('#ticketTab').show();
-			}
-
 			//this.allCheckbox.checked = !remaining;
 			if (app.loggedUser.role == app.util.ROLE_APPROVER || app.loggedUser.role == app.util.ROLE_EXECUTOR) {
 				this.$("#addButton").hide();
