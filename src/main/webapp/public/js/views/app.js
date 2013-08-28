@@ -46,7 +46,10 @@ var app = app || {};
 			$("#loadingModalBackdrop").remove(); //cannot do $(".modal-backdrop").remove(); cause this might affect the modal backdrops what will exist in the future (for instance the ones created by the add/edit ticket modal)
 
 			if (!app.tickets.length) {
+				$('#ticketTab').hide();
 				app.util.displayInfo(this.$messagesDiv, "No tickets found", false);
+			}else{
+				$('#ticketTab').show();
 			}
 
 			//this.allCheckbox.checked = !remaining;
