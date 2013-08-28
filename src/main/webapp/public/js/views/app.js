@@ -45,7 +45,6 @@ var app = app || {};
 
 			if (app.loggedUser && app.loggedUser.username && app.loggedUser.username.emailAddress) {
 				this.$loggedUser.html(app.loggedUser.firstName + ' ' + app.loggedUser.lastName + '  |  '+ app.loggedUser.role.toLowerCase());	
-				console.log(app.loggedUser);
 			};
 			
 			//this.allCheckbox.checked = !remaining;
