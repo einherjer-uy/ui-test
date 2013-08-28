@@ -372,12 +372,12 @@ public class TicketController {
      * Delete attachment
      */
     @RequestMapping(value = "/tickets/{project}-{number}/attachment/{attachId}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteAttachment(
+    public @ResponseBody Set<Attachment> deleteAttachment(
             @PathVariable("project") String projectPrefix,
             @PathVariable("number") Integer ticketNumber,
             @PathVariable("attachId") Long attachmentId) {
         ticketService.deleteAttachment(projectPrefix, ticketNumber, attachmentId);
-        return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+        return ticketService.find(projectPrefix, ticketNumber).getAttachments();
     }
 
 }

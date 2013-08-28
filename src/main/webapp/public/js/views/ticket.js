@@ -8,7 +8,6 @@ var app = app || {};
 		className: 'modal-dialog',
 
 		template: _.template($('#modal-template').html()),
-		attachmentsTemplate: _.template($('#attachmentsTemplateOLD').html()),
 
 		events: {
 			'click #saveButton' : 'save',
@@ -21,6 +20,7 @@ var app = app || {};
 			// in this case we do it in initialize() (instead of in render()) cause the elements to be selected belong to a separate modal, unrelated to the view's "el" (<li> in this case)
 			// in this case we don't use the syntax this.$(<selector>); cause the edit is done in a separate modal, unrelated to the view's "el" (<li> in this case)
 			this.$addEditModal = $('#addEditModal');
+			this.attachmentsTemplate = _.template($('#attachmentsTemplate').html());
 		},
 
 		render: function () {
@@ -29,7 +29,6 @@ var app = app || {};
 			this.$type = this.$('#type');
 			this.$priority = this.$('#priority');
 			this.$due = this.$('#due');
-			//this.$fileUpload = this.$("div#fileUpload");
 			this.$comment = this.$("textarea#comment");
 			this.$alertContainer = this.$('#ticket-alert-container');
 			this.$descriptionCharNum = this.$('#descriptionCharNum');
@@ -41,7 +40,7 @@ var app = app || {};
         	});
 
 			var self = this;
-			this.renderAttachments(this.model.get("number"), this.model.get("attachments"));
+			this.renderAttachments();
 			this.$('#fileupload').fileupload({
 		        dataType: 'json',
 		        url: "tt/tickets/"+self.model.get("number")+"/attachment",
@@ -60,23 +59,6 @@ var app = app || {};
 		            }
 		        }
 		    });
-			
-			/*// Start upload manager
-	        // Reset the baseUrl of template manager
-	        Backbone.TemplateManager.baseUrl = '{name}';
-	        
-	        // Create the upload manager object
-	        app.UploadManager = new Backbone.UploadManager({
-	            //uploadUrl: 'http://upload-manager.sroze.io/upload',
-	            uploadUrl: '/tt/tickets/TT-1/attachment',
-	            templates: {
-	                main: '../public/lib/backbone-upload-manager-master/templates/upload-manager.main',
-	                file: '../public/lib/backbone-upload-manager-master/templates/upload-manager.file'
-	            }
-	        });
-	        
-	        // Render it in our div
-	        app.UploadManager.renderTo(this.$fileUpload);*/
 
 		    $.each(app.ticketTypes, function(item) {
 		        self.$type.append(this);
@@ -113,53 +95,35 @@ var app = app || {};
 		},
 
 		renderAttachments: function() {
-			//this.$("#uploadedFiles").html("");
-			//_.each(data, function(file){
-			//	jQuery("#uploadedFiles").append(new app.AttachmentRowView({ model: file }).render().el);
-			//});	
 			var data = this.model.get("attachments");
 			this.$uploadedFiles.html("");
 			if (data && data.length>0) {
-				this.$uploadedFiles.append(this.attachmentsTemplate({attachments: this.model.get("attachments"), ticketNumber: data}));
+				this.$uploadedFiles.append(this.attachmentsTemplate({attachments: data, ticketNumber: this.model.get("number")}));
 			}
-
+			var self = this;
+			this.$uploadedFiles.find("[id^=deleteAttach]").click( function() {
+				$.ajax({
+	  				url: "/tt/tickets/"+self.model.get("number")+"/attachment/"+$(this).attr("id").replace("deleteAttach",""), //note the need of $( ) around this to be able to use jQuery attr, only this doesn't work 
+	  				type: "DELETE",
+	  				data: null,
+	  				async: false,
+	  				contentType: "application/json; charset=utf-8",
+	  				dataType: "json",
+					success: function(data) {
+					    self.model.set("attachments", data);
+		            	self.renderAttachments();
+					},
+				    error: function(data) {
+				    	if (data.responseJSON && data.responseJSON.message) {
+				    		app.util.displayError(self.$alertContainer, data.responseJSON.message);
+				    	}
+				    	else { //just in case the server missed to return a proper json with "message" value
+				    		app.util.displayError(self.$alertContainer, "Unexpected server error");
+				    	}
+				    }
+				});
+			});
 		},
-		/*		var self = this;
-	            jQuery.each(data, function (index, file) {
-	                jQuery("#uploadedFiles").append(
-	                    jQuery('<tr/>')
-	                    .append(jQuery('<td/>').html("<a href='tt/tickets/"+ticketNumber+"/attachment/"+file.id+"' title='"+file.fileName+"'>"+file.fileName+"</a>"))
-	                    .append(jQuery('<td/>').text(file.fileSize).css("white-space","nowrap"))
-	                    .append(jQuery('<td/>').append(
-	                    	jQuery('<a/>').attr('href','#').addClass('btn btn-danger glyphicon glyphicon-trash')
-	                    		.on('click',function() {
-	                    			$.ajax({
-						  				url: "/tt/tickets/"+ticketNumber+"/attachment/"+file.id,
-						  				type: "DELETE",
-						  				data: null,
-						  				async: false,
-						  				contentType: "application/json; charset=utf-8",
-						  				dataType: "json",
-										success: function(data) {
-										    self.model.fetch();
-										    self.renderAttachments(self.model.get("number"), self.model.get("attachments"));
-										},
-									    error: function(data) {
-									    	if (data.responseJSON && data.responseJSON.message) {
-									    		app.util.displayError(self.$alertContainer, data.responseJSON.message);
-									    	}
-									    	else { //just in case the server missed to return a proper json with "message" value
-									    		app.util.displayError(self.$alertContainer, "Unexpected server error");
-									    	}
-									    }
-									});
-	                    		})
-	                    	)
-						)
-					);
-	            });
-	        }
-        },*/
 
 		getTemplateData: function() {
 			var templateData = this.model.toJSON();
@@ -181,9 +145,6 @@ var app = app || {};
 					this.model.save(null, { //wait: true,
 						success: function (model, response, options) {							
 							model.set({number:response.number});
-							//app.UploadManager.files.each(function(file){											
-						    //    file.start();
-						    //});
 							app.tickets.add(model);
 						},
 						error: function (model, xhr, options) {

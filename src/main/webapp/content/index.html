@@ -8,8 +8,7 @@
     <link rel="stylesheet" href="../public/css/tt.css" media="screen">
     <link rel="stylesheet" href="../public/css/bootstrap-datetimepicker.min.css" media="screen" >
     <link rel="stylesheet" href="../public/css/bootstrap-glyphicons.css" media="screen" >
-    <!--<link href="../public/lib/backbone-upload-manager-master/css/backbone.upload-manager.css" rel="stylesheet">-->
-	<link rel="stylesheet" href="../public/lib/jquery-file-upload/css/jquery.fileupload-ui.css" media="screen">
+	<link rel="stylesheet" href="../public/lib/jquery/jquery.fileupload-ui.css" media="screen">
 </head>
 <body class="tt-body">
 
@@ -181,18 +180,12 @@
 		</div>
 	</script>
 
-	<script type="text/template" id="attachmentRowTemplate">
-    	<td><a href='tt/tickets/TT-3/attachment/{{file.id}}' title='{{file.fileName}}'>{{file.fileName}}</a></td>
-		<td class='white-space:nowrap'>{{file.fileSize}}</td>
-        <td><a href='#' class='deleteAttach btn btn-danger glyphicon glyphicon-trash'></a></td>
-	</script>
-
-	<script type="text/template" id="attachmentsTemplateOLD">
+	<script type="text/template" id="attachmentsTemplate">
 		<% _.each(attachments, function(file) { %>
 			<tr>
 	        	<td><a href='tt/tickets/{{ticketNumber}}/attachment/{{file.id}}' title='{{file.fileName}}'>{{file.fileName}}</a></td>
 				<td class='white-space:nowrap'>{{file.fileSize}}</td>
-	            <td><a href='#' class='btn btn-danger glyphicon glyphicon-trash'></a></td>
+	            <td><a href='#' id="deleteAttach{{file.id}}" class='btn btn-danger glyphicon glyphicon-trash'></a></td>
 	        </tr>
 		<% }); %>
 	</script>
@@ -220,116 +213,6 @@
 		</div>
 	</script>
 
-<!--
-<form id="fileupload" action="tt/tickets/TT-2/attachment" method="POST" enctype="multipart/form-data">
-         The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload --
-        <div class="row fileupload-buttonbar">
-            <div class="col-lg-7">
-                <!-- The fileinput-button span is used to style the file input field as button --
-                <span class="btn btn-success fileinput-button">
-                    <i class="glyphicon glyphicon-plus"></i>
-                    <span>Add files...</span>
-                    <input type="file" name="files[]" multiple>
-                </span>
-                <button type="submit" class="btn btn-primary start">
-                    <i class="glyphicon glyphicon-upload"></i>
-                    <span>Start upload</span>
-                </button>
-                <button type="reset" class="btn btn-warning cancel">
-                    <i class="glyphicon glyphicon-ban-circle"></i>
-                    <span>Cancel upload</span>
-                </button>
-                <button type="button" class="btn btn-danger delete">
-                    <i class="glyphicon glyphicon-trash"></i>
-                    <span>Delete</span>
-                </button>
-                <input type="checkbox" class="toggle">
-                <!-- The loading indicator is shown during file processing --
-                <span class="fileupload-loading"></span>
-            </div>
-            <!-- The global progress information --
-            <div class="col-lg-5 fileupload-progress fade">
-                <!-- The global progress bar --
-                <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                    <div class="progress-bar progress-bar-success" style="width:0%;"></div>
-                </div>
-                <!-- The extended global progress information --
-                <div class="progress-extended">&nbsp;</div>
-            </div>
-        </div>
-        <!-- The table listing the files available for upload/download --
-        <table role="presentation" class="table table-striped"><tbody class="files"></tbody></table>
-    </form>-->
-
-<!-- The template to display files available for upload -->
-<script id="template-upload" type="text/x-tmpl">
-{% for (var i=0, file; file=o.files[i]; i++) { %}
-    <tr class="template-upload fade">
-        <td>
-            <span class="preview"></span>
-        </td>
-        <td>
-            <p class="name">{%=file.name%}</p>
-            {% if (file.error) { %}
-                <div><span class="label label-important">Error</span> {%=file.error%}</div>
-            {% } %}
-        </td>
-        <td>
-            <p class="size">{%=o.formatFileSize(file.size)%}</p>
-            {% if (!o.files.error) { %}
-                <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
-            {% } %}
-        </td>
-        <td>
-            {% if (!o.files.error && !i && !o.options.autoUpload) { %}
-                <button class="btn btn-primary start">
-                    <i class="glyphicon glyphicon-upload"></i>
-                    <span>Start</span>
-                </button>
-            {% } %}
-            {% if (!i) { %}
-                <button class="btn btn-warning cancel">
-                    <i class="glyphicon glyphicon-ban-circle"></i>
-                    <span>Cancel</span>
-                </button>
-            {% } %}
-        </td>
-    </tr>
-{% } %}
-</script>
-<!-- The template to display files available for download -->
-<script id="template-download" type="text/x-tmpl">
-{% for (var i=0, file; file=o.files[i]; i++) { %}
-    <tr class="template-download fade">
-        <td>
-            <span class="preview">
-                {% if (file.thumbnailUrl) { %}
-                    <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}"></a>
-                {% } %}
-            </span>
-        </td>
-        <td>
-            <p class="name">
-                <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.name%}</a>
-            </p>
-            {% if (file.error) { %}
-                <div><span class="label label-important">Error</span> {%=file.error%}</div>
-            {% } %}
-        </td>
-        <td>
-            <span class="size">{%=o.formatFileSize(file.size)%}</span>
-        </td>
-        <td>
-            <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
-                <i class="glyphicon glyphicon-trash"></i>
-                <span>Delete</span>
-            </button>
-            <input type="checkbox" name="delete" value="1" class="toggle">
-        </td>
-    </tr>
-{% } %}
-</script>
-
 	<!-- jQuery -->
 	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 
@@ -337,16 +220,6 @@
 	<script src="../public/lib/jquery/jquery.ui.widget.js"></script>
 	<script src="../public/lib/jquery/jquery.iframe-transport.js"></script>
 	<script src="../public/lib/jquery/jquery.fileupload.js"></script>
-
-	<!--<script src="../public/lib/jquery-file-upload/js/jquery.fileupload-ui.js"></script>-->
-<!-- The Templates plugin is included to render the upload/download listings 
-<script src="http://blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"></script>-->
-<!-- The File Upload processing plugin 
-<script src="../public/lib/jquery-file-upload/js/jquery.fileupload-process.js"></script>-->
-<!-- The File Upload user interface plugin 
-<script src="../public/lib/jquery-file-upload/js/jquery.fileupload-ui.js"></script>-->
-<!-- The main application script 
-<script src="../public/lib/jquery-file-upload/js/main.js"></script>-->
 
 	<!-- Date-Time Picker -->
 	<script src="../public/lib/bootstrap/bootstrap-datetimepicker.min.js"></script>    
@@ -361,10 +234,6 @@
 		 };
 	</script>
 	<script src="http://documentcloud.github.com/backbone/backbone-min.js"></script>
-	
-	<!--<script type="text/javascript" src="../public/lib/backbone/backbone.defered-view-loader.js"></script>-->
-	<!-- Upload Manager script 
-	<script type="text/javascript" src="../public/lib/backbone-upload-manager-master/js/backbone.upload-manager.js"></script>-->
 	
 	<!-- Bootstrap -->
 	<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
