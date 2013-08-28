@@ -41,7 +41,9 @@
 
 	<section id="ttApp" class="container well">
 		<header id="header">
-			<h2>Dashboard</h2>
+			<div class="row">
+				<div class="span6"><h2>Dashboard</h2></div>
+				<div class="span6"><a id="addButton" class="btn btn-primary btn-small pull-right"><i class="glyphicon glyphicon-plus"></i> Create new ticket</a></div>
 			<hr></hr>
 		</header>
 		<section id="main">
@@ -55,7 +57,7 @@
 	              	<li id="ticketCardTab" class=""			><a href="#cards"  	class="glyphicon glyphicon-th" data-toggle="tab"></a></li>
 	            </ul>
 
-				<div class="tab-content">
+				<div id="tickets-collection" class="tab-content">
 					<div class="tab-pane fade in active" id="list">
 						<table id="ticketTable" class="table table-striped table-hover" style="display:none;">
 							<thead>
@@ -76,7 +78,6 @@
 				</div>	
 			</section>	
 			<footer>
-				<a id="addButton" class="btn btn-primary btn-small pull-right"><i class="glyphicon glyphicon-plus"></i> Create new ticket</a>
 				<!-- Add/Edit ticket modal -->
 				<div class="modal fade" id="addEditModal"></div>
 			</footer>

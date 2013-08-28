@@ -260,6 +260,7 @@ body.tt-body {
 	margin-top: 10px;
 	min-height: 500px;
 	position: relative;
+	padding-bottom: 60px;
 }
 
 #ttApp-footer {
@@ -284,6 +285,14 @@ body.tt-body {
 
 #ticketTable .actions {
 	width: 140px;
+}
+
+#tickets-collection {
+	overflow: visible; /* to override bootsrap overflow: auto in the tabs container */
+}
+
+#addButton {
+	margin: 10px 0px;
 }
 
 #addEditModal .actions {
