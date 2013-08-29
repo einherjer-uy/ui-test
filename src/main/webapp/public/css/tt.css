@@ -256,6 +256,10 @@ body.tt-body {
 	background-color: #C0DEED;
 }
 
+#pleaseWaitDialog .progress {
+	margin: 20px;
+}
+
 #ttApp { 
 	margin-top: 10px;
 	min-height: 500px;
@@ -285,6 +289,10 @@ body.tt-body {
 
 #ticketTable .actions {
 	width: 140px;
+}
+
+#ticketTab {
+	font-size: 24px;
 }
 
 #tickets-collection {
