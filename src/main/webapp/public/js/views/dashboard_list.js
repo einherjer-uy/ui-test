@@ -9,6 +9,7 @@ var app = app || {};
 		initialize: function () {
 			this.$ticketTable = this.$('#ticketTable');
 			this.listenTo(app.tickets, 'add', this.addOne);
+			this.listenTo(app.tickets, 'reset', this.addAll);
 			this.listenTo(app.tickets, 'all', this.render);
 		},
 

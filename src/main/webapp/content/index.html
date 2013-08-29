@@ -107,11 +107,10 @@
 	<script type="text/template" id="item-card-template">
         <div class="thumbnail">
 			<div class="actions"></div>
-			<div>{{ log[log.length-1].timestamp }}</div>
-			<div>{{ log[log.length-1].user.firstName }}</div>
-			<div>{{ log[log.length-1].user.lastName }}</div>   
 			<div>{{ description }}</div>
 			<div>{{ number }}</div>
+			<div>{{ creatorFirstName }}</div>
+			<div>{{ creatorLastName }}</div>
         </div>
 	</script>
 
@@ -252,6 +251,9 @@
 
 	<!-- Date-Time Picker -->
 	<script src="../public/lib/bootstrap/bootstrap-datetimepicker.min.js"></script>    
+
+	<!-- Timeago Plugin-->	
+	<script src="../public/lib/jquery.timeago.js"></script>
 
     <!-- Backbone -->
 	<script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>

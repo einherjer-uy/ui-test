@@ -9,6 +9,8 @@ var app = app || {};
 		initialize: function () {
 			this.$ticketCards = this.$('#ticketCards');
 			this.listenTo(app.tickets, 'add', this.addOne);
+			this.listenTo(app.tickets, 'reset', this.addAll);
+			this.listenTo(app.tickets, 'all', this.render);
 		},
 
 		addOne: function (ticket) {

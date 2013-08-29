@@ -28,13 +28,6 @@ var app = app || {};
 					$(".modal-backdrop").hide();
 					
 					$('#dashboardMessages').html('');
-
-					if (!app.tickets.length) {
-						$('#ticketTab').hide();
-						app.util.displayInfo($('#dashboardMessages'), "No tickets found", false);
-					}else{
-						$('#ticketTab').show();
-					}
 	            }	
 	        });
 		},
@@ -42,6 +35,13 @@ var app = app || {};
 		render: function () {
 			//var completed = app.tickets.completed().length;
 			//var remaining = app.tickets.remaining().length;
+
+			if (!app.tickets.length) {
+				$('#ticketTab').hide();
+				app.util.displayInfo($('#dashboardMessages'), "No tickets found", false);
+			}else{
+				$('#ticketTab').show();
+			}
 
 			if (app.loggedUser && app.loggedUser.username && app.loggedUser.username.emailAddress) {
 				this.$loggedUser.html(app.loggedUser.firstName + ' ' + app.loggedUser.lastName + '  |  '+ app.loggedUser.role.toLowerCase());	

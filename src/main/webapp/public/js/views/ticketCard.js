@@ -17,7 +17,22 @@ var app = app || {};
 		},
 
 		render: function () {
-			this.$el.html(this.template(this.model.toJSON()));
+			var creatorFirstName = "";
+			var creatorLastName = "";
+
+			var log = this.model.get("log");
+
+			if (log && log.length > 0) {
+				creatorFirstName = log[log.length-1].user.firstName;
+				creatorLastName = log[log.length-1].user.lastName;
+			};
+			this.$el.html(this.template({number: this.model.get("number"), 
+									description: this.model.get("description"), 
+							   creatorFirstName: creatorFirstName,
+							   creatorLastName: creatorLastName
+										})
+			);
+
 			this.$(".actions").append(new app.ActionsView({ model: this.model, onAddEditModal: false, $messages: this.$messages }).render().el);
 			return this;
 		}
