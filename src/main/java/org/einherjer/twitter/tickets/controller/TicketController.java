@@ -325,6 +325,23 @@ public class TicketController {
     }
     
     /**
+     * Mark as Read
+     * 
+     * Example request:
+     * POST /api/tickets/PR1-1/read HTTP/1.1
+     * Host: localhost:8080
+     * Content-Type: application/json
+     * no body
+     */
+    @RequestMapping(value = "/tickets/{project}-{number}/read", method = RequestMethod.POST)
+    public ResponseEntity<String> markAsRead(
+            @PathVariable("project") String projectPrefix, 
+            @PathVariable("number") Integer ticketNumber) {
+        ticketService.read(projectPrefix, ticketNumber);
+        return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+    }
+    
+    /**
      * Add attachment
      * 
      * Example request:
@@ -379,5 +396,5 @@ public class TicketController {
         ticketService.deleteAttachment(projectPrefix, ticketNumber, attachmentId);
         return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
     }
-
+    
 }

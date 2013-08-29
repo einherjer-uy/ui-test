@@ -2,6 +2,7 @@ package org.einherjer.twitter.tickets.repository;
 
 import org.einherjer.twitter.tickets.model.Project;
 import org.einherjer.twitter.tickets.model.Ticket;
+import org.einherjer.twitter.tickets.model.Ticket.TicketStatus;
 import org.einherjer.twitter.tickets.model.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -17,6 +18,8 @@ public interface TicketRepository extends PagingAndSortingRepository<Ticket, Lon
 
     @Query("select l.ticket from CreationLogEntry l where l.user = ?1")
     Iterable<Ticket> findByCreator(User user);
+
+    Iterable<Ticket> findByStatus(TicketStatus status);
 
     //override CrudRepository methods and hide them from the rest exporter with exporter = false
     //TODO: for some reason adding @RestResource(exported = false) makes the call to the repository fail even from another Service  

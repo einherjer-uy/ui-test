@@ -76,6 +76,7 @@ var app = app || {};
 		},
 
 		ok: function() {
+			this.parentView.markAsRead(); //make use of the parentView attribute that is here for a different reason but this way reause the markAsRead function easily.
 			if (this.type==app.util.CANCEL_POPOVER) {
 				this.cancel();
 			}

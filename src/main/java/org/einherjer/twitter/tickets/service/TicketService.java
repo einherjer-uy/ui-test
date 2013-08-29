@@ -6,6 +6,7 @@ import org.einherjer.twitter.tickets.model.Ticket;
 import org.einherjer.twitter.tickets.model.Ticket.TicketPriority;
 import org.einherjer.twitter.tickets.model.Ticket.TicketStatus;
 import org.einherjer.twitter.tickets.model.User;
+import org.einherjer.twitter.tickets.model.User.Role;
 import org.einherjer.twitter.tickets.repository.ProjectRepository;
 import org.einherjer.twitter.tickets.repository.TicketRepository;
 import org.einherjer.twitter.tickets.repository.UserRepository;
@@ -31,12 +32,26 @@ public class TicketService {
     }
 
     public Iterable<Ticket> findAllForRole() {
-        if (loginService.getLoggedUser().getRole() == User.Role.REQUESTOR) {
-            return ticketRepository.findByCreator(loginService.getLoggedUser());
+        User loggedUser = loginService.getLoggedUser();
+        Iterable<Ticket> tickets;
+        if (loggedUser.getRole() == User.Role.REQUESTOR) {
+            tickets = ticketRepository.findByCreator(loginService.getLoggedUser());
+        }
+        else if (loggedUser.getRole() == User.Role.APPROVER) {
+            tickets = ticketRepository.findByStatus(TicketStatus.NEW);
+        }
+        else if (loginService.getLoggedUser().getRole() == User.Role.EXECUTOR) {
+            tickets = ticketRepository.findByStatus(TicketStatus.APPROVED);
         }
         else {
-            return ticketRepository.findAll();
+            throw new RuntimeException("Unsupported user role");
         }
+        for (Ticket t : tickets) {
+            if (loggedUser.getUnread().contains(t)) {
+                t.setUnread(true);
+            }
+        }
+        return tickets;
     }
 
     public Ticket find(String projectPrefix, Integer ticketNumber) {
@@ -77,7 +92,9 @@ public class TicketService {
                 Project project = projectRepository.findByPrefix(projectPrefix);
                 Assert.notNull(project, "No project matches the specified prefix");
                 ticket = new Ticket(project, data);
-                return ticketRepository.save(ticket);
+                Ticket newTicket = ticketRepository.save(ticket);
+                this.broadcastUnread(newTicket, Role.APPROVER);
+                return newTicket;
             }
         }
         else {
@@ -85,6 +102,13 @@ public class TicketService {
             ticket.set(data);
             ticket.logUpdate();
             return ticket;
+        }
+    }
+
+    private void broadcastUnread(Ticket ticket, Role role) {
+        //TODO: this is very ineffcient, read all users every time a ticket is created, we should have an object cache or some pre populated structure, updated by the user CRUD that should be infrequent
+        for (User user : userRepository.findByRole(role)) {
+            user.addUnread(ticket);
         }
     }
 
@@ -173,6 +197,7 @@ public class TicketService {
             throw new UnsupportedOperationException("Approve is not a valid operation for tickets in status " + ticket.getStatus());
         }
         ticket.changeStatus(TicketStatus.APPROVED, comment);
+        this.broadcastUnread(ticket, Role.EXECUTOR);
     }
 
     @Transactional
@@ -185,6 +210,12 @@ public class TicketService {
             throw new UnsupportedOperationException("Mark as Done is not a valid operation for tickets in status " + ticket.getStatus());
         }
         ticket.changeStatus(TicketStatus.DONE, null);
+    }
+
+    @Transactional
+    public void read(String projectPrefix, Integer ticketNumber) {
+        Ticket ticket = this.find(projectPrefix, ticketNumber);
+        loginService.getLoggedUser().read(ticket);
     }
 
     public Attachment getAttachment(String projectPrefix, Integer ticketNumber, Long attachmentId) {

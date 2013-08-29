@@ -14,9 +14,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @NoArgsConstructor
+@EqualsAndHashCode(of = { "number" }, callSuper = false)
 //table name is plural to avoid restricted keywords in some databases like "user" and "comment"
 @Table(name = "Tickets", uniqueConstraints = @UniqueConstraint(columnNames = { "ticket_number", "project_id" }))
 @JsonIgnoreProperties(ignoreUnknown = true) //needed so that when BackboneJS sends a json with "number":null (when creating a new ticket, cause it always sends the id field) the parsing of the json doesn't fail because of the absence of a getNumber here
@@ -75,6 +78,9 @@ public class Ticket extends AbstractEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "ticket_id")
     private Set<Attachment> attachments = new HashSet<Attachment>();
+
+    @Transient
+    private @Getter @Setter boolean unread;
 
     public Ticket(Project project, String title, String description, User assignee, TicketType type, TicketPriority priority, DateTime due) {
         this.number = this.generateTicketNumber(project);
