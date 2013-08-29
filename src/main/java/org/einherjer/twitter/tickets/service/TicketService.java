@@ -105,8 +105,15 @@ public class TicketService {
         }
     }
 
+    private void broadcastRead(Ticket ticket) {
+        //TODO: this is very ineffcient, read all users every time a ticket is cancelled, rejected, etc; we should have an object cache or some pre populated structure, updated by the user CRUD that should be infrequent
+        for (User user : userRepository.findAll()) {
+            user.read(ticket);
+        }
+    }
+
     private void broadcastUnread(Ticket ticket, Role role) {
-        //TODO: this is very ineffcient, read all users every time a ticket is created, we should have an object cache or some pre populated structure, updated by the user CRUD that should be infrequent
+        //TODO: this is very ineffcient, read all users (by role) every time a ticket is created, we should have an object cache or some pre populated structure, updated by the user CRUD that should be infrequent
         for (User user : userRepository.findByRole(role)) {
             user.addUnread(ticket);
         }
@@ -144,12 +151,14 @@ public class TicketService {
                 throw new SecurityException("Requestors can only cancel tickets they created");
             }
             if (ticket.getStatus() == TicketStatus.NEW) {
+                this.broadcastRead(ticket);
                 this.ticketRepository.delete(ticket);
             }
             else if (ticket.getStatus() == TicketStatus.APPROVED) {
                 if (comment == null || comment.trim().isEmpty()) {
                     throw new IllegalArgumentException("Comment is required in order to cancel an approved ticket");
                 }
+                this.broadcastRead(ticket);
                 ticket.changeStatus(TicketStatus.CANCELLED, comment);
             }
             else {
@@ -161,6 +170,7 @@ public class TicketService {
                 if (comment == null || comment.trim().isEmpty()) {
                     throw new IllegalArgumentException("Comment is required in order to cancel an approved ticket");
                 }
+                this.broadcastRead(ticket);
                 ticket.changeStatus(TicketStatus.CANCELLED, comment);
             }
             else {
@@ -184,6 +194,7 @@ public class TicketService {
         if (comment == null || comment.trim().isEmpty()) {
             throw new IllegalArgumentException("Comment is required in order to cancel an approved ticket");
         }
+        this.broadcastRead(ticket);
         ticket.changeStatus(TicketStatus.REJECTED, comment);
     }
     
@@ -197,7 +208,8 @@ public class TicketService {
             throw new UnsupportedOperationException("Approve is not a valid operation for tickets in status " + ticket.getStatus());
         }
         ticket.changeStatus(TicketStatus.APPROVED, comment);
-        this.broadcastUnread(ticket, Role.EXECUTOR);
+        this.broadcastRead(ticket); //remove from the approvers
+        this.broadcastUnread(ticket, Role.EXECUTOR); //add to the executors
     }
 
     @Transactional
@@ -209,6 +221,7 @@ public class TicketService {
         if (ticket.getStatus() != TicketStatus.APPROVED) {
             throw new UnsupportedOperationException("Mark as Done is not a valid operation for tickets in status " + ticket.getStatus());
         }
+        this.broadcastRead(ticket); //remove from executors
         ticket.changeStatus(TicketStatus.DONE, null);
     }
 

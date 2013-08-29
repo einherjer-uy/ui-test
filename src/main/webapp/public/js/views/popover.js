@@ -76,7 +76,11 @@ var app = app || {};
 		},
 
 		ok: function() {
-			this.parentView.markAsRead(); //make use of the parentView attribute that is here for a different reason but this way reause the markAsRead function easily.
+			//Note1: make use of the parentView attribute that is here for a different reason but this way reause the markAsRead function easily.
+			//Note2: it is possible to do something like $('.element').popover( ... ).click(function() { alert("click"); });
+			//		anyway in our case it doesn't work cause after markAsRead the row is rerendered and the popover closes
+    		this.parentView.markAsRead(); 
+
 			if (this.type==app.util.CANCEL_POPOVER) {
 				this.cancel();
 			}
@@ -112,7 +116,7 @@ var app = app || {};
   				contentType: "application/json; charset=utf-8",
   				dataType: "json",
 				success: function(data) {
-				    app.tickets.fetch({reset:true}); //fetch needed only in this case cause the ticket might have been removed on the server
+				    app.tickets.fetch({reset:true}); //fetch needed cause the ticket might have been removed on the server
 				    if(self.onAddEditModal) {
 						self.$addEditModal.modal("hide");
 					}
@@ -146,7 +150,7 @@ var app = app || {};
   				contentType: "application/json; charset=utf-8",
   				dataType: "json",
 				success: function(data){
-				    self.model.fetch();
+				    app.tickets.fetch({reset:true}); //fetch needed cause after the status has changed the server might determine the ticket in its new status shouldn't be returned/shown, otherwise a model.fetch() would be enough
 				    if(self.onAddEditModal) {
 						self.$addEditModal.modal("hide");
 					}
@@ -172,7 +176,7 @@ var app = app || {};
   				contentType: "application/json; charset=utf-8",
   				dataType: "json",
 				success: function(data){
-				    self.model.fetch();
+				    app.tickets.fetch({reset:true}); //fetch needed cause after the status has changed the server might determine the ticket in its new status shouldn't be returned/shown, otherwise a model.fetch() would be enough
 				    if(self.onAddEditModal) {
 						self.$addEditModal.modal("hide");
 					}
@@ -197,7 +201,7 @@ var app = app || {};
   				contentType: "application/json; charset=utf-8",
   				dataType: "json",
 				success: function(data){
-				    self.model.fetch();
+				    app.tickets.fetch({reset:true}); //fetch needed cause after the status has changed the server might determine the ticket in its new status shouldn't be returned/shown, otherwise a model.fetch() would be enough
 				    if(self.onAddEditModal) {
 						self.$addEditModal.modal("hide");
 					}
