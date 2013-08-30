@@ -145,8 +145,17 @@ var app = app || {};
 				if (this.model.isNew()) {
 					this.model.save(null, {
 						success: function (model, response, options) {							
-							model.set({number:response.number});
-							app.tickets.add(model);
+							app.tickets.fetch({  //call server to fetch the collection, which will in turn trigger the update of the view
+						        success: function () {
+						        	//Hide progress bar and black background
+					                $('#pleaseWaitDialog').hide();
+									$(".modal-backdrop").hide();
+									
+									$('#dashboardMessages').html('');
+					            }	
+					        });
+							//model.set({number:response.number});
+							//app.tickets.add(model);
 						},
 						error: function (model, xhr, options) {
 							if (xhr.responseJSON && xhr.responseJSON.message) {
