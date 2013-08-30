@@ -1,5 +1,7 @@
 package org.einherjer.twitter.tickets.service;
 
+import java.util.Arrays;
+
 import org.einherjer.twitter.tickets.model.Attachment;
 import org.einherjer.twitter.tickets.model.Project;
 import org.einherjer.twitter.tickets.model.Ticket;
@@ -38,10 +40,10 @@ public class TicketService {
             tickets = ticketRepository.findByCreator(loginService.getLoggedUser());
         }
         else if (loggedUser.getRole() == User.Role.APPROVER) {
-            tickets = ticketRepository.findByStatus(TicketStatus.NEW);
+            tickets = ticketRepository.findByStatusIn(Arrays.asList(TicketStatus.NEW, TicketStatus.APPROVED));
         }
         else if (loginService.getLoggedUser().getRole() == User.Role.EXECUTOR) {
-            tickets = ticketRepository.findByStatus(TicketStatus.APPROVED);
+            tickets = ticketRepository.findByStatusIn(Arrays.asList(TicketStatus.APPROVED));
         }
         else {
             throw new RuntimeException("Unsupported user role");

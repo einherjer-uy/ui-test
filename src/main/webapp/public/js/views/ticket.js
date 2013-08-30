@@ -40,7 +40,7 @@ var app = app || {};
 			this.renderAttachments();
 			this.$('#fileupload').fileupload({
 		        dataType: 'json',
-		        url: "tt/tickets/"+self.model.get("number")+"/attachment",
+		        url: "tt/tickets/" + (self.model.get("number") ? self.model.get("number")+"/" : "") + "attachment",
 		        done: function (e, data) {
 		        	self.model.set("attachments", data.result);
 		            self.renderAttachments();
@@ -94,25 +94,42 @@ var app = app || {};
 		renderAttachments: function() {
 			var data = this.model.get("attachments");
 			this.$uploadedFiles.html("");
+
+			var ticketId=0;
+			if (this.model.get("number")) {
+				ticketId = this.model.get("number");
+			}
+			else {
+				if(data) {
+					ticketId = data[0].tempTicketId;	
+				}
+			}
 			if (data && data.length>0) {
-				this.$uploadedFiles.append(this.attachmentsTemplate({attachments: data, ticketNumber: this.model.get("number")}));
+				this.$uploadedFiles.append(this.attachmentsTemplate({attachments: data, ticketNumber: ticketId}));
 			}
 			var self = this;
 			this.$uploadedFiles.find("[id^=deleteAttach]").click( function() {
 				$.ajax({
-	  				url: "/tt/tickets/"+self.model.get("number")+"/attachment/"+$(this).attr("id").replace("deleteAttach",""), //note the need of $( ) around this to be able to use jQuery attr, only this doesn't work 
+	  				url: "/tt/tickets/"+ticketId+"/attachment/"+$(this).attr("id").replace("deleteAttach",""), //note the need of $( ) around this to be able to use jQuery attr, only this doesn't work 
 	  				type: "DELETE",
 	  				data: null,
 	  				contentType: "application/json; charset=utf-8",
 	  				dataType: "json",
 					success: function() {
-						//careful here, we cannot do model.fetch and then renderAssessment cause fetch is an ajax (asynchronous) call,
-						//so we need to use callbacks yo make sure the request has been completed
-		            	self.model.fetch({
-		            		success: function (model, response, options) {
-		            			self.renderAttachments();
-		            		}
-		            	});
+						if (self.model.get("number")) {
+							//careful here, we cannot do model.fetch and then renderAssessment cause fetch is an ajax (asynchronous) call,
+							//so we need to use callbacks yo make sure the request has been completed
+			            	self.model.fetch({
+			            		success: function (model, response, options) {
+			            			self.renderAttachments();
+			            		}
+			            	});
+						}
+						else {
+							$.getJSON("/tt/tickets/"+ticketId+"/attachments", function(result) {
+								app.loggedUser = result;
+							});
+						}
 					},
 				    error: function(data) {
 				    	if (data.responseJSON && data.responseJSON.message) {
@@ -147,24 +164,18 @@ var app = app || {};
 						success: function (model, response, options) {							
 							var ticketNumber = response.number;
 							app.tickets.fetch({  //call server to fetch the collection, which will in turn trigger the update of the view
+								reset: true, //reset:true needed to refresh the whole collection, otherwise backbone adds the new model to the end and doesn't respect the sorting returned by the server
 						        success: function () {
 						        	//Hide progress bar and black background
 					                $('#pleaseWaitDialog').hide();
 									$(".modal-backdrop").hide();
-									
-									app.util.displayInfo($('#dashboardMessages'), "Ticket " +  ticketNumber + " successfully created", false);
+									app.util.displayInfo($('#dashboardMessages'), "Ticket " + ticketNumber + " successfully created", false);	
 					            }	
 					        });
+							//this can be an option if we don't want to get the whole collection but just update the created ticket with the id assigned by the server
+							//var ticketNumber = response.number;
 							//model.set({number:response.number});
 							//app.tickets.add(model);
-						},
-						error: function (model, xhr, options) {
-							if (xhr.responseJSON && xhr.responseJSON.message) {
-					    		serverError = xhr.responseJSON.message;
-					    	}
-					    	else { //just in case the server missed to return a proper json with "message" value
-					    		serverError = "Unexpected server error";	
-					    	}
 						}
 					});
 		        } else {
@@ -183,7 +194,6 @@ var app = app || {};
 			  				url: "/tt/tickets/"+this.model.get("number"),
 			  				type: "PATCH",
 			  				async: false,
-			  				//TODO: validar que changedAttributes tenga algo si no revienta por bad request
 			  				data: JSON.stringify(data),
 			  				contentType: "application/json; charset=utf-8",
 			  				dataType: "json",

@@ -31,10 +31,13 @@ public class User extends AbstractEntity {
     private @Getter @Setter Role role;
     
     @Column(nullable = false)
-    private @Getter @Setter DashboardMode dashboardMode;
+    private @Getter @Setter DashboardMode dashboardMode = DashboardMode.LIST;
     
     private @Getter @Setter String firstName;
     private @Getter @Setter String lastName;
+    
+    @Column(nullable = false)
+    private @Getter boolean notificationsEnabled = true;
 
     @JsonIgnore
     @ManyToMany
@@ -44,7 +47,6 @@ public class User extends AbstractEntity {
         this.username = new EmailAddress(username);
         this.password = new Password(password);
         this.role = role;
-        this.dashboardMode = DashboardMode.LIST;
     }
 
     public Set<Ticket> getUnread() {

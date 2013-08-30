@@ -16,10 +16,11 @@ public interface TicketRepository extends PagingAndSortingRepository<Ticket, Lon
 
     Ticket findByProjectAndNumber(Project project, Integer ticketNumber);
 
-    @Query("select l.ticket from CreationLogEntry l where l.user = ?1")
+    @Query("select l.ticket from CreationLogEntry l where l.user = ?1 order by l.timestamp desc")
     Iterable<Ticket> findByCreator(User user);
 
-    Iterable<Ticket> findByStatus(TicketStatus status);
+    @Query("select l.ticket from CreationLogEntry l where l.ticket.status in (?1) order by l.timestamp desc")
+    Iterable<Ticket> findByStatusIn(Iterable<TicketStatus> statuses);
 
     //override CrudRepository methods and hide them from the rest exporter with exporter = false
     //TODO: for some reason adding @RestResource(exported = false) makes the call to the repository fail even from another Service  
