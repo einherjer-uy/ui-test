@@ -32,8 +32,10 @@ var app = app || {};
 
 		render: function () {
 			if (!app.tickets.length) {
-				$('#ticketTab').hide();
-				app.util.displayInfo($('#dashboardMessages'), "No tickets found", false);
+				if ($('#pleaseWaitDialog').is(":hidden")) {
+					$('#ticketTab').hide();
+					app.util.displayInfo($('#dashboardMessages'), "No tickets found", false);	
+				};
 			}else{
 				$('#ticketTab').show();
 			}
