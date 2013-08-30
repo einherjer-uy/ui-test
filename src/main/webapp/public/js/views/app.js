@@ -7,7 +7,8 @@ var app = app || {};
 		el: '#ttApp',
 
 		events: {
-			'click #addButton': 'add'
+			'click #addButton': 'add',
+			'click #refreshButton': 'refresh'
 		},
 
 		initialize: function () {
@@ -30,7 +31,34 @@ var app = app || {};
 	        });
 		},
 
+		refresh: function () {
+			
+			$('#pleaseWaitDialog').show();
+			$(".modal-backdrop").show();
+
+			app.tickets.reset();
+			app.tickets.fetch({  //call server to fetch the collection, which will in turn trigger the update of the view
+		        success: function (model, response, options) {
+
+		        	//Hide progress bar and black background
+	                $('#pleaseWaitDialog').hide();
+					$(".modal-backdrop").hide();
+					$('#dashboardMessages').html('');
+
+					if (!app.tickets.length) {
+						if ($('#pleaseWaitDialog').is(":hidden")) {
+							$('#ticketTab').hide();
+							app.util.displayInfo($('#dashboardMessages'), "No tickets found", false);	
+						};
+					}else{
+						$('#ticketTab').show();
+					}
+	            }	
+	        });			
+		},
+
 		render: function () {
+			
 			if (!app.tickets.length) {
 				if ($('#pleaseWaitDialog').is(":hidden")) {
 					$('#ticketTab').hide();
