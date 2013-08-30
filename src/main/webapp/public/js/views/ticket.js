@@ -145,13 +145,14 @@ var app = app || {};
 				if (this.model.isNew()) {
 					this.model.save(null, {
 						success: function (model, response, options) {							
+							var ticketNumber = response.number;
 							app.tickets.fetch({  //call server to fetch the collection, which will in turn trigger the update of the view
 						        success: function () {
 						        	//Hide progress bar and black background
 					                $('#pleaseWaitDialog').hide();
 									$(".modal-backdrop").hide();
 									
-									$('#dashboardMessages').html('');
+									app.util.displayInfo($('#dashboardMessages'), "Ticket " +  ticketNumber + " successfully created", false);
 					            }	
 					        });
 							//model.set({number:response.number});
@@ -206,7 +207,8 @@ var app = app || {};
 					app.util.displayError(this.$alertContainer, serverError);
 				}
 				else {
-					this.$addEditModal.modal("hide");	
+					this.$addEditModal.modal("hide");
+					app.util.displayInfo($('#dashboardMessages'), "Ticket " + this.model.get("number") + " successfully updated", false);	
 				}
 			}
 			else if (app.loggedUser.role==app.util.ROLE_APPROVER) {
@@ -220,6 +222,7 @@ var app = app || {};
 					success: function(data){
 						self.model.set("priority", self.$priority.val());
 					    self.$addEditModal.modal("hide");
+					    app.util.displayInfo($('#dashboardMessages'), "Ticket " + this.model.get("number") + " successfully updated", false);	
 					},
 				    error: function(data) {
 				    	if (data.responseJSON && data.responseJSON.message) {
