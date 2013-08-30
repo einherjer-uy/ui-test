@@ -109,6 +109,7 @@ var app = app || {};
 			    }
 			}
 			var self = this;
+			var ticketNumber = this.model.get("number");
 		    $.ajax({
   				url: "/tt/tickets/"+this.model.get("number")+"/cancel",
   				type: "POST",
@@ -120,6 +121,7 @@ var app = app || {};
 				    if(self.onAddEditModal) {
 						self.$addEditModal.modal("hide");
 					}
+					app.util.displayInfo($('#dashboardMessages'), "Ticket " +  ticketNumber + " successfully canceled.", false);
 				},
 			    error: function(data) {
 			    	if(self.showErrors()) {
@@ -143,6 +145,7 @@ var app = app || {};
 		    	return;	
 		    }
 			var self = this;
+			var ticketNumber = this.model.get("number");
 		    $.ajax({
   				url: "/tt/tickets/"+this.model.get("number")+"/reject",
   				type: "POST",
@@ -154,6 +157,7 @@ var app = app || {};
 				    if(self.onAddEditModal) {
 						self.$addEditModal.modal("hide");
 					}
+					app.util.displayInfo($('#dashboardMessages'), "Ticket " +  ticketNumber + " successfully rejected.", false);
 				},
 			    error: function(data) {
 			    	if(self.showErrors()) {
@@ -169,6 +173,7 @@ var app = app || {};
 		//TODO: factorize all $.ajax calls
 		approve: function () {
 			var self = this;
+			var ticketNumber = this.model.get("number");
 		    $.ajax({
   				url: "/tt/tickets/"+this.model.get("number")+"/approve",
   				type: "POST",
@@ -180,6 +185,8 @@ var app = app || {};
 				    if(self.onAddEditModal) {
 						self.$addEditModal.modal("hide");
 					}
+					console.log(ticketNumber);
+					app.util.displayInfo($('#dashboardMessages'), "Ticket " +  ticketNumber + " successfully approved.", false);
 				},
 			    error: function(data) {
 			    	if(self.showErrors()) {
@@ -195,6 +202,7 @@ var app = app || {};
 		//TODO: factorize all $.ajax calls
 		done: function () {
 			var self = this;
+			var ticketNumber = this.model.get("number");
 		    $.ajax({
   				url: "/tt/tickets/"+this.model.get("number")+"/done",
   				type: "POST",
@@ -204,6 +212,7 @@ var app = app || {};
 				    app.tickets.fetch({reset:true}); //fetch needed cause after the status has changed the server might determine the ticket in its new status shouldn't be returned/shown, otherwise a model.fetch() would be enough
 				    if(self.onAddEditModal) {
 						self.$addEditModal.modal("hide");
+						app.util.displayInfo($('#dashboardMessages'), "Ticket " +  ticketNumber + " successfully marked as Done.", false);
 					}
 				},
 			    error: function(data) {

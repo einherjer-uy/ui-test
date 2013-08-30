@@ -177,6 +177,7 @@ var app = app || {};
 				    //    }
 		            //});
 					var data = this.model.changedAttributes();
+					var ticketNumber = this.model.get("number");
 					if (data) { //if nothing changed don't even call the server
 						$.ajax({
 			  				url: "/tt/tickets/"+this.model.get("number"),
@@ -208,11 +209,12 @@ var app = app || {};
 				}
 				else {
 					this.$addEditModal.modal("hide");
-					app.util.displayInfo($('#dashboardMessages'), "Ticket " + this.model.get("number") + " successfully updated", false);	
+					app.util.displayInfo($('#dashboardMessages'), "Ticket " + ticketNumber + " successfully updated", false);	
 				}
 			}
 			else if (app.loggedUser.role==app.util.ROLE_APPROVER) {
 				var self = this;
+				var ticketNumber = this.model.get("number");
 			    $.ajax({
 	  				url: "/tt/tickets/"+this.model.get("number")+"/priority",
 	  				type: "POST",
@@ -222,7 +224,7 @@ var app = app || {};
 					success: function(data){
 						self.model.set("priority", self.$priority.val());
 					    self.$addEditModal.modal("hide");
-					    app.util.displayInfo($('#dashboardMessages'), "Ticket " + this.model.get("number") + " successfully updated", false);	
+					    app.util.displayInfo($('#dashboardMessages'), "Ticket " + ticketNumber + " successfully updated", false);	
 					},
 				    error: function(data) {
 				    	if (data.responseJSON && data.responseJSON.message) {
