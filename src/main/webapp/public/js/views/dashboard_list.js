@@ -8,6 +8,7 @@ var app = app || {};
 
 		initialize: function () {
 			this.$ticketTable = this.$('#ticketTable');
+			this.$ticketTableBody = this.$('#ticketTableBody');
 			this.listenTo(app.tickets, 'add', this.addOne);
 			this.listenTo(app.tickets, 'reset', this.addAll);
 			this.listenTo(app.tickets, 'all', this.render);
@@ -36,11 +37,11 @@ var app = app || {};
 
 		addOne: function (ticket) {
 			var view = new app.TicketRowView({ model: ticket });
-			this.$ticketTable.append(view.render().el);						
+			this.$ticketTableBody.append(view.render().el);						
 		},
 
 		addAll: function () {
-			this.$ticketTable.html('');
+			this.$ticketTableBody.html('');
 			app.tickets.each(this.addOne, this);				
 		},
 	});

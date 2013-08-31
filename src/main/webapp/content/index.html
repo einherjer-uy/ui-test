@@ -26,11 +26,18 @@
 	<div class="navbar navbar-inverse navbar-static-top tt-navbar">
 		<div class="navbar-inner">
 			<div class="container">
-				<a class="brand" href="/">
-					<span class="tt-icon tt-bird"></span>
-				</a>
-
-				<ul class="nav pull-right">	
+				<ul class="nav">
+					<li>
+						<a class="brand" href="/">
+							<span class="tt-icon tt-bird"></span>
+						</a>
+					</li>
+					<li class="divider-vertical" />
+					<li>
+						<a id="title-long" class="brand hidden-phone" href="/">Corporporate Events Ticket System</a>
+						<a id="title-short" class="brand visible-phone" href="/">CETS</a>
+					</li>
+				</ul><ul class="nav pull-right">	
 					<li><a id="loggedUser"></a></li>
 					<li class="divider-vertical"></li>							
 					<li><a id="logoutLink" class="tt-inverse-text" href="/logout">Logout</a></li>
@@ -43,7 +50,12 @@
 		<header id="header">
 			<div class="row">
 				<div class="span6"><h2>Dashboard</h2></div>
-				<div class="span6"><a id="addButton" class="btn btn-primary btn-small pull-right"><i class="glyphicon glyphicon-plus"></i> Create new ticket</a></div>
+				<div class="span6">
+					<div class="pull-right">
+						<a id="refreshButton" class="btn btn-small"><i class="glyphicon glyphicon-refresh"></i> Refresh</a>
+						<a id="addButton" class="btn btn-primary btn-small"><i class="glyphicon glyphicon-plus"></i> Create new ticket</a>						
+					</div>
+				</div>
 			<hr></hr>
 		</header>
 		<section id="main">
@@ -63,13 +75,16 @@
 							<thead>
 								<tr>
 									<th>Id</th>
-									<th>Description</th>
-									<th>Type</th>
-									<th>Priority</th>
-									<th>Due date</th>
-									<th colspan="4">Status</th>					
+									<th class="ticket-description">Description</th>
+									<th class="text-center">Type</th>
+									<th class="text-center">Priority</th>
+									<th class="text-center">Due date</th>
+									<th class="text-center">Status</th>	
+									<th class="text-center"></th>				
 								</tr>
 							</thead>
+							<tbody id="ticketTableBody">
+							</tbody>
 						</table>
 					</div>
 					<div class="tab-pane fade in" id="cards">
@@ -93,25 +108,38 @@
 	<!--Template for the tickets table-->
 	<script type="text/template" id="item-template">
         <td>{{ number }}</td>
-        <td>{{ description }}</td>
-        <td>{{ type }}</td>
-        <td>{{ priority }}</td>
-        <td>{{ due }}</td>
-        <td>{{ status }}</td>
-        <td>
+        <td class="ticket-description">{{ description }}</td>
+        <td class="text-center muted"><small>{{ type }}</small></td>
+        <td class="text-center">{{ priority == "HIGH" ? '<i class="glyphicon glyphicon-chevron-up" />' : (priority == 'MEDIUM' ? '<i class="glyphicon glyphicon-minus" />' : '<i class="glyphicon glyphicon-chevron-down" />' ) }}</td>
+        <td class="text-center muted"><small>{{ !due ? '<span>-</span>' : '<span title="' + due.substr(11,5) + '">' + due.substr(0,10) + '</span>' }}</small></td>
+        <td class="text-center">{{ status }}</td>
+        <td class="text-center">
         	<div class="actions"></div>
 		</td>
 	</script>
 
 	<!--Template for the tickets cards-->
 	<script type="text/template" id="item-card-template">
-        <div class="thumbnail">
-			<div class="actions"></div>
-			<div>{{ description }}</div>
-			<div>{{ number }}</div>
-			<div>{{ creatorFirstName }}</div>
-			<div>{{ creatorLastName }}</div>
-			<div><abbr class="timeago" title="{{ dateCreated }}"></abbr></div>
+        <div class="thumbnail ticket-card">
+        	<div class="row-fluid card-header">
+        		<div class="span6"><span>{{ number }}</span></div>
+        		<div class="span6">
+        			<span class="pull-right">{{ priority == "HIGH" ? '<i class="glyphicon glyphicon-chevron-up" />' : (priority == 'MEDIUM' ? '<i class="glyphicon glyphicon-minus" />' : '<i class="glyphicon glyphicon-chevron-down" />' ) }}</span>
+    			</div>
+        	</div>
+    		<div class="row-fluid card-body">
+    			<div class="ticket-description">
+    				<span>{{ description }}</span>
+				</div>
+    			<div class="muted">
+    				<small>{{ type }}</small>
+    				<small class="pull-right">{{ !due ? '<span>-</span>' : '<span title="' + due.substr(11,5) + '">' + due.substr(0,10) + '</span>' }}</small>
+				</div>
+    		</div>
+    		<div class="row-fluid card-footer">    			
+    			<div class="span6"><span>{{ status }}<span></div>
+        		<div class="span6"><span class="actions pull-right" /></div>
+    		</div>
         </div>
 	</script>
 
@@ -135,63 +163,74 @@
 
 				<div class="alert-container" id="ticket-alert-container"></div>
 
-				<div class="control-group" >
-			    	<label class="control-label hidden-phone" for="type" title="This field is mandatory">Type<font color="red">*</font></label>				    	
-			    	<div class="controls">
-						<select id="type" placeholder="Type" value={{type}}></select>
-			    	</div>						    		    	
-			  	</div>	
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#form-basic" data-toggle="tab">Basic</a></li>
+					<li><a href="#form-attachments" data-toggle="tab">Attachments</a></li>
+					<li><a href="#form-activity" data-toggle="tab">Activity</a></li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="form-basic">
+						<div class="control-group" >
+					    	<label class="control-label hidden-phone" for="type" title="This field is mandatory">Type<font color="red">*</font></label>				    	
+					    	<div class="controls">
+								<select id="type" placeholder="Type" value={{type}}></select>
+					    	</div>						    		    	
+					  	</div>	
 
-				<div class="control-group" >
-			  		<label class="control-label hidden-phone" for="priority" title="This field is mandatory">Priority<font color="red">*</font></label>
-			    	<div class="controls">
-						<select id="priority" placeholder="Priority" value={{priority}}></select>
-			    	</div>
-			    </div>				  	
+						<div class="control-group" >
+					  		<label class="control-label hidden-phone" for="priority" title="This field is mandatory">Priority<font color="red">*</font></label>
+					    	<div class="controls">
+								<select id="priority" placeholder="Priority" value={{priority}}></select>
+					    	</div>
+					    </div>				  	
 
-				<div class="control-group">
-					<label class="control-label hidden-phone" for="due">Due Date</label>
-					<div class="controls">
-						<div id="duedate-datetimepicker" class="input-append date">
-							<input type="text" date-format="dd/MM/yyyy-hh:mm" id="due" placeholder="Due Date" value={{due == null ? "" : due}}></input>
-							<span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span>
+						<div class="control-group">
+							<label class="control-label hidden-phone" for="due">Due Date</label>
+							<div class="controls">
+								<div id="duedate-datetimepicker" class="input-append date">
+									<input type="text" date-format="dd/MM/yyyy-hh:mm" id="due" placeholder="Due Date" value={{due == null ? "" : due}}></input>
+									<span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span>
+								</div>
+							</div>					
 						</div>
-					</div>					
+
+						<div class="control-group">
+					    	<label class="control-label hidden-phone" for="description" title="This field is mandatory">Description<font color="red">*</font></label>
+					    	<div class="controls">
+								<textarea id="description" class="input-xlarge" rows="3" placeholder="Description">{{description}}</textarea>
+								<div><small><p class="muted" id="descriptionCharNum">3000</p></small></div>
+								<div id="description-alert" class="alert alert-message"><small><strong>Note: </strong>The description given will be used by the executors so it is fundamental to be as detailed as possible.</small></div> 
+					    	</div>
+					  	</div>
+					</div>
+					<div class="tab-pane" id="form-attachments">
+						<div id="fileUploadDiv" class="control-group">
+					    	<label class="control-label hidden-phone" for="fileupload">Attachments</label>
+					    	<div class="controls">
+								<div>
+					 				<span class="btn btn-success fileinput-button">
+					                    <i class="glyphicon glyphicon-plus"></i>
+					                    <span>Add files...</span>
+					                    <input id="fileupload" type="file" name="files[]" multiple>
+					                </span>
+					                <div id="progress" class="progress progress-striped active" style="display:none; margin-top:7px;">
+					                    <div class="bar" style="width:0%;"></div>
+					                </div>
+								    <table id="uploadedFiles" style="width:100%; margin: 5px, 0;"></table>
+								</div>
+					    	</div>
+					  	</div>
+					</div>
+					<div class="tab-pane" id="form-activity">
+						<div id="commentDiv" class="control-group"> 
+							<!-- only for approvers changing the priority of a ticket trough this form -->
+					    	<label class="control-label hidden-phone" for="comment">Comment</label>
+					    	<div class="controls">
+								<textarea id="comment" class="input-xlarge" rows="4" placeholder="Comment"></textarea>
+					    	</div>
+					  	</div>
+					</div>
 				</div>
-
-				<div class="control-group">
-			    	<label class="control-label hidden-phone" for="description" title="This field is mandatory">Description<font color="red">*</font></label>
-			    	<div class="controls">
-						<textarea id="description" class="input-xlarge" rows="6" placeholder="Description">{{description}}</textarea>
-						<div><small ><p class="muted" id="descriptionCharNum">3000</p></small></div>
-			    	</div>
-			  	</div>
-					<div class='alert alert-message'><small><strong>Note: </strong>The description given will be used by the executors so it is fundamental to be as detailed as possible.</small></div> 
-
-				<div id="fileUploadDiv" class="control-group">
-			    	<label class="control-label hidden-phone" for="fileupload">Attachments</label>
-			    	<div class="controls">
-						<div>
-			 				<span class="btn btn-success fileinput-button">
-			                    <i class="glyphicon glyphicon-plus"></i>
-			                    <span>Add files...</span>
-			                    <input id="fileupload" type="file" name="files[]" multiple>
-			                </span>
-			                <div id="progress" class="progress progress-striped active" style="display:none; margin-top:7px;">
-			                    <div class="bar" style="width:0%;"></div>
-			                </div>
-						    <table id="uploadedFiles" style="width:100%; margin: 5px, 0;"></table>
-						</div>
-			    	</div>
-			  	</div>
-
-				<div id="commentDiv" class="control-group"> 
-					<!-- only for approvers changing the priority of a ticket trough this form -->
-			    	<label class="control-label hidden-phone" for="comment">Comment</label>
-			    	<div class="controls">
-						<textarea id="comment" class="input-xlarge" rows="4" placeholder="Comment"></textarea>
-			    	</div>
-			  	</div>
 
    			 </form>		
 		</div>

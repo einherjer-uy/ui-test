@@ -265,6 +265,7 @@ body.tt-body {
 	min-height: 500px;
 	position: relative;
 	padding-bottom: 60px;
+	background-color: #fff; /* Overrid bootstrap's well background */
 }
 
 #ttApp-footer {
@@ -287,20 +288,78 @@ body.tt-body {
 	color: #eee;
 }
 
+
+#ticketTab {
+	font-size: 24px;
+}
+
+#ticketTable .ticket-description {
+	width: 340px;
+    max-width: 340px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 #ticketTable .actions {
 	width: 140px;
 }
 
-#ticketTab {
-	font-size: 24px;
+.table th.text-center,
+.table td.text-center {
+   text-align: center; /* Make the text-center class work on tables */  
 }
 
 #tickets-collection {
 	overflow: visible; /* to override bootsrap overflow: auto in the tabs container */
 }
 
+.ticket-card {
+	margin-bottom: 10px;
+	background: linear-gradient(to bottom, #fcfcfc, #fff);
+}
+
+.ticket-card:hover {
+	background: linear-gradient(to bottom, #f7f7f7, #fcfcfc);	
+}
+
+.ticket-card .card-header {
+	border-bottom: 1px solid #eee;
+	line-height: 30px;
+}
+
+.ticket-card .card-body {
+	height: 100px;
+}
+
+.ticket-card .card-footer {
+	border-top: 1px solid #eee;
+	line-height: 30px;
+}
+
+.ticket-card .ticket-description {
+	height: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+}
+
+#ticket-form #description,
+#ticket-form #description-alert {
+	width: 380px;
+}
+
+#ticket-form #description-alert {
+	padding-left: 6px;
+	padding-right: 6px;
+}
+
 #addButton {
 	margin: 10px 0px;
+}
+
+#addEditModal {
+	width: 650px;
 }
 
 #addEditModal .actions {
