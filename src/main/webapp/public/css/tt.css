@@ -344,8 +344,22 @@ body.tt-body {
     word-wrap: break-word;
 }
 
+#ticket-form #description,
+#ticket-form #description-alert {
+	width: 380px;
+}
+
+#ticket-form #description-alert {
+	padding-left: 6px;
+	padding-right: 6px;
+}
+
 #addButton {
 	margin: 10px 0px;
+}
+
+#addEditModal {
+	width: 650px;
 }
 
 #addEditModal .actions {
