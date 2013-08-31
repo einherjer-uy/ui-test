@@ -163,63 +163,74 @@
 
 				<div class="alert-container" id="ticket-alert-container"></div>
 
-				<div class="control-group" >
-			    	<label class="control-label hidden-phone" for="type" title="This field is mandatory">Type<font color="red">*</font></label>				    	
-			    	<div class="controls">
-						<select id="type" placeholder="Type" value={{type}}></select>
-			    	</div>						    		    	
-			  	</div>	
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#form-basic" data-toggle="tab">Basic</a></li>
+					<li><a href="#form-attachments" data-toggle="tab">Attachments</a></li>
+					<li><a href="#form-activity" data-toggle="tab">Activity</a></li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="form-basic">
+						<div class="control-group" >
+					    	<label class="control-label hidden-phone" for="type" title="This field is mandatory">Type<font color="red">*</font></label>				    	
+					    	<div class="controls">
+								<select id="type" placeholder="Type" value={{type}}></select>
+					    	</div>						    		    	
+					  	</div>	
 
-				<div class="control-group" >
-			  		<label class="control-label hidden-phone" for="priority" title="This field is mandatory">Priority<font color="red">*</font></label>
-			    	<div class="controls">
-						<select id="priority" placeholder="Priority" value={{priority}}></select>
-			    	</div>
-			    </div>				  	
+						<div class="control-group" >
+					  		<label class="control-label hidden-phone" for="priority" title="This field is mandatory">Priority<font color="red">*</font></label>
+					    	<div class="controls">
+								<select id="priority" placeholder="Priority" value={{priority}}></select>
+					    	</div>
+					    </div>				  	
 
-				<div class="control-group">
-					<label class="control-label hidden-phone" for="due">Due Date</label>
-					<div class="controls">
-						<div id="duedate-datetimepicker" class="input-append date">
-							<input type="text" date-format="dd/MM/yyyy-hh:mm" id="due" placeholder="Due Date" value={{due == null ? "" : due}}></input>
-							<span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span>
+						<div class="control-group">
+							<label class="control-label hidden-phone" for="due">Due Date</label>
+							<div class="controls">
+								<div id="duedate-datetimepicker" class="input-append date">
+									<input type="text" date-format="dd/MM/yyyy-hh:mm" id="due" placeholder="Due Date" value={{due == null ? "" : due}}></input>
+									<span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span>
+								</div>
+							</div>					
 						</div>
-					</div>					
+
+						<div class="control-group">
+					    	<label class="control-label hidden-phone" for="description" title="This field is mandatory">Description<font color="red">*</font></label>
+					    	<div class="controls">
+								<textarea id="description" class="input-xlarge" rows="6" placeholder="Description">{{description}}</textarea>
+								<div><small><p class="muted" id="descriptionCharNum">3000</p></small></div>
+								<div class="alert alert-message"><small><strong>Note: </strong>The description given will be used by the executors so it is fundamental to be as detailed as possible.</small></div> 
+					    	</div>
+					  	</div>
+					</div>
+					<div class="tab-pane" id="form-attachments">
+						<div id="fileUploadDiv" class="control-group">
+					    	<label class="control-label hidden-phone" for="fileupload">Attachments</label>
+					    	<div class="controls">
+								<div>
+					 				<span class="btn btn-success fileinput-button">
+					                    <i class="glyphicon glyphicon-plus"></i>
+					                    <span>Add files...</span>
+					                    <input id="fileupload" type="file" name="files[]" multiple>
+					                </span>
+					                <div id="progress" class="progress progress-striped active" style="display:none; margin-top:7px;">
+					                    <div class="bar" style="width:0%;"></div>
+					                </div>
+								    <table id="uploadedFiles" style="width:100%; margin: 5px, 0;"></table>
+								</div>
+					    	</div>
+					  	</div>
+					</div>
+					<div class="tab-pane" id="form-activity">
+						<div id="commentDiv" class="control-group"> 
+							<!-- only for approvers changing the priority of a ticket trough this form -->
+					    	<label class="control-label hidden-phone" for="comment">Comment</label>
+					    	<div class="controls">
+								<textarea id="comment" class="input-xlarge" rows="4" placeholder="Comment"></textarea>
+					    	</div>
+					  	</div>
+					</div>
 				</div>
-
-				<div class="control-group">
-			    	<label class="control-label hidden-phone" for="description" title="This field is mandatory">Description<font color="red">*</font></label>
-			    	<div class="controls">
-						<textarea id="description" class="input-xlarge" rows="6" placeholder="Description">{{description}}</textarea>
-						<div><small ><p class="muted" id="descriptionCharNum">3000</p></small></div>
-			    	</div>
-			  	</div>
-					<div class='alert alert-message'><small><strong>Note: </strong>The description given will be used by the executors so it is fundamental to be as detailed as possible.</small></div> 
-
-				<div id="fileUploadDiv" class="control-group">
-			    	<label class="control-label hidden-phone" for="fileupload">Attachments</label>
-			    	<div class="controls">
-						<div>
-			 				<span class="btn btn-success fileinput-button">
-			                    <i class="glyphicon glyphicon-plus"></i>
-			                    <span>Add files...</span>
-			                    <input id="fileupload" type="file" name="files[]" multiple>
-			                </span>
-			                <div id="progress" class="progress progress-striped active" style="display:none; margin-top:7px;">
-			                    <div class="bar" style="width:0%;"></div>
-			                </div>
-						    <table id="uploadedFiles" style="width:100%; margin: 5px, 0;"></table>
-						</div>
-			    	</div>
-			  	</div>
-
-				<div id="commentDiv" class="control-group"> 
-					<!-- only for approvers changing the priority of a ticket trough this form -->
-			    	<label class="control-label hidden-phone" for="comment">Comment</label>
-			    	<div class="controls">
-						<textarea id="comment" class="input-xlarge" rows="4" placeholder="Comment"></textarea>
-			    	</div>
-			  	</div>
 
    			 </form>		
 		</div>
