@@ -31,19 +31,39 @@ var app = app || {};
 			this.$descriptionCharNum = this.$('#descriptionCharNum');
 			this.$uploadedFiles = this.$("#uploadedFiles");
 
+			//cleanup storage of attachments linked to the session when closing the popup to prevent them form showing up again if the user cancels and the save logic doesn't get executed
+			//use "one" to fire the event only once, otherwise after each "render" an additional handler is added to the event (could have used "off" first and then "on" instead)
+			this.$addEditModal.one("hidden", function() { 
+				$.ajax({
+	  				url: "/tt/tickets/attachment",
+	  				type: "DELETE"
+	  			});
+			});
+
 			this.$("#duedate-datetimepicker").datetimepicker({
         		format: 'MM/dd/yyyy-hh:mm',
         		pickSeconds: false
         	});
 
 			var self = this;
-			this.renderAttachments();
+			this.renderAttachments(this.model.get("attachments"));
 			this.$('#fileupload').fileupload({
 		        dataType: 'json',
 		        url: "tt/tickets/" + (self.model.get("number") ? self.model.get("number")+"/" : "") + "attachment",
 		        done: function (e, data) {
 		        	self.model.set("attachments", data.result);
-		            self.renderAttachments();
+		            self.renderAttachments(self.model.get("attachments"));
+		        },
+		        fail: function (e, data) {
+		        	var error;
+		        	if (data.jqXHR.responseJSON && data.jqXHR.responseJSON.message) {
+			    		error = data.jqXHR.responseJSON.message;
+			    	}
+			    	else {
+			    		error = "Cannot upload the file. Files over 20Mb are not allowed.";
+			    	}
+		        	self.hideErrors();
+					self.showErrors([{message:error}]);
 		        },
 		        progressall: function (e, data) {
 		            var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -91,18 +111,11 @@ var app = app || {};
 			return this;
 		},
 
-		renderAttachments: function() {
-			var data = this.model.get("attachments");
+		renderAttachments: function(data) {
 			this.$uploadedFiles.html("");
-
 			var ticketId=0;
 			if (this.model.get("number")) {
 				ticketId = this.model.get("number");
-			}
-			else {
-				if(data) {
-					ticketId = data[0].tempTicketId;	
-				}
 			}
 			if (data && data.length>0) {
 				this.$uploadedFiles.append(this.attachmentsTemplate({attachments: data, ticketNumber: ticketId}));
@@ -110,24 +123,23 @@ var app = app || {};
 			var self = this;
 			this.$uploadedFiles.find("[id^=deleteAttach]").click( function() {
 				$.ajax({
-	  				url: "/tt/tickets/"+ticketId+"/attachment/"+$(this).attr("id").replace("deleteAttach",""), //note the need of $( ) around this to be able to use jQuery attr, only this doesn't work 
+	  				url: "/tt/tickets/" + (ticketId==0 ? "" : ticketId + "/") + "attachment/"+$(this).attr("id").replace("deleteAttach",""), //note the need of $( ) around this to be able to use jQuery attr, only this doesn't work 
 	  				type: "DELETE",
 	  				data: null,
 	  				contentType: "application/json; charset=utf-8",
 	  				dataType: "json",
 					success: function() {
 						if (self.model.get("number")) {
-							//careful here, we cannot do model.fetch and then renderAssessment cause fetch is an ajax (asynchronous) call,
-							//so we need to use callbacks yo make sure the request has been completed
-			            	self.model.fetch({
+							self.model.fetch({
 			            		success: function (model, response, options) {
-			            			self.renderAttachments();
+			            			self.renderAttachments(model.get("attachments"));
 			            		}
 			            	});
 						}
 						else {
-							$.getJSON("/tt/tickets/"+ticketId+"/attachments", function(result) {
-								app.loggedUser = result;
+							$.getJSON("/tt/tickets/attachment", function(result) {
+								self.model.set("attachments", result);
+								self.renderAttachments(result);
 							});
 						}
 					},
@@ -169,7 +181,7 @@ var app = app || {};
 						        	//Hide progress bar and black background
 					                $('#pleaseWaitDialog').hide();
 									$(".modal-backdrop").hide();
-									app.util.displayInfo($('#dashboardMessages'), "Ticket " + ticketNumber + " successfully created", false);	
+									app.util.displayInfo($('#dashboardMessages'), "Ticket " + ticketNumber + " successfully created", false);
 					            }	
 					        });
 							//this can be an option if we don't want to get the whole collection but just update the created ticket with the id assigned by the server
@@ -206,9 +218,6 @@ var app = app || {};
 						    	}
 						    }
 						});
-					}
-					else {
-						serverError = "Save aborted cause apparently you haven't done any change";
 					}
 		        }
 		        if (this.model.validationError) {

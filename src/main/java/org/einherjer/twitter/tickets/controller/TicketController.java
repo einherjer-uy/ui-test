@@ -1,6 +1,7 @@
 package org.einherjer.twitter.tickets.controller;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import lombok.Getter;
 
@@ -146,11 +148,11 @@ public class TicketController {
      * { "project":{"prefix":"PR1"}, "title":"t", "description":"d", "status":"OPEN", "assignee":{"username":"user@twitter.com"} }
      */
     @RequestMapping(value = "/tickets", method = RequestMethod.POST)
-    public @ResponseBody SimpleJson postTicket(@RequestBody Ticket jsonBody) throws TicketNotFoundException {
+    public @ResponseBody SimpleJson postTicket(@RequestBody Ticket jsonBody, HttpSession session) throws TicketNotFoundException {
         this.validateTicketDTO(jsonBody);
         Assert.notNull(jsonBody.getProject(), "Project cannot be null");
         Assert.notNull(jsonBody.getProject().getPrefix(), "Project cannot be null");
-        final Ticket ticket = ticketService.save(jsonBody.getProject().getPrefix(), -1, jsonBody);
+        final Ticket ticket = ticketService.save(jsonBody.getProject().getPrefix(), -1, session.getId(), jsonBody);
         return new SimpleJson().append("number", ticket.getTicketId());
         //usually a POST will return HttpStatus.CREATED and an empty body, but in this case we include the ticket id that the server generated in the response (we can still change the status code from OK to CREATED using the approach of getTickets()
     }
@@ -342,7 +344,7 @@ public class TicketController {
     }
     
     /**
-     * Add attachment
+     * Add attachment (for ticket)
      * 
      * Example request:
      * POST /api/tickets/PR1-1/attachment HTTP/1.1
@@ -353,7 +355,7 @@ public class TicketController {
      * ... File Data ...
      */
     @RequestMapping(value = "/tickets/{project}-{number}/attachment", method = RequestMethod.POST)
-    public @ResponseBody Set<Attachment> uploadAttachment(
+    public @ResponseBody Set<Attachment> uploadAttachmentForTicket(
             @PathVariable("project") String projectPrefix,
             @PathVariable("number") Integer ticketNumber,
     // this way is simpler but doesn't support multiple files
@@ -365,16 +367,33 @@ public class TicketController {
         Iterator<String> itr = request.getFileNames();
         while (itr.hasNext()) {
             mpf = request.getFile(itr.next());
-            ticketService.addAttachment(projectPrefix, ticketNumber, mpf.getOriginalFilename(), mpf.getSize() / 1024 + " Kb", mpf.getContentType(), mpf.getBytes());
+            ticketService.addAttachment(projectPrefix, ticketNumber, mpf.getOriginalFilename(), new BigDecimal(mpf.getSize()), mpf.getContentType(), mpf.getBytes());
         }
-        return ticketService.find(projectPrefix, ticketNumber).getAttachments(); //the file upload jquery plugin requires the server to return the list of attachments after POST
+        return this.getAttachmentsForTicket(projectPrefix, ticketNumber); //the file upload jquery plugin requires the server to return the list of attachments after POST
     }
 
     /**
-     * Download attachment 
+     * Add attachment (for session)
+     * 
+     */
+    @RequestMapping(value = "/tickets/attachment", method = RequestMethod.POST)
+    public @ResponseBody Set<Attachment> uploadAttachmentForSession(
+            MultipartHttpServletRequest request,
+            HttpSession session) throws IOException {
+        MultipartFile mpf = null;
+        Iterator<String> itr = request.getFileNames();
+        while (itr.hasNext()) {
+            mpf = request.getFile(itr.next());
+            ticketService.addAttachmentForSession(session.getId(), mpf.getOriginalFilename(), new BigDecimal(mpf.getSize()), mpf.getContentType(), mpf.getBytes());
+        }
+        return this.getAttachmentsForSession(session); //the file upload jquery plugin requires the server to return the list of attachments after POST
+    }
+    
+    /**
+     * Download attachment (for ticket)
      */
     @RequestMapping(value = "/tickets/{project}-{number}/attachment/{attachId}", method = RequestMethod.GET)
-    public void downloadAttachment(
+    public void downloadAttachmentForTicket(
             @PathVariable("project") String projectPrefix,
             @PathVariable("number") Integer ticketNumber,
             @PathVariable("attachId") Long attachmentId,
@@ -386,7 +405,21 @@ public class TicketController {
     }
     
     /**
-     * Delete attachment
+     * Download attachment (for session)
+     */
+    @RequestMapping(value = "/tickets/attachment/{attachId}", method = RequestMethod.GET)
+    public void downloadAttachmentForSession(
+            @PathVariable("attachId") Long attachmentId,
+            HttpServletResponse response,
+            HttpSession session) throws IOException {
+        Attachment attachment = ticketService.getAttachmentForSession(session.getId(), attachmentId);
+        response.setContentType(attachment.getFileType());
+        response.setHeader("Content-disposition", "attachment; filename=\"" + attachment.getFileName() + "\"");
+        FileCopyUtils.copy(attachment.getBytes(), response.getOutputStream());
+    }
+    
+    /**
+     * Delete attachment (for ticket)
      */
     @RequestMapping(value = "/tickets/{project}-{number}/attachment/{attachId}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteAttachment(
@@ -395,6 +428,42 @@ public class TicketController {
             @PathVariable("attachId") Long attachmentId) {
         ticketService.deleteAttachment(projectPrefix, ticketNumber, attachmentId);
         return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+    }
+    
+    /**
+     * Delete attachment (for session)
+     */
+    @RequestMapping(value = "/tickets/attachment/{attachId}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteAttachment(@PathVariable("attachId") Long attachmentId, HttpSession session) {
+        ticketService.deleteAttachmentForSession(session.getId(), attachmentId);
+        return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * Cleanup attachment session store
+     */
+    @RequestMapping(value = "/tickets/attachment", method = RequestMethod.DELETE)
+    public ResponseEntity<String> cleanupAttachmentStore(HttpSession session) {
+        ticketService.cleanupAttachmentStore(session.getId());
+        return new ResponseEntity<String>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * Get all attachments (for ticket)
+     */
+    @RequestMapping(value = "/tickets/{project}-{number}/attachment", method = RequestMethod.GET)
+    public @ResponseBody Set<Attachment> getAttachmentsForTicket(
+            @PathVariable("project") String projectPrefix,
+            @PathVariable("number") Integer ticketNumber) {
+        return ticketService.find(projectPrefix, ticketNumber).getAttachments();
+    }
+    
+    /**
+     * Get all attachments (for session)
+     */
+    @RequestMapping(value = "/tickets/attachment", method = RequestMethod.GET)
+    public @ResponseBody Set<Attachment> getAttachmentsForSession(HttpSession session) {
+        return ticketService.getAttachmentsForSession(session.getId());
     }
     
 }
