@@ -205,7 +205,7 @@
 	<script type="text/template" id="attachmentsTemplate">
 		<% _.each(attachments, function(file) { %>
 			<tr>
-	        	<td><a href='tt/tickets/{{ticketNumber}}/attachment/{{file.id}}' title='{{file.fileName}}'>{{file.fileName}}</a></td>
+	        	<td><a href='tt/tickets/{{ticketNumber ? ticketNumber+"/" : ""}}attachment/{{file.id}}' title='{{file.fileName}}'>{{file.fileName}}</a></td>
 				<td class='white-space:nowrap'>{{file.fileSize}}</td>
 	            <td><a href='#' id="deleteAttach{{file.id}}" class='btn btn-danger glyphicon glyphicon-trash'></a></td>
 	        </tr>
