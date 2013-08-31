@@ -27,13 +27,7 @@ var app = app || {};
 				creatorLastName = log[log.length-1].user.lastName;
 				dateCreated = log[log.length-1].timestamp; 
 			};
-			this.$el.html(this.template({number: this.model.get("number"), 
-									description: this.model.get("description"), 
-							   creatorFirstName: creatorFirstName,
-							    creatorLastName: creatorLastName,
-							        dateCreated: dateCreated
-										})
-			);			
+			this.$el.html(this.template(this.model.toJSON()));			
 			this.$(".actions").append(new app.ActionsView({ model: this.model, onAddEditModal: false, $messages: this.$messages }).render().el);
 			this.$el.find('.timeago').timeago();
 			return this;

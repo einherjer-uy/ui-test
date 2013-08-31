@@ -109,9 +109,9 @@
 	<script type="text/template" id="item-template">
         <td>{{ number }}</td>
         <td class="ticket-description">{{ description }}</td>
-        <td class="text-center">{{ type }}</td>
+        <td class="text-center"><small>{{ type }}</small></td>
         <td class="text-center">{{ priority == "HIGH" ? '<i class="glyphicon glyphicon-chevron-up" />' : (priority == 'MEDIUM' ? '<i class="glyphicon glyphicon-minus" />' : '<i class="glyphicon glyphicon-chevron-down" />' ) }}</td>
-        <td class="text-center">{{ !due ? '<span>-</span>' : '<span title="' + due.substr(11,5) + '">' + due.substr(0,10) + '</span>' }}</td>
+        <td class="text-center"><small>{{ !due ? '<span>-</span>' : '<span title="' + due.substr(11,5) + '">' + due.substr(0,10) + '</span>' }}</small></td>
         <td class="text-center">{{ status }}</td>
         <td class="text-center">
         	<div class="actions"></div>
@@ -120,13 +120,26 @@
 
 	<!--Template for the tickets cards-->
 	<script type="text/template" id="item-card-template">
-        <div class="thumbnail">
-			<div class="actions"></div>
-			<div>{{ description }}</div>
-			<div>{{ number }}</div>
-			<div>{{ creatorFirstName }}</div>
-			<div>{{ creatorLastName }}</div>
-			<div><abbr class="timeago" title="{{ dateCreated }}"></abbr></div>
+        <div class="thumbnail ticket-card">
+        	<div class="row-fluid card-header">
+        		<div class="span6"><span>{{ number }}</span></div>
+        		<div class="span6">
+        			<span class="pull-right">{{ priority == "HIGH" ? '<i class="glyphicon glyphicon-chevron-up" />' : (priority == 'MEDIUM' ? '<i class="glyphicon glyphicon-minus" />' : '<i class="glyphicon glyphicon-chevron-down" />' ) }}</span>
+    			</div>
+        	</div>
+    		<div class="row-fluid card-body">
+    			<div class="ticket-description">
+    				<span>{{ description }}</span>
+				</div>
+    			<div>
+    				<small>{{ type }}</small>
+    				<small class="pull-right">{{ !due ? '<span>-</span>' : '<span title="' + due.substr(11,5) + '">' + due.substr(0,10) + '</span>' }}</small>
+				</div>
+    		</div>
+    		<div class="row-fluid card-footer">    			
+    			<div class="span6"><span>{{ status }}<span></div>
+        		<div class="span6"><span class="actions pull-right" /></div>
+    		</div>
         </div>
 	</script>
 

@@ -301,6 +301,10 @@ body.tt-body {
     white-space: nowrap;
 }
 
+#ticketTable small {
+	color: #888;
+}
+
 #ticketTable .actions {
 	width: 140px;
 }
@@ -312,6 +316,40 @@ body.tt-body {
 
 #tickets-collection {
 	overflow: visible; /* to override bootsrap overflow: auto in the tabs container */
+}
+
+.ticket-card {
+	margin-bottom: 10px;
+	background: linear-gradient(to bottom, #fcfcfc, #fff);
+}
+
+.ticket-card:hover {
+	background: linear-gradient(to bottom, #f7f7f7, #fcfcfc);	
+}
+
+.ticket-card .card-header {
+	border-bottom: 1px solid #eee;
+	line-height: 30px;
+}
+
+.ticket-card .card-body {
+	height: 100px;
+}
+
+.ticket-card .card-footer {
+	border-top: 1px solid #eee;
+	line-height: 30px;
+}
+
+.ticket-card .ticket-description {
+	height: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+}
+
+.ticket-card small {
+	color: #888;
 }
 
 #addButton {
