@@ -301,10 +301,6 @@ body.tt-body {
     white-space: nowrap;
 }
 
-#ticketTable small {
-	color: #888;
-}
-
 #ticketTable .actions {
 	width: 140px;
 }
@@ -346,10 +342,6 @@ body.tt-body {
     overflow: hidden;
     text-overflow: ellipsis;
     word-wrap: break-word;
-}
-
-.ticket-card small {
-	color: #888;
 }
 
 #addButton {

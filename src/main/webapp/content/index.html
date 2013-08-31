@@ -109,9 +109,9 @@
 	<script type="text/template" id="item-template">
         <td>{{ number }}</td>
         <td class="ticket-description">{{ description }}</td>
-        <td class="text-center"><small>{{ type }}</small></td>
+        <td class="text-center muted"><small>{{ type }}</small></td>
         <td class="text-center">{{ priority == "HIGH" ? '<i class="glyphicon glyphicon-chevron-up" />' : (priority == 'MEDIUM' ? '<i class="glyphicon glyphicon-minus" />' : '<i class="glyphicon glyphicon-chevron-down" />' ) }}</td>
-        <td class="text-center"><small>{{ !due ? '<span>-</span>' : '<span title="' + due.substr(11,5) + '">' + due.substr(0,10) + '</span>' }}</small></td>
+        <td class="text-center muted"><small>{{ !due ? '<span>-</span>' : '<span title="' + due.substr(11,5) + '">' + due.substr(0,10) + '</span>' }}</small></td>
         <td class="text-center">{{ status }}</td>
         <td class="text-center">
         	<div class="actions"></div>
@@ -131,7 +131,7 @@
     			<div class="ticket-description">
     				<span>{{ description }}</span>
 				</div>
-    			<div>
+    			<div class="muted">
     				<small>{{ type }}</small>
     				<small class="pull-right">{{ !due ? '<span>-</span>' : '<span title="' + due.substr(11,5) + '">' + due.substr(0,10) + '</span>' }}</small>
 				</div>
