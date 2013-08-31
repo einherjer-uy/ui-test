@@ -344,6 +344,19 @@ body.tt-body {
     word-wrap: break-word;
 }
 
+.ticket-card.tt-card-error:hover {
+	background: linear-gradient(to bottom, #EBCCCC, #F0D1D1);
+}
+.ticket-card.tt-card-error {
+	background: linear-gradient(to bottom, #F2DEDE, #F7E3E3);
+}
+.ticket-card.tt-card-success:hover {
+	background: linear-gradient(to bottom, #d0e9c6, #D5EECB);
+}
+.ticket-card.tt-card-success {
+	background: linear-gradient(to bottom, #dff0d8, #E4F5DD);
+}
+
 #ticket-form #description,
 #ticket-form #description-alert {
 	width: 380px;
