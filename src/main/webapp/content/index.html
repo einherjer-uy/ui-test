@@ -75,11 +75,12 @@
 							<thead>
 								<tr>
 									<th>Id</th>
-									<th>Description</th>
-									<th>Type</th>
-									<th>Priority</th>
-									<th>Due date</th>
-									<th colspan="4">Status</th>					
+									<th class="ticket-description">Description</th>
+									<th class="text-center">Type</th>
+									<th class="text-center">Priority</th>
+									<th class="text-center">Due date</th>
+									<th class="text-center">Status</th>	
+									<th class="text-center"></th>				
 								</tr>
 							</thead>
 							<tbody id="ticketTableBody">
@@ -107,12 +108,12 @@
 	<!--Template for the tickets table-->
 	<script type="text/template" id="item-template">
         <td>{{ number }}</td>
-        <td>{{ description }}</td>
-        <td>{{ type }}</td>
-        <td>{{ priority }}</td>
-        <td>{{ due }}</td>
-        <td>{{ status }}</td>
-        <td>
+        <td class="ticket-description">{{ description }}</td>
+        <td class="text-center">{{ type }}</td>
+        <td class="text-center">{{ priority == "HIGH" ? '<i class="glyphicon glyphicon-chevron-up" />' : (priority == 'MEDIUM' ? '<i class="glyphicon glyphicon-minus" />' : '<i class="glyphicon glyphicon-chevron-down" />' ) }}</td>
+        <td class="text-center">{{ !due ? '<span>-</span>' : '<span title="' + due.substr(11,5) + '">' + due.substr(0,10) + '</span>' }}</td>
+        <td class="text-center">{{ status }}</td>
+        <td class="text-center">
         	<div class="actions"></div>
 		</td>
 	</script>

@@ -265,6 +265,7 @@ body.tt-body {
 	min-height: 500px;
 	position: relative;
 	padding-bottom: 60px;
+	background-color: #fff; /* Overrid bootstrap's well background */
 }
 
 #ttApp-footer {
@@ -287,12 +288,26 @@ body.tt-body {
 	color: #eee;
 }
 
+
+#ticketTab {
+	font-size: 24px;
+}
+
+#ticketTable .ticket-description {
+	width: 340px;
+    max-width: 340px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 #ticketTable .actions {
 	width: 140px;
 }
 
-#ticketTab {
-	font-size: 24px;
+.table th.text-center,
+.table td.text-center {
+   text-align: center; /* Make the text-center class work on tables */  
 }
 
 #tickets-collection {
