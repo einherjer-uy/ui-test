@@ -49,6 +49,12 @@ public class User extends AbstractEntity {
         this.role = role;
     }
 
+    @JsonIgnore(false) //override the getter just to include the id in the json
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
     public Set<Ticket> getUnread() {
         return Collections.unmodifiableSet(this.unread);
     }

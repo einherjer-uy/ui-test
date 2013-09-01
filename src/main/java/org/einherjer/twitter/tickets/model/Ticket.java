@@ -58,7 +58,7 @@ public class Ticket extends AbstractEntity {
     
     private @Getter String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 3000)
     private @Getter String description;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
