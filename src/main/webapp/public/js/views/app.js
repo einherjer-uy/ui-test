@@ -109,7 +109,6 @@ var app = app || {};
   				contentType: "application/json; charset=utf-8",
   				dataType: "json",
 			});
-			//app.loggedUser.save();
 		},
 
 		setTicketCardTab:function() {
@@ -121,7 +120,6 @@ var app = app || {};
   				contentType: "application/json; charset=utf-8",
   				dataType: "json",
 			});
-			//app.loggedUser.save();
 		}
 
 	});

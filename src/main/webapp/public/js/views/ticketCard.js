@@ -31,7 +31,7 @@ var app = app || {};
 			this.$(".actions").append(new app.ActionsView({ model: this.model, onAddEditModal: false, $messages: this.$messages }).render().el);
 			this.$el.find('.timeago').timeago();
 
-			if (app.loggedUser.role==app.util.ROLE_REQUESTOR) {
+			if (app.loggedUser.get("role")==app.util.ROLE_REQUESTOR) {
 				if (this.model.get("status")=="APPROVED") {
 					this.$(".thumbnail").addClass("tt-card-success");
 				}

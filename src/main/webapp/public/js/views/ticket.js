@@ -91,15 +91,15 @@ var app = app || {};
 				this.$(".actions").append(new app.ActionsView({ model: this.model, onAddEditModal: true, $messages: this.$alertContainer }).render().el);
 			}
 
-			if(app.loggedUser.role==app.util.ROLE_REQUESTOR) {
+			if(app.loggedUser.get("role")==app.util.ROLE_REQUESTOR) {
 				this.$("#commentDiv").hide();
 			}
-			else if(app.loggedUser.role==app.util.ROLE_APPROVER) {
+			else if(app.loggedUser.get("role")==app.util.ROLE_APPROVER) {
 				this.$description.prop("readonly",true);
 				this.$due.prop("readonly",true);
 				this.$type.prop("disabled",true);
 			}
-			else if(app.loggedUser.role==app.util.ROLE_EXECUTOR) {
+			else if(app.loggedUser.get("role")==app.util.ROLE_EXECUTOR) {
 				this.$description.prop("readonly",true);
 				this.$due.prop("readonly",true);
 				this.$type.prop("disabled",true);
@@ -168,7 +168,7 @@ var app = app || {};
 
 		save: function (e) {
 			this.hideErrors();
-			if (app.loggedUser.role==app.util.ROLE_REQUESTOR) {
+			if (app.loggedUser.get("role")==app.util.ROLE_REQUESTOR) {
 				this.model.set(this.newAttributes());
 				var serverError;
 				if (this.model.isNew()) {
@@ -231,7 +231,7 @@ var app = app || {};
 					app.util.displayInfo($('#dashboardMessages'), "Ticket " + ticketNumber + " successfully updated", false);	
 				}
 			}
-			else if (app.loggedUser.role==app.util.ROLE_APPROVER) {
+			else if (app.loggedUser.get("role")==app.util.ROLE_APPROVER) {
 				var self = this;
 				var ticketNumber = this.model.get("number");
 			    $.ajax({
