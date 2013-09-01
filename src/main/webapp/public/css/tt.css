@@ -346,7 +346,7 @@ body.tt-body {
 
 .tt-ellipsis {
     text-overflow: ellipsis;
-    word-wrap: break-word;	
+    white-space: nowrap;	
 }
 
 .ticket-card.tt-card-error:hover {
