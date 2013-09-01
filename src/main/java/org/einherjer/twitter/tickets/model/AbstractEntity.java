@@ -21,7 +21,7 @@ public class AbstractEntity implements Identifiable<Long> {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private final Long id = null;
 
-    //the getter could have been generated with lombok and the @JsonIgnore set on the attribute but that way the @Override of @JsonIgnore in the Attachment doesn't work
+    //the getter could have been generated with lombok and the @JsonIgnore set on the attribute but that way the @Override of @JsonIgnore in the Attachment and User doesn't work
     @JsonIgnore
     @Override
     public Long getId() {

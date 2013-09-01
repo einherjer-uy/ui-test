@@ -344,6 +344,11 @@ body.tt-body {
     word-wrap: break-word;
 }
 
+.tt-ellipsis {
+    text-overflow: ellipsis;
+    word-wrap: break-word;	
+}
+
 .ticket-card.tt-card-error:hover {
 	background: linear-gradient(to bottom, #EBCCCC, #F0D1D1);
 }
