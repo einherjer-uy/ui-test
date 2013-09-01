@@ -5,9 +5,11 @@ var app = app || {};
 	app.TicketView = Backbone.View.extend({
 
 		template: _.template($('#modal-template').html()),
+		yesNoConfirmationTemplate: _.template($('#yesNoConfirmationTemplate').html()),
 
 		events: {
-			'click #saveButton' : 'save',
+			'click .confirmOkButton': 'save',
+			'click .confirmCancelButton': 'closeSavePopover',
 			'click #closeButton' : 'close',
 			'keyup #description' : 'descriptionModalCountChar'
 		},
@@ -30,6 +32,7 @@ var app = app || {};
 			this.$alertContainer = this.$('#ticket-alert-container');
 			this.$descriptionCharNum = this.$('#descriptionCharNum');
 			this.$uploadedFiles = this.$("#uploadedFiles");
+			this.$saveButton = this.$("#saveButton");
 
 			//cleanup storage of attachments linked to the session when closing the popup to prevent them form showing up again if the user cancels and the save logic doesn't get executed
 			//use "one" to fire the event only once, otherwise after each "render" an additional handler is added to the event (could have used "off" first and then "on" instead)
@@ -107,6 +110,13 @@ var app = app || {};
 				this.$("#commentDiv").hide();
 				this.$("#saveButton").hide();
 			}
+
+			this.$saveButton.popover({
+			    placement : 'top',
+			    title : 'Confirmation',
+			    html: true,
+			    content : this.yesNoConfirmationTemplate()
+			});
 
 			return this;
 		},
@@ -255,6 +265,10 @@ var app = app || {};
 				    }
 				});
 			}
+		},
+
+		closeSavePopover: function() {
+			this.$saveButton.popover("hide");
 		},
 
 		showErrors: function(errors) {
