@@ -284,9 +284,9 @@ var app = app || {};
 	    	var len = this.$description.val().length;
 	        if (len >= 3000) {
 	        	this.$description.val(this.$description.val().substring(0, 3000));
-	        } else {
-	        	this.$descriptionCharNum.text((3000 - len).toString()) ; 
+	        	len = 3000;
 	        }
+        	this.$descriptionCharNum.text((3000 - len).toString());
 		}
 
 	});
