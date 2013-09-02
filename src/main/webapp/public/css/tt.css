@@ -339,6 +339,7 @@ body.tt-body {
 .ticket-card .card-footer {
 	border-top: 1px solid #eee;
 	line-height: 30px;
+	padding-top: 4px;
 }
 
 .ticket-card .ticket-description {
@@ -416,7 +417,8 @@ body.tt-body {
 	display: none;
 }
 
-tr:hover .actions .action-enabled {
+tr:hover .actions .action-enabled,
+.ticket-card:hover .actions .action-enabled {
 	color: #999;
 	-webkit-transition: all 0.2s;
 	-moz-transition: all 0.2s;
