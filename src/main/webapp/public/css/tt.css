@@ -268,6 +268,10 @@ body.tt-body {
 	background-color: #fff; /* Overrid bootstrap's well background */
 }
 
+#header h2 {
+	margin-top: 0px;
+}
+
 #ttApp-footer {
 	position: absolute;
 	bottom: 0;
