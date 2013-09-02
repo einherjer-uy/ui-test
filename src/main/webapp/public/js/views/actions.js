@@ -85,7 +85,7 @@ var app = app || {};
 			//	self.$doneAction.tooltip("hide"); //hide the tooltip when the popover is shown, otherwise they overlap
 			//});
 
-			if(app.loggedUser.role==app.util.ROLE_REQUESTOR) {
+			if(app.loggedUser.get("role")==app.util.ROLE_REQUESTOR) {
 				this.$viewAction.addClass('action-disabled');
 				this.$approveAction.addClass('action-disabled');
 				this.$rejectAction.addClass('action-disabled');
@@ -94,7 +94,7 @@ var app = app || {};
 				this.$editAction.addClass('action-enabled');
 				this.$cancelAction.addClass('action-enabled');
 			}
-			if(app.loggedUser.role==app.util.ROLE_APPROVER) {
+			if(app.loggedUser.get("role")==app.util.ROLE_APPROVER) {
 				this.$viewAction.addClass('action-disabled');
 				this.$doneAction.addClass('action-disabled');
 
@@ -103,7 +103,7 @@ var app = app || {};
 				this.$approveAction.addClass('action-enabled');
 				this.$rejectAction.addClass('action-enabled');
 			}
-			if(app.loggedUser.role==app.util.ROLE_EXECUTOR) {
+			if(app.loggedUser.get("role")==app.util.ROLE_EXECUTOR) {
 				this.$editAction.addClass('action-disabled');
 				this.$cancelAction.addClass('action-disabled');
 				this.$approveAction.addClass('action-disabled');

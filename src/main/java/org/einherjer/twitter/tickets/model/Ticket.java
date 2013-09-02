@@ -1,5 +1,6 @@
 package org.einherjer.twitter.tickets.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -57,7 +58,7 @@ public class Ticket extends AbstractEntity {
     
     private @Getter String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 3000)
     private @Getter String description;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
@@ -153,10 +154,25 @@ public class Ticket extends AbstractEntity {
         return Collections.unmodifiableSet(attachments);
     }
 
-    public Attachment addAttachment(String fileName, String fileSize, String fileType, byte[] bytes) {
+    public Attachment addAttachment(String fileName, BigDecimal fileSize, String fileType, byte[] bytes) {
         Attachment attachment = new Attachment(fileName, fileSize, fileType, bytes);
+        validateNewAttachmentSize(attachment);
         this.attachments.add(attachment);
         return attachment;
+    }
+
+    private void validateNewAttachmentSize(Attachment attachment) {
+        BigDecimal total = BigDecimal.ZERO;
+        for (Attachment a : this.attachments) {
+            total = total.add(a.getSizeBytes());
+        }
+        if (total.add(attachment.getSizeBytes()).compareTo(Attachment.SIZE_LIMIT) > 0) {
+            throw new IllegalArgumentException("Total attachment size per ticket exeeded (20mb)");
+        }
+    }
+
+    public void resetAttachments(Set<Attachment> attachments) {
+        this.attachments.addAll(attachments);
     }
 
     public void removeAttachment(Long attachmentId) {

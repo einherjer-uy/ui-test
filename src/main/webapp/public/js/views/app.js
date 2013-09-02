@@ -8,7 +8,9 @@ var app = app || {};
 
 		events: {
 			'click #addButton': 'add',
-			'click #refreshButton': 'refresh'
+			'click #refreshButton': 'refresh',
+			'click #ticketListTab': 'setTicketListTab',
+			'click #ticketCardTab': 'setTicketCardTab'
 		},
 
 		initialize: function () {
@@ -20,15 +22,33 @@ var app = app || {};
 			this.listenTo(app.tickets, 'reset', this.addAll);
 			this.listenTo(app.tickets, 'all', this.render);
 
-	        app.tickets.fetch({  //call server to fetch the collection, which will in turn trigger the update of the view
-		        success: function () {
-		        	//Hide progress bar and black background
-	                $('#pleaseWaitDialog').hide();
-					$(".modal-backdrop").hide();
-					
-					$('#dashboardMessages').html('');
-	            }	
-	        });
+			app.loggedUser.fetch ({
+				success: function () {
+					app.tickets.fetch({  //call server to fetch the collection, which will in turn trigger the update of the view
+							        success: function () {
+							        	//Hide progress bar and black background
+						                $('#pleaseWaitDialog').hide();
+										$(".modal-backdrop").hide();
+										
+										$('#dashboardMessages').html('');
+						            }	
+					});
+
+					if (app.loggedUser.get("dashboardMode") != "LIST" ) {
+						$('#ticketListTab').removeClass("active");
+						$('#list').removeClass("active");
+				
+						$('#ticketCardTab').addClass("active");
+						$('#cards').addClass("active");
+					};		
+
+					$('#loggedUser').html(app.loggedUser.get("firstName") + ' ' + app.loggedUser.get("lastName") + '  |  ' + app.loggedUser.get("role").toLowerCase());				
+
+					if (app.loggedUser.get("role") == app.util.ROLE_APPROVER || app.loggedUser.get("role") == app.util.ROLE_EXECUTOR) {
+						$("#addButton").hide();
+					}
+				}
+			});
 		},
 
 		refresh: function () {
@@ -67,14 +87,6 @@ var app = app || {};
 			}else{
 				$('#ticketTab').show();
 			}
-
-			if (app.loggedUser && app.loggedUser.username && app.loggedUser.username.emailAddress) {
-				this.$loggedUser.html(app.loggedUser.firstName + ' ' + app.loggedUser.lastName + '  |  '+ app.loggedUser.role.toLowerCase());	
-			};
-			
-			if (app.loggedUser.role == app.util.ROLE_APPROVER || app.loggedUser.role == app.util.ROLE_EXECUTOR) {
-				this.$("#addButton").hide();
-			}
 		},
 
 		add: function() {
@@ -86,6 +98,28 @@ var app = app || {};
 			this.$messagesDiv.html('');
 			this.$addEditModal.html(new app.TicketView({model: ticket}).render().el);
         	this.$addEditModal.modal({keyboard: false, backdrop: "static"});
+		},
+
+		setTicketListTab:function() {
+			app.loggedUser.set("dashboardMode","LIST");
+			$.ajax({
+  				url: "/tt/loggedUser", 
+  				type: "PUT",
+  				data: JSON.stringify(app.loggedUser.toJSON()),
+  				contentType: "application/json; charset=utf-8",
+  				dataType: "json",
+			});
+		},
+
+		setTicketCardTab:function() {
+			app.loggedUser.set("dashboardMode","CARD");
+			$.ajax({
+  				url: "/tt/loggedUser", 
+  				type: "PUT",
+  				data: JSON.stringify(app.loggedUser.toJSON()),
+  				contentType: "application/json; charset=utf-8",
+  				dataType: "json",
+			});
 		}
 
 	});

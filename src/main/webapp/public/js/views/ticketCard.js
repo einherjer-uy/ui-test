@@ -30,6 +30,24 @@ var app = app || {};
 			this.$el.html(this.template(this.model.toJSON()));			
 			this.$(".actions").append(new app.ActionsView({ model: this.model, onAddEditModal: false, $messages: this.$messages }).render().el);
 			this.$el.find('.timeago').timeago();
+
+			if (app.loggedUser.get("role")==app.util.ROLE_REQUESTOR) {
+				if (this.model.get("status")=="APPROVED") {
+					this.$(".thumbnail").addClass("tt-card-success");
+				}
+				if (this.model.get("status")=="REJECTED") {
+					this.$(".thumbnail").addClass("tt-card-error");
+				}
+			}
+			else {
+				if (this.model.get("unread")) {
+					this.$el.addClass("unread");
+				}
+				else {
+					this.$el.removeClass("unread");
+				}
+			}
+
 			return this;
 		}
 

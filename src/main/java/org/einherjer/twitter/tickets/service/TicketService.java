@@ -1,15 +1,20 @@
 package org.einherjer.twitter.tickets.service;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
 
 import org.einherjer.twitter.tickets.model.Attachment;
 import org.einherjer.twitter.tickets.model.Project;
+import org.einherjer.twitter.tickets.model.Session;
 import org.einherjer.twitter.tickets.model.Ticket;
 import org.einherjer.twitter.tickets.model.Ticket.TicketPriority;
 import org.einherjer.twitter.tickets.model.Ticket.TicketStatus;
 import org.einherjer.twitter.tickets.model.User;
 import org.einherjer.twitter.tickets.model.User.Role;
 import org.einherjer.twitter.tickets.repository.ProjectRepository;
+import org.einherjer.twitter.tickets.repository.SessionRepository;
 import org.einherjer.twitter.tickets.repository.TicketRepository;
 import org.einherjer.twitter.tickets.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +33,8 @@ public class TicketService {
     private ProjectRepository projectRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private SessionRepository sessionRepository;
 
     public Iterable<Ticket> findAll() {
         return ticketRepository.findAll();
@@ -72,15 +79,20 @@ public class TicketService {
 
     @Transactional
     public Ticket save(String projectPrefix, Integer ticketNumber, Ticket data) throws TicketNotFoundException {
-        return internalSaveOrPatch(projectPrefix, ticketNumber, data, false);
+        return this.save(projectPrefix, ticketNumber, null, data);
+    }
+
+    @Transactional
+    public Ticket save(String projectPrefix, Integer ticketNumber, String sessionId, Ticket data) throws TicketNotFoundException {
+        return internalSaveOrPatch(projectPrefix, ticketNumber, sessionId, data, false);
     }
 
     @Transactional
     public Ticket patch(String projectPrefix, Integer ticketNumber, Ticket data) throws TicketNotFoundException {
-        return internalSaveOrPatch(projectPrefix, ticketNumber, data, true);
+        return internalSaveOrPatch(projectPrefix, ticketNumber, null, data, true);
     }
 
-    private Ticket internalSaveOrPatch(String projectPrefix, Integer ticketNumber, Ticket data, boolean patch) throws TicketNotFoundException {
+    private Ticket internalSaveOrPatch(String projectPrefix, Integer ticketNumber, String sessionId, Ticket data, boolean patch) throws TicketNotFoundException {
         if (!patch) {
             data.setAssignee(userRepository.findByUsername(data.getAssignee().getUsername()));
             Assert.notNull(data.getAssignee(), "No user matches the specified username");
@@ -95,6 +107,12 @@ public class TicketService {
                 Assert.notNull(project, "No project matches the specified prefix");
                 ticket = new Ticket(project, data);
                 Ticket newTicket = ticketRepository.save(ticket);
+                Session session = sessionRepository.findOne(sessionId);
+                if(session!=null){
+                    ticket.resetAttachments(session.getAttachments());
+                    session.cleanAttachments();
+                    sessionRepository.delete(session);
+                }
                 this.broadcastUnread(newTicket, Role.APPROVER);
                 return newTicket;
             }
@@ -108,14 +126,14 @@ public class TicketService {
     }
 
     private void broadcastRead(Ticket ticket) {
-        //TODO: this is very ineffcient, read all users every time a ticket is cancelled, rejected, etc; we should have an object cache or some pre populated structure, updated by the user CRUD that should be infrequent
+        //TODO: this is very inefficient, read all users every time a ticket is cancelled, rejected, etc; we should have an object cache or some pre populated structure, updated by the user CRUD that should be infrequent
         for (User user : userRepository.findAll()) {
             user.read(ticket);
         }
     }
 
     private void broadcastUnread(Ticket ticket, Role role) {
-        //TODO: this is very ineffcient, read all users (by role) every time a ticket is created, we should have an object cache or some pre populated structure, updated by the user CRUD that should be infrequent
+        //TODO: this is very inefficient, read all users (by role) every time a ticket is created, we should have an object cache or some pre populated structure, updated by the user CRUD that should be infrequent
         for (User user : userRepository.findByRole(role)) {
             user.addUnread(ticket);
         }
@@ -233,13 +251,8 @@ public class TicketService {
         loginService.getLoggedUser().read(ticket);
     }
 
-    public Attachment getAttachment(String projectPrefix, Integer ticketNumber, Long attachmentId) {
-        Ticket ticket = this.find(projectPrefix, ticketNumber);
-        return ticket.findAttachmentById(attachmentId);
-    }
-
     @Transactional
-    public Attachment addAttachment(String projectPrefix, Integer ticketNumber, String fileName, String fileSize, String fileType, byte[] bytes) {
+    public Attachment addAttachment(String projectPrefix, Integer ticketNumber, String fileName, BigDecimal fileSize, String fileType, byte[] bytes) {
         Ticket ticket = this.find(projectPrefix, ticketNumber);
         validateUpdate(ticket);
         Attachment attachment = ticket.addAttachment(fileName, fileSize, fileType, bytes);
@@ -248,11 +261,60 @@ public class TicketService {
     }
 
     @Transactional
+    public Attachment addAttachmentForSession(String sessionId, String fileName, BigDecimal fileSize, String fileType, byte[] bytes) {
+        Session session = sessionRepository.findOne(sessionId);
+        if (session == null) {
+            session = new Session(sessionId);
+            session = sessionRepository.save(session);
+        }
+        return session.addAttachment(fileName, fileSize, fileType, bytes);
+    }
+
+    public Attachment getAttachment(String projectPrefix, Integer ticketNumber, Long attachmentId) {
+        Ticket ticket = this.find(projectPrefix, ticketNumber);
+        return ticket.findAttachmentById(attachmentId);
+    }
+
+    public Attachment getAttachmentForSession(String sessionId, Long attachmentId) {
+        Session session = sessionRepository.findOne(sessionId);
+        if (session != null) {
+            return session.findAttachmentById(attachmentId);
+        }
+        return null;
+    }
+
+    @Transactional
     public void deleteAttachment(String projectPrefix, Integer ticketNumber, Long attachmentId) {
         Ticket ticket = this.find(projectPrefix, ticketNumber);
         validateUpdate(ticket);
         ticket.removeAttachment(attachmentId);
         ticket.logUpdate();
+    }
+
+    @Transactional
+    public void deleteAttachmentForSession(String sessionId, Long attachmentId) {
+        Session session = sessionRepository.findOne(sessionId);
+        if (session != null) {
+            session.removeAttachment(attachmentId);
+        }
+    }
+
+    @Transactional
+    public void cleanupAttachmentStore(String sessionId) {
+        Session session = sessionRepository.findOne(sessionId);
+        if (session != null) {
+            session.cleanAttachments();
+        }
+    }
+
+    public Set<Attachment> getAttachmentsForSession(String sessionId) {
+        Session session = sessionRepository.findOne(sessionId);
+        if (session != null) {
+            return session.getAttachments();
+        }
+        else {
+            return Collections.EMPTY_SET;
+        }
     }
 
     private void validateUpdate(Ticket ticket) {

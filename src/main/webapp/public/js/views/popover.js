@@ -52,7 +52,7 @@ var app = app || {};
 		},
 
 		cancelRequiresComment: function() {
-			return !(this.model.get("status")=="NEW" && app.loggedUser.role==app.util.ROLE_REQUESTOR); //only when the user is a Requestor and the status is New we will delete the ticket. In any other case we require a comment.
+			return !(this.model.get("status")=="NEW" && app.loggedUser.get("role")==app.util.ROLE_REQUESTOR); //only when the user is a Requestor and the status is New we will delete the ticket. In any other case we require a comment.
 		},
 		
 		showErrors: function() {
