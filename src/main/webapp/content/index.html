@@ -56,7 +56,8 @@
 						<a id="addButton" class="btn btn-primary btn-small"><i class="glyphicon glyphicon-plus"></i> Create new ticket</a>						
 					</div>
 				</div>
-			<hr></hr>
+			</div>	
+			<hr />
 		</header>
 		<section id="main">
 			<header>
@@ -121,11 +122,9 @@
 	<!--Template for the tickets cards-->
 	<script type="text/template" id="item-card-template">
         <div class="thumbnail ticket-card">
-        	<div class="row-fluid card-header">
-        		<div class="span6"><span>{{ number }}</span></div>
-        		<div class="span6">
-        			<span class="pull-right">{{ priority == "HIGH" ? '<i class="glyphicon glyphicon-chevron-up" />' : (priority == 'MEDIUM' ? '<i class="glyphicon glyphicon-minus" />' : '<i class="glyphicon glyphicon-chevron-down" />' ) }}</span>
-    			</div>
+        	<div class="card-header">        		
+        		<span>{{ number }}</span>
+        		<span class="pull-right">{{ priority == "HIGH" ? '<i class="glyphicon glyphicon-chevron-up" />' : (priority == 'MEDIUM' ? '<i class="glyphicon glyphicon-minus" />' : '<i class="glyphicon glyphicon-chevron-down" />' ) }}</span>    			        		
         	</div>
     		<div class="row-fluid card-body">
     			<div class="ticket-description">
@@ -136,9 +135,9 @@
     				<small class="pull-right">{{ !due ? '<span>-</span>' : '<span title="' + due.substr(11,5) + '">' + due.substr(0,10) + '</span>' }}</small>
 				</div>
     		</div>
-    		<div class="row-fluid card-footer">    			
-    			<div class="span6"><span>{{ status }}<span></div>
-        		<div class="span6"><span class="actions pull-right" /></div>
+    		<div class="card-footer">    			
+    			<span>{{ status }}<span>
+        		<span class="actions pull-right" />
     		</div>
         </div>
 	</script>
