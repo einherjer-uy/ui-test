@@ -229,8 +229,24 @@
 					</div>
 					<div class="tab-pane" id="form-activity">
 						<div id="commentDiv" class="control-group"> 
+							<table class="table">
+								
+								<tbody>
+								
+
+									<% _.each(log, function(logItem) { %>
+										<tr>
+											<td class="muted"><small>{{ logItem.timestamp }}</small></td>
+											<td>What</td>
+											<td><small><strong>{{ logItem.user.firstName }} {{ logItem.user.lastName }}</strong></small></td>
+											<td>{{ logItem.text ? logItem.text : "-" }}</td>
+										</tr>
+									<% }); %>
+
+								</tbody>
+							</table>
 							<!-- only for approvers changing the priority of a ticket trough this form -->
-					    	<label class="control-label hidden-phone" for="comment">Comment</label>
+					    	<label class="control-label hidden-phone" for="comment">Add comment</label>
 					    	<div class="controls">
 								<textarea id="comment" class="input-xlarge" rows="4" placeholder="Comment"></textarea>
 					    	</div>
