@@ -35,12 +35,27 @@ var app = app || {};
 				this.$settingsLink.popover('destroy');
 				app.loggedUser.set("notificationsEnabled",notificationsChecked);
 
+				$('#pleaseWaitDialog').show();
+				$(".modal-backdrop").show();
+
 				$.ajax({
 	  				url: "/tt/loggedUser", 
 	  				type: "PUT",
 	  				data: JSON.stringify(app.loggedUser.toJSON()),
 	  				contentType: "application/json; charset=utf-8",
 	  				dataType: "json",
+	  				error: function (data){
+	  					$('#pleaseWaitDialog').hide();
+						$(".modal-backdrop").hide();
+						$('#dashboardMessages').html('');
+						app.util.displayError($('#dashboardMessages'), "Error updating settings.", false);
+	  				},
+                	success: function (data){
+						$('#pleaseWaitDialog').hide();
+						$(".modal-backdrop").hide();
+						$('#dashboardMessages').html('');
+						app.util.displayInfo($('#dashboardMessages'), "Settings updated.", false);
+                	}
 				});
 			} else {
 				this.$settingsLink.popover("hide");
