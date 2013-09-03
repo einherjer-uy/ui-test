@@ -39,7 +39,9 @@
 					</li>
 				</ul><ul class="nav pull-right">	
 					<li><a id="loggedUser"></a></li>
-					<li class="divider-vertical"></li>							
+					<li class="divider-vertical"></li>								
+					<li id="settings"><a href="#" data-target="popover"><i class="glyphicon glyphicon-cog icon-white"></i> Settings</a></li>
+					<li class="divider-vertical"></li>
 					<li><a id="logoutLink" class="tt-inverse-text" href="/logout">Logout</a></li>
 				</ul>				
 			</div>
@@ -273,6 +275,20 @@
 		</div>
 	</script>
 
+	<script type="text/template" id="settingsTemplate">
+		<div style="width: 200px;">
+			<div style="text-align: center;">
+				<label class="checkbox inline">
+					<input type="checkbox" id="allowNotifications" {{ notificationsEnabled == true ? "checked" : "" }}> Allow Notifications
+				</label>
+			</div>
+			<div style="text-align: right;">
+				<button type="button"  class="settingsCancelButton btn btn-link btn-small">Cancel</button>
+				<button type="button" id="confSave" class="settingsOkButton btn btn-primary btn-small" data-action="change-content">OK</button>
+			</div>
+		</div>
+	</script>
+	
 	<!-- jQuery -->
 	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 
@@ -311,6 +327,7 @@
 	<script src="../public/js/views/ticketRow.js"></script>
 	<script src="../public/js/views/ticketCard.js"></script>
 	<script src="../public/js/views/app.js"></script>
+	<script src="../public/js/views/settings.js"></script>
 	<script src="../public/js/views/dashboard_cards.js"></script>
 	<script src="../public/js/views/dashboard_list.js"></script>	
 	<script src="../public/js/routers/router.js"></script>
