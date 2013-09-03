@@ -27,7 +27,11 @@ var app = app || {};
 				creatorLastName = log[log.length-1].user.lastName;
 				dateCreated = log[log.length-1].timestamp; 
 			};
-			this.$el.html(this.template(this.model.toJSON()));			
+			this.$el.html(this.template(this.model.toJSON()));	
+
+			this.$(".priority").tooltip({placement:"top", title: this.model.get("priority") });
+			this.$(".duedate").tooltip({placement:"right", title: !this.model.get("due") ? "-" : this.model.get("due").substr(11,5) });
+
 			this.$(".actions").append(new app.ActionsView({ model: this.model, onAddEditModal: false, $messages: this.$messages }).render().el);
 			this.$el.find('.timeago').timeago();
 
