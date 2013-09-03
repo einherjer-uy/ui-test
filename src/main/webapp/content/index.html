@@ -114,8 +114,8 @@
         <td>{{ number }}</td>
         <td class="ticket-description">{{ description }}</td>
         <td class="text-center muted"><small>{{ type }}</small></td>
-        <td class="text-center"><i class="glyphicon {{ priority == "HIGH" ? 'glyphicon-chevron-up' : (priority == 'MEDIUM' ? 'glyphicon-minus' : 'glyphicon-chevron-down' ) }}" title="{{priority}}"/></td>
-        <td class="text-center muted"><small>{{ !due ? '<span>-</span>' : '<span title="' + due.substr(11,5) + '">' + due.substr(0,10) + '</span>' }}</small></td>
+        <td class="text-center"><i class="priority glyphicon {{ priority == "HIGH" ? 'glyphicon-chevron-up' : (priority == 'MEDIUM' ? 'glyphicon-minus' : 'glyphicon-chevron-down' ) }}" /></td>
+        <td class="text-center muted"><small>{{ !due ? '<span>-</span>' : '<span class="duedate">' + due.substr(0,10) + '</span>' }}</small></td>
         <td class="text-center"><small class="muted">{{log.length - 1}}</small></td>
         <td class="text-center"><small class="muted">{{attachments.length}}</small></td>
         <td class="text-center">
