@@ -82,7 +82,8 @@
 									<th class="text-center">Type</th>
 									<th class="text-center">Priority</th>
 									<th class="text-center">Due date</th>
-									<th class="text-center">Status</th>	
+									<th class="text-center"><i class="glyphicon glyphicon-comment" /></th>
+									<th class="text-center"><i class="glyphicon glyphicon-paperclip" /></th>	
 									<th class="text-center"></th>				
 								</tr>
 							</thead>
@@ -113,9 +114,10 @@
         <td>{{ number }}</td>
         <td class="ticket-description">{{ description }}</td>
         <td class="text-center muted"><small>{{ type }}</small></td>
-        <td class="text-center">{{ priority == "HIGH" ? '<i class="glyphicon glyphicon-chevron-up" />' : (priority == 'MEDIUM' ? '<i class="glyphicon glyphicon-minus" />' : '<i class="glyphicon glyphicon-chevron-down" />' ) }}</td>
+        <td class="text-center"><i class="glyphicon {{ priority == "HIGH" ? 'glyphicon-chevron-up' : (priority == 'MEDIUM' ? 'glyphicon-minus' : 'glyphicon-chevron-down' ) }}" title="{{priority}}"/></td>
         <td class="text-center muted"><small>{{ !due ? '<span>-</span>' : '<span title="' + due.substr(11,5) + '">' + due.substr(0,10) + '</span>' }}</small></td>
-        <td class="text-center">{{ status }}</td>
+        <td class="text-center"><small class="muted">{{log.length - 1}}</small></td>
+        <td class="text-center"><small class="muted">{{attachments.length}}</small></td>
         <td class="text-center">
         	<div class="actions"></div>
 		</td>
@@ -126,7 +128,7 @@
         <div class="thumbnail ticket-card">
         	<div class="card-header">        		
         		<span>{{ number }}</span>
-        		<span class="pull-right">{{ priority == "HIGH" ? '<i class="glyphicon glyphicon-chevron-up" />' : (priority == 'MEDIUM' ? '<i class="glyphicon glyphicon-minus" />' : '<i class="glyphicon glyphicon-chevron-down" />' ) }}</span>    			        		
+        		<span class="pull-right"><i class="glyphicon {{ priority == "HIGH" ? 'glyphicon-chevron-up' : (priority == 'MEDIUM' ? 'glyphicon-minus' : 'glyphicon-chevron-down' ) }}" title="{{priority}}" /></span>
         	</div>
     		<div class="row-fluid card-body">
     			<div class="ticket-description">
@@ -138,7 +140,10 @@
 				</div>
     		</div>
     		<div class="card-footer">    			
-    			<span>{{ status }}<span>
+    			<span class="muted">
+    				{{ log.length - 1 > 0 ? '<i class="glyphicon glyphicon-comment" title="' + (log.length - 1) + '" />&nbsp;' : ''}}
+    				{{ attachments.length > 0 ? '<i class="glyphicon glyphicon-paperclip" title="' + (attachments.length) + '" />' : ''}}
+    			</span>
         		<span class="actions pull-right" />
     		</div>
         </div>
