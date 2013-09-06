@@ -3,6 +3,7 @@ package org.einherjer.twitter.tickets;
 import org.einherjer.twitter.tickets.repository.TicketRepository;
 import org.einherjer.twitter.tickets.repository.UserRepository;
 import org.einherjer.twitter.tickets.service.LoginService;
+import org.einherjer.twitter.tickets.websocket.NotificationsWebSocketPool;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -33,6 +34,10 @@ public final class ServiceLocator implements ApplicationContextAware {
 
     public LoginService getLoginService() {
         return context.getBean("loginService", LoginService.class);
+    }
+
+    public NotificationsWebSocketPool getNotificationsWebSocketPool() {
+        return context.getBean("notificationsWebSocketPool", NotificationsWebSocketPool.class);
     }
 
 }

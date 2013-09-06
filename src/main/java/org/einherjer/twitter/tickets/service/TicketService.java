@@ -17,6 +17,7 @@ import org.einherjer.twitter.tickets.repository.ProjectRepository;
 import org.einherjer.twitter.tickets.repository.SessionRepository;
 import org.einherjer.twitter.tickets.repository.TicketRepository;
 import org.einherjer.twitter.tickets.repository.UserRepository;
+import org.einherjer.twitter.tickets.websocket.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,8 @@ public class TicketService {
     private UserRepository userRepository;
     @Autowired
     private SessionRepository sessionRepository;
+    @Autowired
+    private NotificationService notificationService;
 
     public Iterable<Ticket> findAll() {
         return ticketRepository.findAll();
@@ -114,6 +117,7 @@ public class TicketService {
                     sessionRepository.delete(session);
                 }
                 this.broadcastUnread(newTicket, Role.APPROVER);
+                this.notificationService.broadcast(Role.APPROVER);
                 return newTicket;
             }
         }

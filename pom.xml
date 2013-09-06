@@ -17,6 +17,7 @@
         <slf4j.version>1.7.2</slf4j.version>
         <jackson.version>2.2.2</jackson.version>
         <logback.version>1.0.13</logback.version>
+        <jetty.version>9.0.5.v20130815</jetty.version>
         
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -240,6 +241,17 @@
             <version>0.8.1</version>
         </dependency>
         
+        <dependency>
+          <groupId>org.eclipse.jetty.websocket</groupId>
+          <artifactId>websocket-api</artifactId>
+          <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.eclipse.jetty.websocket</groupId>
+          <artifactId>websocket-server</artifactId>
+          <version>${jetty.version}</version>
+        </dependency>
+
         <!-- Logging -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -286,7 +298,7 @@
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.0.3.v20130506</version>
+                <version>${jetty.version}</version>
             </plugin>
             
             <plugin>
