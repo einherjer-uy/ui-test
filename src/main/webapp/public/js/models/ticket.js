@@ -16,7 +16,8 @@ var app = app || {};
 			assignee : {username : "user@twitter.com"},
 			type: "HARDWARE",
 			priority: "LOW",
-			due: null
+			due: null,
+			log: []
 		},
 		
 		validate: function (attrs) {
