@@ -346,9 +346,7 @@
 	<!-- Our app -->
 	<script src="../public/js/models/ticket.js"></script>
 	<script src="../public/js/models/loggedUser.js"></script>
-	<script src="../public/js/models/notification.js"></script>
 	<script src="../public/js/collections/tickets.js"></script>
-	<script src="../public/js/collections/notifications.js"></script>
 	<script src="../public/js/views/ticket.js"></script>
 	<script src="../public/js/views/popover.js"></script>
 	<script src="../public/js/views/actions.js"></script>
@@ -361,12 +359,5 @@
 	<script src="../public/js/routers/router.js"></script>
 	<script src="../public/js/utils/util.js"></script>
 	<script src="../public/js/app.js"></script>
-
-	<script type="text/javascript">
-		app.notifications.add(new app.Notification({title:"Title of notice", text:"Message of notice", type:""}));
-		app.notifications.add(new app.Notification({title:"Title of info", text:"Message of info", type:"info"}));
-		app.notifications.add(new app.Notification({title:"title of success", text:"Message of success", type:"success"}));
-		app.notifications.add(new app.Notification({title:"Title of error", text:"Message of error", type:"error"}));
-	</script>
 </body>
 </html>

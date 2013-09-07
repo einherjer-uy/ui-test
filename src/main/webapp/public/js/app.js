@@ -13,8 +13,10 @@ $(function () { "use strict";  //$() shorthand for $(document).ready()
 
 	app.websocket  = (function(){
 		var _ws = null;
+		var processFunc = null;
 
-		var _connect = function() {
+		var _connect = function(process) {
+			processFunc = processFunc || process;
 			_ws = new WebSocket("ws://localhost:8080/tt/notifications");
 			_ws.onopen = _onopen;
 			_ws.onmessage = _onmessage;
@@ -32,7 +34,7 @@ $(function () { "use strict";  //$() shorthand for $(document).ready()
 
 		var _onmessage = function(m) {
 			if (m.data) {
-				alert(m);
+				processFunc(m.data);
 			}
 		};
 
@@ -54,5 +56,21 @@ $(function () { "use strict";  //$() shorthand for $(document).ready()
 			send:_send
 		}	
 	})();
-	app.websocket.connect();
+
+	$.pnotify.defaults.history = false; //remove "redisplay" menu
+	
+	app.websocket.connect(
+		function(data){
+			var jsonData = JSON.parse(data);
+			var opts = {
+	        	title: jsonData.title,
+	        	text: jsonData.text,
+	        	type: jsonData.type,
+	        	addclass: "stack-bottomright",
+	        	stack: {"dir1": "up", "dir2": "left", "firstpos1": 25, "firstpos2": 25}
+			};
+			$.pnotify(opts);
+		}
+	);
+
 });
