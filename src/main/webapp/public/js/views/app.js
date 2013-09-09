@@ -95,7 +95,6 @@ var app = app || {};
 		
 		//TODO: duplicated with ActionsView.showModal, move to util.js
 		showModal: function(ticket) {
-			this.$messagesDiv.html('');
 			this.$addEditModal.html(new app.TicketView({model: ticket}).render().el);
         	this.$addEditModal.modal({keyboard: false, backdrop: "static"});
 		},
