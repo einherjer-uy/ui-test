@@ -178,7 +178,7 @@ public final class NotificationService {
     private void sendEmailToCreator(Ticket ticket, String subject) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message);
+            MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8"); //if not set encoding defaults to us-ascii and links in the email do not work (use "Show Original" option in gmail)
             helper.setSubject(subject);
 
             //using mail.to property (if set) instead of the actual user email to ease testing
@@ -191,7 +191,7 @@ public final class NotificationService {
             }
 
             Map<String, Object> model = new HashMap<String, Object>();
-            model.put("message", subject.replace(ticket.getTicketId(), "<a href=\"localhost:8080/" + ticket.getTicketId() + "\">" + ticket.getTicketId() + "</a>"));
+            model.put("message", subject.replace(ticket.getTicketId(), "<a href=\"http://localhost:8080/" + ticket.getTicketId() + "\">" + ticket.getTicketId() + "</a>"));
             String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "email.vm", "UTF-8", model);
             // use the true flag to indicate the text included is HTML
 
