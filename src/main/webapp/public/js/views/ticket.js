@@ -28,6 +28,7 @@ var app = app || {};
 			this.$type = this.$('#type');
 			this.$priority = this.$('#priority');
 			this.$due = this.$('#due');
+			this.$datetimepicker = this.$('#duedate-datetimepicker');
 			this.$comment = this.$("textarea#comment");
 			this.$alertContainer = this.$('#ticket-alert-container');
 			this.$descriptionCharNum = this.$('#descriptionCharNum');
@@ -100,11 +101,15 @@ var app = app || {};
 			else if(app.loggedUser.get("role")==app.util.ROLE_APPROVER) {
 				this.$description.prop("readonly",true);
 				this.$due.prop("readonly",true);
+				this.$datetimepicker.removeClass('input-append');
+				this.$(".add-on").hide();
 				this.$type.prop("disabled",true);
 			}
 			else if(app.loggedUser.get("role")==app.util.ROLE_EXECUTOR) {
 				this.$description.prop("readonly",true);
 				this.$due.prop("readonly",true);
+				this.$datetimepicker.removeClass('input-append');
+				this.$(".add-on").hide();				
 				this.$type.prop("disabled",true);
 				this.$priority.prop("disabled",true);
 				this.$("#commentDiv").hide();
