@@ -49,6 +49,8 @@ var app = app || {};
         		pickSeconds: false
         	});
 
+        	this.descriptionModalCountChar();
+
 			var self = this;
 			this.renderAttachments(this.model.get("attachments"));
 			this.$('#fileupload').fileupload({
