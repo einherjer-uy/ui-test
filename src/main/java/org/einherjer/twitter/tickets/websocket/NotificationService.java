@@ -1,15 +1,29 @@
 package org.einherjer.twitter.tickets.websocket;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.velocity.app.VelocityEngine;
 import org.eclipse.jetty.websocket.api.Session;
+import org.einherjer.twitter.tickets.model.Ticket;
+import org.einherjer.twitter.tickets.model.User;
 import org.einherjer.twitter.tickets.model.User.Role;
+import org.einherjer.twitter.tickets.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -25,9 +39,18 @@ public final class NotificationService {
 
     @Autowired
     private NotificationsWebSocketPool pool;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private JavaMailSender mailSender;
+    @Autowired
+    private Environment environment;
+    @Autowired
+    private VelocityEngine velocityEngine;
 
-    public void broadcast(Role role) {
-        ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public NotificationService() {
         objectMapper.registerModule(new SimpleModule() {
             {
                 addSerializer(NotificationType.class, new StdSerializer<NotificationType>(NotificationType.class) {
@@ -49,36 +72,72 @@ public final class NotificationService {
                             default:
                                 throw new UnsupportedOperationException("method not implemented for value: " + this);
                         }
-                        
                     }
                 });
             }
         });
-        switch (role) {
-            case APPROVER:
-                try {
-                    this.send(pool.getApproverSessions(), objectMapper.writeValueAsString(new Notification(NotificationType.INFO, "title", "text")));
-                }
-                catch (JsonProcessingException e) {
-                    log.error("Unexpected error", e);
-                    throw new RuntimeException("Unexpected error", e);
-                }
-                break;
-            case EXECUTOR:
-                this.send(pool.getExecutorSessions(), "There's a new approved ticket");
-                break;
-            default:
-                throw new UnsupportedOperationException("Invalid operation for role: " + role);
+    }
+
+    public void notifyCreation(Ticket ticket) {
+        try {
+            this.addToUserUnreadList(ticket, Role.APPROVER);
+            this.send(pool.getApproverSessions(), objectMapper.writeValueAsString(new Notification(NotificationType.INFO, "", "A new ticket has been created")));
+            this.sendEmailToCreator(ticket, "Ticket creation confirmation");
+        }
+        catch (JsonProcessingException e) {
+            log.error("Unexpected error", e);
+            throw new RuntimeException("Unexpected error", e);
         }
     }
 
-    public void broadcast(String userName, String message) {
-        Set<Session> sessions = pool.getRequestorSessions(userName);
-        if (sessions == null) {
-            log.info("No sessions found for user: " + userName + ". It might be offline");
+    public void notifyApproval(Ticket ticket) {
+        try {
+            this.removeFromUserUnreadList(ticket); //remove from the approvers
+            this.addToUserUnreadList(ticket, Role.EXECUTOR); //add to the executors
+            this.send(pool.getExecutorSessions(), objectMapper.writeValueAsString(new Notification(NotificationType.INFO, "", "There's a new approved ticket")));
+            this.notifyCreator(ticket, "Your ticket " + ticket.getTicketId() + " has been approved");
         }
-        else {
-            this.send(sessions, message);
+        catch (JsonProcessingException e) {
+            log.error("Unexpected error", e);
+            throw new RuntimeException("Unexpected error", e);
+        }
+    }
+
+    public void notifyCreatorCancel(Ticket ticket) {
+        this.removeFromUserUnreadList(ticket); //remove from approvers
+        this.sendEmailToCreator(ticket, "Ticket cancellation confirmation");
+    }
+
+    public void notifyApproverCancel(Ticket ticket) {
+        this.removeFromUserUnreadList(ticket); //remove from approvers
+        this.notifyCreator(ticket, "Your ticket " + ticket.getTicketId() + " has been cancelled");
+    }
+
+    public void notifyReject(Ticket ticket) {
+        this.removeFromUserUnreadList(ticket); //remove from approvers
+        this.notifyCreator(ticket, "Your ticket " + ticket.getTicketId() + " has been rejected");
+    }
+
+    public void notifyDone(Ticket ticket) {
+        this.removeFromUserUnreadList(ticket); //remove from executors
+        this.notifyCreator(ticket, "Your ticket " + ticket.getTicketId() + " has been completed");
+    }
+
+    public void notifyChangePriority(Ticket ticket) {
+        this.notifyCreator(ticket, "The priority of your ticket " + ticket.getTicketId() + " has been updated");
+    }
+
+    private void removeFromUserUnreadList(Ticket ticket) {
+        //TODO: this is very inefficient, read all users every time a ticket is cancelled, rejected, etc; we should have an object cache or some pre populated structure, updated by the user CRUD that should be infrequent
+        for (User user : userRepository.findAll()) {
+            user.read(ticket);
+        }
+    }
+
+    private void addToUserUnreadList(Ticket ticket, Role role) {
+        //TODO: this is very inefficient, read all users (by role) every time a ticket is created, we should have an object cache or some pre populated structure, updated by the user CRUD that should be infrequent
+        for (User user : userRepository.findByRole(role)) {
+            user.addUnread(ticket);
         }
     }
 
@@ -91,6 +150,55 @@ public final class NotificationService {
     private void send(Session session, String message) {
         if (session.isOpen()) {
             session.getRemote().sendStringByFuture(message);
+        }
+    }
+
+    /**
+     * sends a popup notification to the user, as well as an email
+     * should be used when an approver or executor performs an action on the creator ticket
+     * for the cases when the creator is the one performing the action and a confirmation email should be sent but not a popup notification use sendEmailToCreator instead of this method
+     */
+    private void notifyCreator(Ticket ticket, String message) {
+        Set<Session> sessions = pool.getRequestorSessions(ticket.createdBy());
+        if (sessions.isEmpty()) {
+            log.info("No sessions found for user: " + ticket.createdBy() + ". It might be offline");
+        }
+        else {
+            try {
+                this.send(sessions, objectMapper.writeValueAsString(new Notification(NotificationType.INFO, "", message)));
+            }
+            catch (JsonProcessingException e) {
+                log.error("Unexpected error", e);
+                throw new RuntimeException("Unexpected error", e);
+            }
+        }
+        this.sendEmailToCreator(ticket, message);
+    }
+
+    private void sendEmailToCreator(Ticket ticket, String subject) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            // use the true flag to indicate you need a multipart message (because of inline images)
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setSubject(subject);
+
+            //using mail.to property instead of the actual user email to ease testing
+            //helper.setTo(ticket.createdBy().getUsername().toString());
+            helper.setTo(environment.getProperty("mail.to"));
+
+            Map<String, Object> model = new HashMap<String, Object>();
+            model.put("message", subject.replace(ticket.getTicketId(), "<a href=\"localhost:8080/" + ticket.getTicketId() + "\">" + ticket.getTicketId() + "</a>"));
+            String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "email.vm", "UTF-8", model);
+            // use the true flag to indicate the text included is HTML
+
+            helper.setText(body, true);
+            ClassPathResource res = new ClassPathResource("twitter_web_sprite_icons.png");
+            helper.addInline("identifier1234", res);
+            mailSender.send(message);
+        }
+        catch (MessagingException e) {
+            log.error("Unexpected error", e);
+            throw new RuntimeException("Unexpected error", e);
         }
     }
 

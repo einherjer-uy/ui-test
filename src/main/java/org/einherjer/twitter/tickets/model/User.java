@@ -9,15 +9,19 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @NoArgsConstructor
 @Table(name = "Users") //table name is plural to avoid restricted keywords in some databases like "user" and "comment"
+@EqualsAndHashCode(callSuper = false, of = "username")
+@ToString(of = "username")
 public class User extends AbstractEntity {
 
     @Column(unique = true, nullable = false)

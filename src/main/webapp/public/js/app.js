@@ -29,7 +29,7 @@ $(function () { "use strict";  //$() shorthand for $(document).ready()
 			//we need to tell the server info about the logged user
 			//trying to do new WebSocket() and then send() doesn't work cause the websocket readystate would be CONNECTING
 			//so, we need to send in the onopen callback
-			_send("{\"method\":\"LOGIN\", \"userName\":\""+app.loggedUser.get("username").emailAddress+"\", \"role\":\""+app.loggedUser.get("role")+"\"}");
+			_send("{\"method\":\"LOGIN\", \"userName\":\""+app.loggedUser.get("username").emailAddress+"\"}");
 		};
 
 		var _onmessage = function(m) {
@@ -70,6 +70,14 @@ $(function () { "use strict";  //$() shorthand for $(document).ready()
 	        	stack: {"dir1": "up", "dir2": "left", "firstpos1": 25, "firstpos2": 25}
 			};
 			$.pnotify(opts);
+		}
+	);
+
+	$("#logoutLink").click(
+		function() {
+			//cannot do this on the server side alone cause the server cannot know if the same user doesn't have a session in another device or browser
+			app.websocket.send("{\"method\":\"LOGOUT\", \"userName\":\""+app.loggedUser.get("username").emailAddress+"\"}");
+			window.location.href = "/logout"; 
 		}
 	);
 

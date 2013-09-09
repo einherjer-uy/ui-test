@@ -44,7 +44,7 @@
 					<li class="divider-vertical"></li>								
 					<li id="settings"><a href="#" data-target="popover"><i class="glyphicon glyphicon-cog icon-white"></i> Settings</a></li>
 					<li class="divider-vertical"></li>
-					<li><a id="logoutLink" class="tt-inverse-text" href="/logout">Logout</a></li>
+					<li><a id="logoutLink" class="tt-inverse-text" href="#">Logout</a></li>
 				</ul>				
 			</div>
 		</div>
@@ -232,10 +232,7 @@
 					<div class="tab-pane" id="form-activity">
 						<div id="commentDiv" class="control-group"> 
 							<table class="table">
-								
 								<tbody>
-								
-
 									<% _.each(log, function(logItem) { %>
 										<tr>
 											<td class="muted"><small>{{ logItem.timestamp }}</small></td>
@@ -244,10 +241,9 @@
 											<td>{{ logItem.text ? logItem.text : "-" }}</td>
 										</tr>
 									<% }); %>
-
 								</tbody>
 							</table>
-							<!-- only for approvers changing the priority of a ticket trough this form -->
+							<!-- only for approvers changing the priority of a ticket through this form -->
 					    	<label class="control-label hidden-phone" for="comment">Add comment</label>
 					    	<div class="controls">
 								<textarea id="comment" class="input-xlarge" rows="4" placeholder="Comment"></textarea>
@@ -304,6 +300,9 @@
 				<label class="checkbox inline">
 					<input type="checkbox" id="allowNotifications" {{ notificationsEnabled == true ? "checked" : "" }}> Allow Notifications
 				</label>
+			</div>
+			<div style="margin:10px 0" class="alert alert-message">
+				<small>You need to logout for the new setting to take effect.</small>
 			</div>
 			<div style="text-align: right;">
 				<button type="button"  class="settingsCancelButton btn btn-link btn-small">Cancel</button>
