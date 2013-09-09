@@ -178,6 +178,8 @@ var app = app || {};
 
 		save: function (e) {
 			this.hideErrors();
+			$('#pleaseWaitDialog').show();
+			$(".modal-backdrop").show();
 			if (app.loggedUser.get("role")==app.util.ROLE_REQUESTOR) {
 				this.model.set(this.newAttributes());
 				var serverError;
@@ -219,6 +221,19 @@ var app = app || {};
 			  				data: JSON.stringify(data),
 			  				contentType: "application/json; charset=utf-8",
 			  				dataType: "json",
+			  				success: function () {
+						        	//Hide progress bar and black background
+
+									app.tickets.fetch({  //call server to fetch the collection, which will in turn trigger the update of the view
+										reset: true, //reset:true needed to refresh the whole collection, otherwise backbone adds the new model to the end and doesn't respect the sorting returned by the server
+								        success: function () {
+								        	//Hide progress bar and black background
+							                $('#pleaseWaitDialog').hide();
+											$(".modal-backdrop").hide();
+											app.util.displayInfo($('#dashboardMessages'), "Ticket " + ticketNumber + " successfully updated", false);
+							            }	
+							        });
+					            },
 						    error: function(data) {
 						    	if (data.responseJSON && data.responseJSON.message) {
 						    		serverError = data.responseJSON.message;
@@ -237,8 +252,7 @@ var app = app || {};
 					app.util.displayError(this.$alertContainer, serverError);
 				}
 				else {
-					this.$addEditModal.modal("hide");
-					app.util.displayInfo($('#dashboardMessages'), "Ticket " + ticketNumber + " successfully updated", false);	
+					this.$addEditModal.modal("hide");					
 				}
 			}
 			else if (app.loggedUser.get("role")==app.util.ROLE_APPROVER) {
