@@ -38,6 +38,10 @@
 	position: absolute;
 }
 
+.modal.fade.in {
+	top: 0%;
+}
+
 body {
 	margin: 0;
 	padding: 0;
