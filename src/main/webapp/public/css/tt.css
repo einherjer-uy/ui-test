@@ -33,6 +33,11 @@
   font-style: normal;
 }
 
+
+.modal {
+	position: absolute;
+}
+
 body {
 	margin: 0;
 	padding: 0;
