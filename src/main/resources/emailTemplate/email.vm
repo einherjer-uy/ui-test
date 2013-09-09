@@ -1,27 +1,26 @@
+<!DOCTYPE HTML>
 <html>
-	<head>
-		<style>
-			body {
-				font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-				font-size: 14px;
-				line-height: 20px;
-				color: #333333;
-			}
-		</style>
-	</head>
-	<body>
-		<div style="padding:10px; background:#252525;">
-			<a style="color:#FFFFFF;" href="/">
-				<img src='cid:identifier1234'></img>
-			</a>
-			<a style="text-decoration:none; float:right;" href="localhost:8080/"><strong style="color:white">Corporate Events Ticket System</strong></a>
+<head>
+	<meta charset="UTF-8">
+	<style>
+		body {
+			font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+			font-size: 14px;
+			line-height: 20px;
+			color: #333333;
+		}
+	</style>
+</head>
+<body>
+	<div style="padding:10px; background:#252525;">
+		<a style="text-decoration:none; float:right;" href="localhost:8080/"><strong style="color:white">Corporate Events Ticket System</strong></a>
+	</div>
+	<div style="background:#EEEEEE; padding:1px 0;">
+		<div style="height:300px; padding:0 20px;">
+			<h3 style="color:#006DCC; font-weight:bold; font-size:20px;">$message</h3>
 		</div>
-		<div style="background:#EEEEEE; padding:1px 0;">
-			<div style="height:300px; padding:0 20px;">
-				<h3 style="color:#006DCC; font-weight:bold; font-size:20px;">$message</h3>
-			</div>
-			<hr/>
-			<p style="text-align:center; color:rgba(0, 0, 0, 0.50); font-size: 85%;"><small>(c) 1998 GSM. All rights reserved.</small></p>
-    	</div>
-	</body>
+		<hr/>
+		<p style="text-align:center; color:rgba(0, 0, 0, 0.50); font-size: 85%;"><small>(c) 1998 GSM. All rights reserved.</small></p>
+	</div>
+</body>
 </html>

@@ -11,6 +11,7 @@ import javax.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.eclipse.jetty.websocket.api.Session;
 import org.einherjer.twitter.tickets.model.Ticket;
@@ -19,7 +20,6 @@ import org.einherjer.twitter.tickets.model.User.Role;
 import org.einherjer.twitter.tickets.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -178,13 +178,17 @@ public final class NotificationService {
     private void sendEmailToCreator(Ticket ticket, String subject) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            // use the true flag to indicate you need a multipart message (because of inline images)
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            MimeMessageHelper helper = new MimeMessageHelper(message);
             helper.setSubject(subject);
 
-            //using mail.to property instead of the actual user email to ease testing
-            //helper.setTo(ticket.createdBy().getUsername().toString());
-            helper.setTo(environment.getProperty("mail.to"));
+            //using mail.to property (if set) instead of the actual user email to ease testing
+            String mailToProperty = environment.getProperty("mail.to");
+            if (StringUtils.isBlank(mailToProperty)) {
+                helper.setTo(ticket.createdBy().getUsername().toString());
+            }
+            else {
+                helper.setTo(mailToProperty);
+            }
 
             Map<String, Object> model = new HashMap<String, Object>();
             model.put("message", subject.replace(ticket.getTicketId(), "<a href=\"localhost:8080/" + ticket.getTicketId() + "\">" + ticket.getTicketId() + "</a>"));
@@ -192,8 +196,7 @@ public final class NotificationService {
             // use the true flag to indicate the text included is HTML
 
             helper.setText(body, true);
-            ClassPathResource res = new ClassPathResource("twitter_web_sprite_icons.png");
-            helper.addInline("identifier1234", res);
+
             mailSender.send(message);
         }
         catch (MessagingException e) {
