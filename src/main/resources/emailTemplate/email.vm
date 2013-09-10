@@ -13,7 +13,7 @@
 </head>
 <body>
 	<div style="padding:10px; background:#252525;">
-		<a style="text-decoration:none;" href="localhost:8080/"><strong style="color:white">Corporate Events Ticket System</strong></a>
+		<a style="text-decoration:none;" href="http://localhost:8080/"><strong style="color:white">Corporate Events Ticket System</strong></a>
 	</div>
 	<div style="background:#EEEEEE; padding:1px 0;">
 		<div style="height:300px; padding:0 20px;">

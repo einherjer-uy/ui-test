@@ -82,7 +82,7 @@ public final class NotificationService {
         try {
             this.addToUserUnreadList(ticket, Role.APPROVER);
             this.send(pool.getApproverSessions(), objectMapper.writeValueAsString(new Notification(NotificationType.INFO, "", "A new ticket has been created")));
-            this.sendEmailToCreator(ticket, "Ticket creation confirmation");
+            this.sendEmailToCreator(ticket, "Ticket creation confirmation", "You have created " + ticket.getTicketId());
         }
         catch (JsonProcessingException e) {
             log.error("Unexpected error", e);
@@ -105,7 +105,7 @@ public final class NotificationService {
 
     public void notifyCreatorCancel(Ticket ticket) {
         this.removeFromUserUnreadList(ticket); //remove from approvers
-        this.sendEmailToCreator(ticket, "Ticket cancellation confirmation");
+        this.sendEmailToCreator(ticket, "Ticket cancellation confirmation", "You have cancelled " + ticket.getTicketId());
     }
 
     public void notifyApproverCancel(Ticket ticket) {
@@ -176,6 +176,15 @@ public final class NotificationService {
     }
 
     private void sendEmailToCreator(Ticket ticket, String subject) {
+        this.sendEmailToCreator(ticket, subject, subject);
+    }
+
+    private void sendEmailToCreator(Ticket ticket, String subject, String messageText) {
+        if (!ticket.createdBy().isNotificationsEnabled()) {
+            log.info("Skipping email notification; the user has disabled the notifications option");
+            return;
+        }
+
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8"); //if not set encoding defaults to us-ascii and links in the email do not work (use "Show Original" option in gmail)
@@ -191,7 +200,7 @@ public final class NotificationService {
             }
 
             Map<String, Object> model = new HashMap<String, Object>();
-            model.put("message", subject.replace(ticket.getTicketId(), "<a href=\"http://localhost:8080/" + ticket.getTicketId() + "\">" + ticket.getTicketId() + "</a>"));
+            model.put("message", messageText.replace(ticket.getTicketId(), "<a href=\"http://localhost:8080/" + ticket.getTicketId() + "\">" + ticket.getTicketId() + "</a>"));
             String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "email.vm", "UTF-8", model);
             // use the true flag to indicate the text included is HTML
 
