@@ -200,7 +200,7 @@ public final class NotificationService {
             }
 
             Map<String, Object> model = new HashMap<String, Object>();
-            model.put("message", messageText.replace(ticket.getTicketId(), "<a href=\"http://localhost:8080/" + ticket.getTicketId() + "\">" + ticket.getTicketId() + "</a>"));
+            model.put("message", messageText.replace(ticket.getTicketId(), "<a href=\"http://localhost:8080/#browse/" + ticket.getTicketId() + "\">" + ticket.getTicketId() + "</a>"));
             String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "email.vm", "UTF-8", model);
             // use the true flag to indicate the text included is HTML
 
