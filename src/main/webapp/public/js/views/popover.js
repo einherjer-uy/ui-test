@@ -76,10 +76,9 @@ var app = app || {};
 		},
 
 		ok: function() {
-			//Note1: make use of the parentView attribute that is here for a different reason but this way reause the markAsRead function easily.
-			//Note2: it is possible to do something like $('.element').popover( ... ).click(function() { alert("click"); });
+			//it is possible to do something like $('.element').popover( ... ).click(function() { alert("click"); });
 			//		anyway in our case it doesn't work cause after markAsRead the row is rerendered and the popover closes
-    		this.parentView.markAsRead(); 
+    		app.util.markAsRead(this.model, this.$messages); 
 
 			if (this.type==app.util.CANCEL_POPOVER) {
 				this.cancel();

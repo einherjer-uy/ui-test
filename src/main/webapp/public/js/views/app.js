@@ -93,10 +93,8 @@ var app = app || {};
 			this.showModal(new app.Ticket());
 		},
 		
-		//TODO: duplicated with ActionsView.showModal, move to util.js
 		showModal: function(ticket) {
-			this.$addEditModal.html(new app.TicketView({model: ticket}).render().el);
-        	this.$addEditModal.modal({keyboard: false, backdrop: "static"});
+			app.util.displayTicket(ticket, this.$addEditModal, this.$messagesDiv);
 		},
 
 		setTicketListTab:function() {

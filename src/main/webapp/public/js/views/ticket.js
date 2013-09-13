@@ -238,6 +238,7 @@ var app = app || {};
 							                $('#pleaseWaitDialog').hide();
 											$(".modal-backdrop").hide();
 											app.util.displayInfo($('#dashboardMessages'), "Ticket " + ticketNumber + " successfully updated", false);
+											app.Router.navigate("#");
 							            }	
 							        });
 					            },
@@ -286,6 +287,11 @@ var app = app || {};
 				    }
 				});
 			}
+		},
+
+		close: function() {
+			this.$addEditModal.modal("hide");
+			app.Router.navigate("#");
 		},
 
 		closeSavePopover: function() {

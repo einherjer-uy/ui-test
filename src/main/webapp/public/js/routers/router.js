@@ -4,16 +4,17 @@ var app = app || {};
 	
 	var AppRouter = Backbone.Router.extend({
 		routes: {
-			'*filter': 'setFilter'
+			'browse/:ticket': 'viewTicket'
 		},
 
-		setFilter: function (param) {
-			// Set the current filter to be used
-			app.TicketFilter = param || '';
+		initialize: function () {
+			this.$addEditModal = $('#addEditModal');
+			this.$messages = $('#dashboardMessages'); 
+		},
 
-			// Trigger a collection filter event, causing hiding/unhiding
-			// of Todo view items
-			app.tickets.trigger('filter');
+		viewTicket: function (param) {
+			var ticket = app.tickets.get(param);
+			app.util.displayTicket(ticket, this.$addEditModal, this.$messages);
 		}
 	});
 
