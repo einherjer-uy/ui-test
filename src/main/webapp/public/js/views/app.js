@@ -90,13 +90,9 @@ var app = app || {};
 		},
 
 		add: function() {
-			this.showModal(new app.Ticket());
+			app.util.displayTicket(new app.Ticket(), this.$addEditModal, this.$messagesDiv);
 		},
 		
-		showModal: function(ticket) {
-			app.util.displayTicket(ticket, this.$addEditModal, this.$messagesDiv);
-		},
-
 		setTicketListTab:function() {
 			app.loggedUser.set("dashboardMode","LIST");
 			$.ajax({

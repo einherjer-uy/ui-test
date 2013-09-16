@@ -68,6 +68,9 @@ var app = app || {};
 			$messages.html('');
 			$addEditModal.html(new app.TicketView({model: model}).render().el);
         	$addEditModal.modal({keyboard: false, backdrop: "static"});
+        	$addEditModal.on('hidden', function () {
+			    app.Router.navigate("");
+			})
 		}
 
 	};

@@ -480,3 +480,11 @@ tr:hover .actions .action-enabled,
 .unread {
 	font-weight: bold;
 }
+
+#loadingModalBackdrop {
+	z-index: 2000; /*display in front of bootstrap modal*/
+}
+
+#pleaseWaitDialog {
+	z-index: 2001; /*display in front of bootstrap modal*/
+}

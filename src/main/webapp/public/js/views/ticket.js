@@ -10,7 +10,6 @@ var app = app || {};
 		events: {
 			'click .confirmOkButton': 'save',
 			'click .confirmCancelButton': 'closeSavePopover',
-			'click #closeButton' : 'close',
 			'keyup #description' : 'descriptionModalCountChar'
 		},
 
@@ -125,6 +124,10 @@ var app = app || {};
 			    content : this.yesNoConfirmationTemplate()
 			});
 
+			if (!this.model.isNew()) {
+				app.Router.navigate("browse/"+this.model.get("number")); //TODO: debugging I see this line works but for some reason later jquery does something that overwrites the URL again
+			}
+
 			return this;
 		},
 
@@ -184,12 +187,21 @@ var app = app || {};
 		},
 
 		save: function (e) {
+			var handleServerError = function(data) {
+				$('#pleaseWaitDialog').hide();
+				$(".modal-backdrop").hide();
+		    	if (data.responseJSON && data.responseJSON.message) {
+		    		app.util.displayError(self.$alertContainer, data.responseJSON.message);
+		    	}
+		    	else { //just in case the server missed to return a proper json with "message" value
+		    		app.util.displayError(self.$alertContainer, "Unexpected server error");	
+		    	}
+			};
 			this.hideErrors();
 			$('#pleaseWaitDialog').show();
 			$(".modal-backdrop").show();
 			if (app.loggedUser.get("role")==app.util.ROLE_REQUESTOR) {
 				this.model.set(this.newAttributes());
-				var serverError;
 				if (this.model.isNew()) {
 					this.model.save(null, {
 						success: function (model, response, options) {							
@@ -201,13 +213,15 @@ var app = app || {};
 					                $('#pleaseWaitDialog').hide();
 									$(".modal-backdrop").hide();
 									app.util.displayInfo($('#dashboardMessages'), "Ticket " + ticketNumber + " successfully created", false);
-					            }	
+					            },
+					            error: handleServerError
 					        });
 							//this can be an option if we don't want to get the whole collection but just update the created ticket with the id assigned by the server
 							//var ticketNumber = response.number;
 							//model.set({number:response.number});
 							//app.tickets.add(model);
-						}
+						},
+						error: handleServerError
 					});
 		        } else {
 		        	//doing something like this doesn't work cause model.save is an ajax (asynchronous call), the rest of the code
@@ -230,7 +244,6 @@ var app = app || {};
 			  				dataType: "json",
 			  				success: function () {
 						        	//Hide progress bar and black background
-
 									app.tickets.fetch({  //call server to fetch the collection, which will in turn trigger the update of the view
 										reset: true, //reset:true needed to refresh the whole collection, otherwise backbone adds the new model to the end and doesn't respect the sorting returned by the server
 								        success: function () {
@@ -238,26 +251,16 @@ var app = app || {};
 							                $('#pleaseWaitDialog').hide();
 											$(".modal-backdrop").hide();
 											app.util.displayInfo($('#dashboardMessages'), "Ticket " + ticketNumber + " successfully updated", false);
-											app.Router.navigate("#");
-							            }	
+							            },
+							            error: handleServerError
 							        });
 					            },
-						    error: function(data) {
-						    	if (data.responseJSON && data.responseJSON.message) {
-						    		serverError = data.responseJSON.message;
-						    	}
-						    	else { //just in case the server missed to return a proper json with "message" value
-						    		serverError = "Unexpected server error";	
-						    	}
-						    }
+						    error: handleServerError
 						});
 					}
 		        }
 		        if (this.model.validationError) {
 					this.showErrors(this.model.validationError);
-				}
-				else if(serverError) {
-					app.util.displayError(this.$alertContainer, serverError);
 				}
 				else {
 					this.$addEditModal.modal("hide");					
@@ -274,24 +277,14 @@ var app = app || {};
 	  				dataType: "json",
 					success: function(data){
 						self.model.set("priority", self.$priority.val());
+						$('#pleaseWaitDialog').hide();
+						$(".modal-backdrop").hide();
 					    self.$addEditModal.modal("hide");
 					    app.util.displayInfo($('#dashboardMessages'), "Ticket " + ticketNumber + " successfully updated", false);	
 					},
-				    error: function(data) {
-				    	if (data.responseJSON && data.responseJSON.message) {
-				    		app.util.displayError(self.$alertContainer, data.responseJSON.message);
-				    	}
-				    	else { //just in case the server missed to return a proper json with "message" value
-				    		app.util.displayError(self.$alertContainer, "Unexpected server error");
-				    	}
-				    }
+				    error: handleServerError
 				});
 			}
-		},
-
-		close: function() {
-			this.$addEditModal.modal("hide");
-			app.Router.navigate("#");
 		},
 
 		closeSavePopover: function() {

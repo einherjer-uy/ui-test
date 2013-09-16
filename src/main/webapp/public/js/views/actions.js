@@ -18,8 +18,8 @@ var app = app || {};
 			//NOTE 1. there are several viewAction, etc in the page (one per row) but backbone makes these selectors relative to the view.$el
 			//NOTE 2. the binding uses jquery "on" (or "delegate" in older jquery) so it works even if the element doesn't exist in the DOM
 			//	      at the moment the View is instantiated (like in this case, the DOM containing the elements selected here are created by the render() function)
-			'click .viewAction': 'view', 
-			'click .editAction': 'edit'
+			'click .viewAction': 'showModal', 
+			'click .editAction': 'showModal'
 		},
 
 		render: function () {
@@ -123,17 +123,8 @@ var app = app || {};
 			return this.onAddEditModal ? "top" : "left";
 		},
 
-		edit: function () {
-			this.showModal(this.model);
-		},
-
-		view: function () {
-			this.showModal(this.model);
-		},
-
-		showModal: function(ticket) {
-			app.util.displayTicket(ticket, this.$addEditModal, this.$messages, true);
-			app.Router.navigate("browse/"+ticket.get("number"));
+		showModal: function() {
+			app.util.displayTicket(this.model, this.$addEditModal, this.$messages, true);
 		},
 
 	});
