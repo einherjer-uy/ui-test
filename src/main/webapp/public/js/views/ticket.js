@@ -200,6 +200,8 @@ var app = app || {};
 			this.hideErrors();
 			$('#pleaseWaitDialog').show();
 			$(".modal-backdrop").show();
+			this.$saveButton.popover("hide");
+
 			if (app.loggedUser.get("role")==app.util.ROLE_REQUESTOR) {
 				this.model.set(this.newAttributes());
 				if (this.model.isNew()) {
