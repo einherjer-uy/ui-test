@@ -212,21 +212,18 @@
 					  	</div>
 					</div>
 					<div class="tab-pane" id="form-attachments">
-						<div id="fileUploadDiv" class="control-group">
-					    	
-					    	<div class="controls">
-								<div>
-					 				<span class="btn btn-success fileinput-button">
-					                    <i class="glyphicon glyphicon-plus"></i>
-					                    <span>Add files...</span>
-					                    <input id="fileupload" type="file" name="files[]" multiple>
-					                </span>
-					                <div id="progress" class="progress progress-striped active" style="display:none; margin-top:7px;">
-					                    <div class="bar" style="width:0%;"></div>
-					                </div>
-								    <table id="uploadedFiles" style="width:100%; margin: 5px, 0;"></table>
-								</div>
-					    	</div>
+						<div id="fileUploadDiv">
+							<div>
+				 				<span class="btn fileinput-button">
+				                    <i class="glyphicon glyphicon-plus"></i>
+				                    <span>Add files...</span>
+				                    <input id="fileupload" type="file" name="files[]" multiple>
+				                </span>
+				                <div id="progress" class="progress progress-striped active" style="display:none; margin-top:7px;">
+				                    <div class="bar" style="width:0%;"></div>
+				                </div>
+							    <table id="uploadedFiles" style="width:100%; margin: 5px, 0;"></table>
+							</div>
 					  	</div>
 					</div>
 					<div class="tab-pane" id="form-activity">
@@ -266,7 +263,7 @@
 			<tr>
 	        	<td class="tt-ellipsis"><a href='tt/tickets/{{ticketNumber ? ticketNumber+"/" : ""}}attachment/{{file.id}}' title='{{file.fileName}}'>{{file.fileName}}</a></td>
 				<td style='white-space:nowrap;'>{{file.fileSize}}</td>
-	            <td><a href='#' id="deleteAttach{{file.id}}" class='btn btn-danger glyphicon glyphicon-trash'></a></td>
+	            <td><a href='#' id="deleteAttach{{file.id}}" class='btn glyphicon glyphicon-trash'></a></td>
 	        </tr>
 		<% }); %>
 	</script>
