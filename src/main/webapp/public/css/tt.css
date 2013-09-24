@@ -270,11 +270,11 @@ body.tt-body {
 }
 
 #ttApp { 
-	margin-top: 10px;
+	margin-top: 55px; /*account for fixed navbar*/
 	min-height: 500px;
 	position: relative;
 	padding-bottom: 60px;
-	background-color: #fff; /* Overrid bootstrap's well background */
+	background-color: #fff; /* Override bootstrap's well background */
 }
 
 #header h2 {
