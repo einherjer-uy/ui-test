@@ -258,11 +258,11 @@ textarea {
 }
 
 body.tt-body {
-	background-image: url(../img/bg.png);
+	background-image: url(../img/bg2.png);
 	background-position: left 40px;
 	background-attachment: fixed;
 	background-repeat: no-repeat;
-	background-color: #C0DEED;
+	background-color: #BEBEBE;
 }
 
 #pleaseWaitDialog .progress {
@@ -347,7 +347,8 @@ body.tt-body {
 
 .ticket-card .card-footer {
 	border-top: 1px solid #eee;
-	line-height: 30px;
+	height: 30px; /*need to force height cause if the ticket doesn't have comments/attachments the only content of the footer would be the "actions" and since they "float right" the footer gets zero height*/
+	line-height: 30px; /*line-height helps center the content vertically on the line*/
 	padding-top: 4px;
 }
 
