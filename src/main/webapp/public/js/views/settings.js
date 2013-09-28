@@ -36,7 +36,7 @@ var app = app || {};
 				app.loggedUser.set("notificationsEnabled",notificationsChecked);
 
 				$('#pleaseWaitDialog').show();
-				$(".modal-backdrop").show();
+				$("#loadingModalBackdrop").show();
 
 				$.ajax({
 	  				url: "/tt/loggedUser", 
@@ -46,13 +46,13 @@ var app = app || {};
 	  				dataType: "json",
 	  				error: function (data){
 	  					$('#pleaseWaitDialog').hide();
-						$(".modal-backdrop").hide();
+						$("#loadingModalBackdrop").hide();
 						$('#dashboardMessages').html('');
 						app.util.displayError($('#dashboardMessages'), "Error updating settings.", false);
 	  				},
                 	success: function (data){
 						$('#pleaseWaitDialog').hide();
-						$(".modal-backdrop").hide();
+						$("#loadingModalBackdrop").hide();
 						$('#dashboardMessages').html('');
 						app.util.displayInfo($('#dashboardMessages'), "Settings updated.", false);
                 	}

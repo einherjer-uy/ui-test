@@ -28,7 +28,7 @@ var app = app || {};
 							        success: function () {
 							        	//Hide progress bar and black background
 						                $('#pleaseWaitDialog').hide();
-										$(".modal-backdrop").hide();
+										$("#loadingModalBackdrop").hide();
 										
 										$('#dashboardMessages').html('');
 						            }	
@@ -54,7 +54,7 @@ var app = app || {};
 		refresh: function () {
 			
 			$('#pleaseWaitDialog').show();
-			$(".modal-backdrop").show();
+			$("#loadingModalBackdrop").show();
 
 			app.tickets.reset();
 			app.tickets.fetch({  //call server to fetch the collection, which will in turn trigger the update of the view
@@ -62,7 +62,7 @@ var app = app || {};
 
 		        	//Hide progress bar and black background
 	                $('#pleaseWaitDialog').hide();
-					$(".modal-backdrop").hide();
+					$("#loadingModalBackdrop").hide();
 					$('#dashboardMessages').html('');
 
 					if (!app.tickets.length) {

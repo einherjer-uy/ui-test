@@ -109,7 +109,7 @@ var app = app || {};
 			}
 
 			$('#pleaseWaitDialog').show();
-			$(".modal-backdrop").show();
+			$("#loadingModalBackdrop").show();
 
 			var self = this;
 			var ticketNumber = this.model.get("number");
@@ -129,12 +129,12 @@ var app = app || {};
 					}
 
 					$('#pleaseWaitDialog').hide();
-					$(".modal-backdrop").hide();
+					$("#loadingModalBackdrop").hide();
 					app.util.displayInfo($('#dashboardMessages'), "Ticket " +  ticketNumber + " successfully canceled.", false);
 				},
 			    error: function(data) {
 					$('#pleaseWaitDialog').hide();
-					$(".modal-backdrop").hide();
+					$("#loadingModalBackdrop").hide();
 
 			    	if(self.showErrors()) {
 			    		app.util.displayError(self.$messages, data.responseJSON.message);
@@ -158,7 +158,7 @@ var app = app || {};
 		    }
 
 			$('#pleaseWaitDialog').show();
-			$(".modal-backdrop").show();
+			$("#loadingModalBackdrop").show();
 
 			var self = this;
 			var ticketNumber = this.model.get("number");
@@ -177,12 +177,12 @@ var app = app || {};
 						self.$addEditModal.modal("hide");
 					}
 					$('#pleaseWaitDialog').hide();
-					$(".modal-backdrop").hide();					
+					$("#loadingModalBackdrop").hide();					
 					app.util.displayInfo($('#dashboardMessages'), "Ticket " +  ticketNumber + " successfully rejected.", false);
 				},
 			    error: function(data) {
 			    	$('#pleaseWaitDialog').hide();
-					$(".modal-backdrop").hide();
+					$("#loadingModalBackdrop").hide();
 			    	if(self.showErrors()) {
 			    		app.util.displayError(self.$messages, data.responseJSON.message);
 			    	}
@@ -197,7 +197,7 @@ var app = app || {};
 		approve: function () {
 
 			$('#pleaseWaitDialog').show();
-			$(".modal-backdrop").show();
+			$("#loadingModalBackdrop").show();
 
 			var self = this;
 			var ticketNumber = this.model.get("number");
@@ -216,12 +216,12 @@ var app = app || {};
 						self.$addEditModal.modal("hide");
 					}
 					$('#pleaseWaitDialog').hide();
-					$(".modal-backdrop").hide();
+					$("#loadingModalBackdrop").hide();
 					app.util.displayInfo($('#dashboardMessages'), "Ticket " +  ticketNumber + " successfully approved.", false);
 				},
 			    error: function(data) {
 			    	$('#pleaseWaitDialog').hide();
-					$(".modal-backdrop").hide();
+					$("#loadingModalBackdrop").hide();
 			    	if(self.showErrors()) {
 			    		app.util.displayError(self.$messages, data.responseJSON.message);
 			    	}
@@ -236,7 +236,7 @@ var app = app || {};
 		done: function () {
 
 			$('#pleaseWaitDialog').show();
-			$(".modal-backdrop").show();
+			$("#loadingModalBackdrop").show();
 
 			var self = this;
 			var ticketNumber = this.model.get("number");
@@ -251,7 +251,7 @@ var app = app || {};
 				success: function(data){
 				    app.tickets.fetch({reset:true}); //fetch needed cause after the status has changed the server might determine the ticket in its new status shouldn't be returned/shown, otherwise a model.fetch() would be enough
 				    $('#pleaseWaitDialog').hide();
-					$(".modal-backdrop").hide();						
+					$("#loadingModalBackdrop").hide();						
 				    if(self.onAddEditModal) {
 						self.$addEditModal.modal("hide");
 						app.util.displayInfo($('#dashboardMessages'), "Ticket " +  ticketNumber + " successfully marked as Done.", false);
@@ -259,7 +259,7 @@ var app = app || {};
 				},
 			    error: function(data) {
 			    	$('#pleaseWaitDialog').hide();
-					$(".modal-backdrop").hide();						
+					$("#loadingModalBackdrop").hide();						
 			    	if(self.showErrors()) {
 			    		app.util.displayError(self.$messages, data.responseJSON.message);
 			    	}

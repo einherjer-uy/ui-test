@@ -189,7 +189,7 @@ var app = app || {};
 		save: function (e) {
 			var handleServerError = function(data) {
 				$('#pleaseWaitDialog').hide();
-				$(".modal-backdrop").hide();
+				$("#loadingModalBackdrop").hide();
 		    	if (data.responseJSON && data.responseJSON.message) {
 		    		app.util.displayError(self.$alertContainer, data.responseJSON.message);
 		    	}
@@ -199,7 +199,7 @@ var app = app || {};
 			};
 			this.hideErrors();
 			$('#pleaseWaitDialog').show();
-			$(".modal-backdrop").show();
+			$("#loadingModalBackdrop").show();
 			this.$saveButton.popover("hide");
 
 			if (app.loggedUser.get("role")==app.util.ROLE_REQUESTOR) {
@@ -213,7 +213,7 @@ var app = app || {};
 						        success: function () {
 						        	//Hide progress bar and black background
 					                $('#pleaseWaitDialog').hide();
-									$(".modal-backdrop").hide();
+									$("#loadingModalBackdrop").hide();
 									app.util.displayInfo($('#dashboardMessages'), "Ticket " + ticketNumber + " successfully created", false);
 					            },
 					            error: handleServerError
@@ -251,7 +251,7 @@ var app = app || {};
 								        success: function () {
 								        	//Hide progress bar and black background
 							                $('#pleaseWaitDialog').hide();
-											$(".modal-backdrop").hide();
+											$("#loadingModalBackdrop").hide();
 											app.util.displayInfo($('#dashboardMessages'), "Ticket " + ticketNumber + " successfully updated", false);
 							            },
 							            error: handleServerError
@@ -263,6 +263,8 @@ var app = app || {};
 		        }
 		        if (this.model.validationError) {
 					this.showErrors(this.model.validationError);
+					$('#pleaseWaitDialog').hide();
+					$("#loadingModalBackdrop").hide();
 				}
 				else {
 					this.$addEditModal.modal("hide");					
@@ -280,7 +282,7 @@ var app = app || {};
 					success: function(data){
 						self.model.set("priority", self.$priority.val());
 						$('#pleaseWaitDialog').hide();
-						$(".modal-backdrop").hide();
+						$("#loadingModalBackdrop").hide();
 					    self.$addEditModal.modal("hide");
 					    app.util.displayInfo($('#dashboardMessages'), "Ticket " + ticketNumber + " successfully updated", false);	
 					},
