@@ -32,18 +32,18 @@ users
 
 demo script
 -----------
-# explain tech stack (incl. server-side)
-# responsiveness of login screen
-# login as requestor, approver, executor (in a different browser or incognito)
-# dashboard screen (navbar features, responsiveness specially in cards view, list vs cards)
-# differences in dashboard screen between requestor/approver/executor roles (actions and "create new"; requestor sees his own tickets, approver see NEW and APPROVED, executor sees APPROVED)
-# create new ticket (validation of due date and description, attachments)
-# edit ticket (download, delete attachment)
-# email notifications, open ticket by url (e.g. http://localhost:8080/#browse/TT-2)
-# requestor cancels a ticket
-# requestor creates a ticket, approver is notified, new tickets are shown in bold
-# approver changes priority, enters a coment, the requestor is notified (ONLY the creator of the ticket, not every requestor)
-# approver rejects from the edit modal without a comment, gets an error
-# same thing but with a comment, requestor is notfied and ticket is displayed in red (also in card view)
-# approved tickets are shown in green
-# approver approves, executor is notified, can view or mark as done
+1. explain tech stack (incl. server-side)
+2. responsiveness of login screen
+3. login as requestor, approver, executor (in a different browser or incognito)
+4. dashboard screen (navbar features, responsiveness specially in cards view, list vs cards)
+5. differences in dashboard screen between requestor/approver/executor roles (actions and "create new"; requestor sees his own tickets, approver see NEW and APPROVED, executor sees APPROVED)
+6. create new ticket (validation of due date and description, attachments)
+7. edit ticket (download, delete attachment)
+8. email notifications, open ticket by url (e.g. http://localhost:8080/#browse/TT-2)
+9. requestor cancels a ticket
+10. requestor creates a ticket, approver is notified, new tickets are shown in bold
+11. approver changes priority, enters a coment, the requestor is notified (ONLY the creator of the ticket, not every requestor)
+12. approver rejects from the edit modal without a comment, gets an error
+13. same thing but with a comment, requestor is notfied and ticket is displayed in red (also in card view)
+14. approved tickets are shown in green
+15. approver approves, executor is notified, can view or mark as done
