@@ -38,7 +38,7 @@ demo script
 4. dashboard screen (navbar features, responsiveness specially in cards view, list vs cards)
 5. differences in dashboard screen between requestor/approver/executor roles (actions and "create new"; requestor sees his own tickets, approver see NEW and APPROVED, executor sees APPROVED)
 6. create new ticket (validation of due date and description, attachments)
-7. edit ticket (download, delete attachment)
+7. edit ticket (download, delete attachment, responsiveness)
 8. email notifications, open ticket by url (e.g. http://localhost:8080/#browse/TT-2)
 9. requestor cancels a ticket
 10. requestor creates a ticket, approver is notified, new tickets are shown in bold
