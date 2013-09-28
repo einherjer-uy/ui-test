@@ -380,6 +380,7 @@ body.tt-body {
 #ticket-form #description,
 #ticket-form #description-alert {
 	width: 380px;
+	margin-bottom: 0;
 }
 
 #ticket-form #description-alert {
@@ -393,6 +394,10 @@ body.tt-body {
 
 #addEditModal {
 	width: 650px;
+}
+
+#addEditModal .modal-body {
+	min-height: 418px;
 }
 
 #addEditModal .actions {
@@ -488,4 +493,8 @@ tr:hover .actions .action-enabled,
 
 #pleaseWaitDialog {
 	z-index: 2001; /*display in front of bootstrap modal*/
+}
+
+.control-group:last-child {
+	margin-bottom: 0;
 }
