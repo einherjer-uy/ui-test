@@ -377,10 +377,12 @@ body.tt-body {
 	background: linear-gradient(to bottom, #dff0d8, #E4F5DD);
 }
 
-#ticket-form #description,
-#ticket-form #description-alert {
-	width: 380px;
-	margin-bottom: 0;
+@media (min-width: 768px) {
+	#ticket-form #description,
+	#ticket-form #description-alert {
+		width: 380px;
+		margin-bottom: 0;
+	}
 }
 
 #ticket-form #description-alert {
@@ -392,8 +394,11 @@ body.tt-body {
 	margin: 10px 0px;
 }
 
-#addEditModal {
-	width: 650px;
+@media (min-width: 768px) {
+	#addEditModal {
+		width: 650px;
+		margin-left: -325px;
+	}
 }
 
 #addEditModal .modal-body {
