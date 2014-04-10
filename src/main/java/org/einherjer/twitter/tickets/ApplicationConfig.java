@@ -38,6 +38,7 @@ import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 @EnableJpaRepositories
 @EnableTransactionManagement
 @PropertySource("classpath:application.properties") //see @PropertySource javadoc and http://blog.jamesdbloom.com/UsingPropertySourceAndEnvironment.html
+//@ImportResource("classpath:applicationContext.xml") //se pueden importar configuraciones en xml asi
 public class ApplicationConfig {
 
     @Autowired
