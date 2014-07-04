@@ -5,8 +5,13 @@
 
     <!-- need to create a web.xml for this cause it's not supported by JavaConfig yet -->
     <!-- see the *WebApplicationInitializer.java for the remaining config -->
+    <!-- HOWEVER A NICE WORKAROUND is to have a controller with
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+	public String home() {
+		return "redirect:/index.html";
+	} -->
 	<welcome-file-list>
-		<welcome-file>content/index.html</welcome-file>
+		<welcome-file>content/index.html</welcome-file> 
 	</welcome-file-list>
         
 </web-app>
